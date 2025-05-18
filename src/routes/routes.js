@@ -37,6 +37,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "demo" */ '../views/Dashboard.vue'),
         meta: { requiresAuth: true }
       },
+       {
+        path: '/users',
+        name: 'users',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Users/CreateUser.vue'),
+        meta: { requiresAuth: true }
+      },
       {
         path: '/icons',
         name: 'icons',
