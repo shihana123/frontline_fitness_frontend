@@ -6,7 +6,7 @@
       </b-col>
     </b-row>
 
-    <b-form @submit.prevent="updateProfile">
+    <b-form @submit.prevent="createUser">
       <h6 class="heading-small text-muted mb-4">User information</h6>
 
       <div class="pl-lg-4">
@@ -18,6 +18,7 @@
               label="First Name"
               placeholder="First Name"
               v-model="user.firstName"
+              v-validate="'required|alpha'"
             >
             </base-input>
           </b-col>
@@ -176,15 +177,14 @@
             </base-input>
           </b-col>
           <b-col lg="6">
-            <base-input label="Languages Known" v-model="user.language">
-            <select  class="form-control">
-                <option>Malayalam</option>
-                <option>English</option>
-                <option>Hindi</option>
-                <option>Tamil</option>
-                <option>Telugu</option>
-            </select>
-            </base-input>
+            <label class="form-control-label">Languages</label>
+            <multiselect
+              v-model="user.language"
+              :options="languages"
+              :multiple="true"
+              :taggable="true"
+              placeholder="Select languages"
+            />
           </b-col>
         </b-row>
 
@@ -205,63 +205,147 @@
 
         <b-row>
           <b-col lg="12">
-            <base-input label="Available Time">
-                <b-form-checkbox-group
-                v-model="user.selectedDays"
-                :options="days"
-                name="days"
-                stacked
-                >
-                </b-form-checkbox-group>
-            </base-input>
-            
+            <label class="form-control-label">
+              Available Time
+            </label>
+            <div>
+              <div v-for="(range, index) in user.timeRanges" :key="index" class="mb-4">
+                <vue-slider
+                  v-model="range.value"
+                  :min="0"
+                  :max="1440"
+                  :interval="15"
+                  :tooltip="'always'"
+                  :dot-size="16"
+                  :marks="timeMarks"
+                  :formatter="formatTime"
+                  :piecewise="true"
+                  :piecewise-label="true"
+                  :process="true"
+                  :enable-cross="false"
+                  :lazy="true"
+                  :contained="true"
+                  :use-range="true"
+                  class="w-full"
+                />
+                <hr>
+                <div>
+                  Range {{ index + 1 }}: {{ formatTime(range.value[0]) }} - {{ formatTime(range.value[1]) }}
+                </div>
+              </div>
+              <base-button icon type="primary" @click="addRange">Add More Time Range</base-button>
+              <!-- <button @click="addRange">Add Time Range</button> -->
+              <!-- <pre>{{ user.timeRanges }}</pre> -->
+            </div>
           </b-col>
-        </b-row>
+          
+        </b-row><br>
+        <b-button type="submit" variant="success" class="submit_btn">Create User</b-button>
       </div>
 
     </b-form>
   </card>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      user: {
-        company: 'Creative Code Inc.',
-        username: 'michael23',
-        email: '',
-        firstName: 'Mike',
-        lastName: 'Andrew',
-        address: 'Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09',
-        city: 'New York',
-        country: 'USA',
-        postalCode: '',
-        aboutMe: `Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.`,
-        selectedDays: [],
+  import axios from 'axios'
+  import VueSlider from 'vue-slider-component'
+  import 'vue-slider-component/theme/default.css'
+  import Multiselect from 'vue-multiselect'
+  import 'vue-multiselect/dist/vue-multiselect.min.css'
+
+  export default {
+    components: {
+      VueSlider, // <-- Add this
+      Multiselect
+    },
+    data() {
+      return {
+        user: {
+          email: '',
+          firstName: '',
+          lastName: '',
+          phonenumber: '',
+          age: '',
+          gender: '',
+          address: '',
+          city: '',
+          country: '',
+          postalCode: '',
+          resume: '',
+          contract: '',
+          joiningDate: '',
+          language: [],
+          selectedDays: [],
+          timeRanges : [
+            { value : [540, 720] }
+          ]
+        },
+        days: [
+          { text: 'Sunday', value: 'sunday' },
+          { text: 'Monday', value: 'monday' },
+          { text: 'Tuesday', value: 'tuesday' },
+          { text: 'Wednesday', value: 'wednesday' },
+          { text: 'Thursday', value: 'thursday' },
+          { text: 'Friday', value: 'friday' },
+          { text: 'Saturday', value: 'saturday' },
+        ],
+        languages: ['English', 'Spanish', 'French', 'German', 'Hindi', 'Malayalam', 'Tamil', 'Telugu'],
+      };
+    },
+    computed: {
+      timeMarks() {
+        const marks = {}
+        for (let i = 0; i <= 1440; i += 60) {
+          marks[i] = this.formatTime(i)
+        }
+        return marks
+      }
+    },
+    methods: {
+      
+      formatTime(minutes) {
+        const h = Math.floor(minutes / 60)
+        const m = minutes % 60
+        const hour = h % 24
+        const suffix = hour >= 12 ? 'PM' : 'AM'
+        const displayHour = hour % 12 === 0 ? 12 : hour % 12
+        const displayMin = m.toString().padStart(2, '0')
+        return `${displayHour}:${displayMin} ${suffix}`
       },
-      days: [
-        { text: 'Sunday', value: 'sunday' },
-        { text: 'Monday', value: 'monday' },
-        { text: 'Tuesday', value: 'tuesday' },
-        { text: 'Wednesday', value: 'wednesday' },
-        { text: 'Thursday', value: 'thursday' },
-        { text: 'Friday', value: 'friday' },
-        { text: 'Saturday', value: 'saturday' },
-      ]
-    };
-  },
-  methods: {
-    updateProfile() {
-      alert('Your data: ' + JSON.stringify(this.user));
+      addRange() {
+        this.user.timeRanges.push({ value: [600, 720] }) // default new range: 10:00 AM to 12:00 PM
+      },
+      createUser()
+      {
+        axios.post('http://127.0.0.1:8000/api/auth/login', {
+          data: this.user
+        })
+        .then(response => {
+          
+          console.log(response);
+          
+        })
+        .catch(error => {
+          console.log(error);
+          
+        })
+        
+      }
     }
-  }
-};
+  };
 </script>
 <style>
-.custom-control {
-  position: relative;
-  display: inline !important;
-  min-height: 1.5rem;
-  padding-left: 4rem !important;
-}
+  .custom-control {
+    position: relative;
+    display: inline !important;
+    min-height: 1.5rem;
+    padding-left: 4rem !important;
+  }
+  .vue-slider-mark-label {
+    font-size: 6px !important;
+  }
+  .submit_btn
+  {
+    float: right;
+  }
 </style>

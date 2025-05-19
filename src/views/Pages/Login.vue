@@ -30,8 +30,8 @@
               <div class="text-center text-muted mb-4">
                 <h3>Sign In</h3>
               </div>
-              <validation-observer v-slot="{handleSubmit}" ref="formValidator">
-                <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
+              <!-- <validation-observer v-slot="{handleSubmit}" ref="formValidator"> -->
+                <b-form role="form" @submit.prevent="handleSubmit">
                   <base-input alternative
                               class="mb-3"
                               name="Email"
@@ -56,7 +56,7 @@
                     <base-button type="primary" native-type="submit" class="my-4">Sign in</base-button>
                   </div>
                 </b-form>
-              </validation-observer>
+              <!-- </validation-observer> -->
             </b-card-body>
           </b-card>
           <b-row class="mt-3">
@@ -83,7 +83,7 @@
       };
     },
     methods: {
-      onSubmit() {
+      handleSubmit() {
         // this will be called only after form is valid. You can do api call here to login
         
         axios.post('http://127.0.0.1:8000/api/auth/login', {
