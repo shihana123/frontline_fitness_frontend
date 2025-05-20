@@ -15,20 +15,20 @@
           <b-col lg="6">
             <base-input
               type="text"
-              label="First Name"
-              placeholder="First Name"
-              v-model="user.firstName"
+              label="Name"
+              placeholder="Name"
+              v-model="user.name"
               v-validate="'required|alpha'"
             >
             </base-input>
           </b-col>
           <b-col lg="6">
-            <base-input
-              type="text"
-              label="Last Name"
-              placeholder="Last Name"
-              v-model="user.lastName"
-            >
+            <base-input label="Select Role">
+            <select class="form-control" v-model="user.role">
+                <option v-for="role in roles" :key="role.id" :value="role.id">
+                  {{ role.rolename }}
+                </option>
+            </select>
             </base-input>
           </b-col>
         </b-row>
@@ -147,6 +147,7 @@
               label="Resume"
               placeholder="Resume"
               v-model="user.resume"
+              @change="handleFileUpload($event, 'resume')"
             >
             </base-input>
           </b-col>
@@ -156,6 +157,7 @@
               label="Contract"
               placeholder="Contract"
               v-model="user.contract"
+              @change="handleFileUpload($event, 'contract')"
             >
             </base-input>
           </b-col>
@@ -261,9 +263,10 @@
     data() {
       return {
         user: {
+          name: '',
           email: '',
-          firstName: '',
-          lastName: '',
+          password: '',
+          role: '',
           phonenumber: '',
           age: '',
           gender: '',
@@ -290,6 +293,7 @@
           { text: 'Saturday', value: 'saturday' },
         ],
         languages: ['English', 'Spanish', 'French', 'German', 'Hindi', 'Malayalam', 'Tamil', 'Telugu'],
+        roles: [],
       };
     },
     computed: {
@@ -317,20 +321,94 @@
       },
       createUser()
       {
-        axios.post('http://127.0.0.1:8000/api/auth/login', {
-          data: this.user
+        const formData = new FormData();
+        formData.append('name', this.user.name);
+        formData.append('email', this.user.email);
+        formData.append('role_id', this.user.role);
+        formData.append('password', this.user.password);
+        formData.append('phone', this.user.phonenumber);
+        formData.append('age', this.user.age);
+        formData.append('gender', this.user.gender);
+        formData.append('address', this.user.address);
+        formData.append('city', this.user.city);
+        formData.append('country', this.user.country);
+        formData.append('pincode', this.user.postalCode);
+        formData.append('joining_date', this.user.joiningDate);
+        // formData.append('available_time', this.user.timeRanges);
+
+        // Append file inputs
+        if (this.user.resume) {
+          formData.append('resume', this.user.resume);
+        }
+        if (this.user.contract) {
+          formData.append('contract', this.user.contract);
+        }
+
+        // For arrays, use JSON.stringify
+        formData.append('language', JSON.stringify(this.user.language));
+        formData.append('available_days', JSON.stringify(this.user.selectedDays));
+        formData.append('available_time', JSON.stringify(this.user.timeRanges));
+
+        axios.post('http://127.0.0.1:8000/api/user/userCreate', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         })
         .then(response => {
-          
-          console.log(response);
-          
+          console.log('User created successfully:', response.data);
         })
         .catch(error => {
-          console.log(error);
+          console.error('Error creating user:', error.response && error.response.data ? error.response.data : error);
+
+        });
+        // axios.post('http://127.0.0.1:8000/api/user/userCreate', {
+        //   name: this.user.name,
+        //   email: this.user.email,
+        //   role_id: this.user.role,
+        //   password: this.user.password,
+        //   phone: this.user.phonenumber,
+        //   age: this.user.age,
+        //   gender: this.user.gender,
+        //   address: this.user.address,
+        //   city: this.user.city,
+        //   country: this.user.country,
+        //   pincode: this.user.postalCode,
+        //   resume: this.user.resume,
+        //   contract: this.user.contract,
+        //   joining_date: this.user.joiningDate,
+        //   language: this.user.language,
+        //   available_days: this.user.selectedDays,
+        //   available_time: this.user.timeRanges,
+        // })
+        // .then(response => {
           
-        })
+        //   console.log(response);
+          
+        // })
+        // .catch(error => {
+        //   console.log(error);
+          
+        // })
         
+      },
+      async fetchRoles() {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/user/roles/');
+          console.log(response);
+          this.roles = response.data;
+          
+          // this.roles = response.data;
+        } catch (error) {
+          console.error('Error fetching roles:', error);
+        }
+      },
+      handleFileUpload(event, field) {
+        this.user[field] = event.target.files[0];
       }
+
+    },
+    mounted(){
+      this.fetchRoles();
     }
   };
 </script>
