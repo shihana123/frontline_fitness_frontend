@@ -1,34 +1,28 @@
 <template>
     <b-card no-body>
         <b-card-header class="border-0 header-sec">
-            <h3 class="mb-0">Users List</h3>
-            <b-button  variant="success" class="create_btn" @click="redirect()">Create User</b-button>
+            <h3 class="mb-0">Program List</h3>
+            <b-button  variant="success" class="create_btn" @click="redirect()">Create Program</b-button>
         </b-card-header>
-        <!-- {{ users }} -->
-
+       
         <el-table class="table-responsive table"
                   header-row-class-name="thead-light"
-                  :data="users">
+                  :data="programs">
             <el-table-column label="Name"
                              min-width="140px"
                              prop="name">
             </el-table-column>
-            <el-table-column label="Role"
-                             prop="roles[0].role.rolename"
-                             min-width="140px">
-            </el-table-column>
+           
 
-            <el-table-column label="Email"
+            <el-table-column label="Program Type"
                              min-width="170px"
-                             prop="email">
+                             >
+                             <template #default="scope">
+                            {{ scope.row.program_type.join(', ') }}
+                            </template>
             </el-table-column>
 
-            <el-table-column label="Phone" 
-                             min-width="190px"
-                             prop="phone">
-                
-            </el-table-column>
-
+           
             <el-table-column label="Action"
                              prop="completion"
                              min-width="240px">
@@ -66,25 +60,27 @@
     },
     data() {
       return {
-        users: [],
+        programs: [],
         currentPage: 1
       };
     },
     methods:{
         async userList(){
-            axios.get('http://127.0.0.1:8000/api/user/userList')
+            axios.get('http://127.0.0.1:8000/api/user/ProgramList')
             .then(response => {
-                this.users = response.data;
-                console.log('User fetched successfully:', response.data);
+                this.programs = response.data;
+                console.log(response.data[1].program_type);
+                
+                // console.log('programs fetched successfully:', response.data);
             })
             .catch(error => {
-                console.error('Error creating user:', error.response && error.response.data ? error.response.data : error);
+                console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
 
             });
         },
         redirect()
         {
-            this.$router.push('/users/create');
+            this.$router.push('/programs/create');
         }
     },
     mounted()

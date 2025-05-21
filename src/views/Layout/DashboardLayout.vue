@@ -22,6 +22,15 @@
         </sidebar-item>
 
         <sidebar-item
+            :link="{
+              name: 'Programs',
+              path: '/programs',
+              icon: 'ni ni-ui-04 text-orange'
+              }"
+            >
+        </sidebar-item>
+
+        <sidebar-item
               :link="{
                 name: 'Maps',
                 path: '/maps',
