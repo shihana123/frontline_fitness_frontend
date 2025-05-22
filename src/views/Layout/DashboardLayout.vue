@@ -3,7 +3,7 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item
+        <sidebar-item v-if="role_id == 'Admin' || 'Trainer'"
           :link="{
             name: 'Dashboard',
             path: '/dashboard',
@@ -12,7 +12,7 @@
         >
         </sidebar-item>
 
-        <sidebar-item
+        <sidebar-item v-if="role_id == 'Admin'"
             :link="{
               name: 'Users',
               path: '/users',
@@ -21,9 +21,20 @@
             >
         </sidebar-item>
 
-        <sidebar-item
+        <sidebar-item v-if="role_id == 'Admin'"
             :link="{
               name: 'Programs',
+              path: '/programs',
+              icon: 'ni ni-ui-04 text-orange'
+              }"
+            >
+        </sidebar-item>
+
+
+        <!-- trainer -->
+         <sidebar-item v-if="role_id == 'Trainer'"
+            :link="{
+              name: 'New Clients',
               path: '/programs',
               icon: 'ni ni-ui-04 text-orange'
               }"
@@ -108,6 +119,7 @@
   import ContentFooter from './ContentFooter.vue';
   import DashboardContent from './Content.vue';
   import { FadeTransition } from 'vue2-transitions';
+  import axios from 'axios'
 
   export default {
     components: {
@@ -116,16 +128,35 @@
       DashboardContent,
       FadeTransition
     },
+    data() {
+      return {
+        role_id: '',
+      };
+    },
     methods: {
       initScrollbar() {
         let isWindows = navigator.platform.startsWith('Win');
         if (isWindows) {
           initScrollbar('sidenav');
         }
+      },
+      async userData()
+      {
+        const token = localStorage.getItem('token');
+        console.log(localStorage.getItem('token'));
+        var userRes = await axios.get('http://127.0.0.1:8000/api/user/userDetails/', {
+          headers: { Authorization: `Token ${token}` }
+        });
+        this.role_id = userRes.data.roles[0].role.rolename;
+        
+        // localStorage.setItem('userRole', userRes.data.role);
+        
       }
     },
+   
     mounted() {
       this.initScrollbar()
+      this.userData()
     }
   };
 </script>

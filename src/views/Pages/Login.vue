@@ -94,7 +94,7 @@
           const token = response.data.key
           localStorage.setItem('token', token) 
           this.$router.push('/dashboard')
-          // console.log(response.data.key);
+          console.log(response);
           
         })
         .catch(error => {
@@ -106,7 +106,6 @@
     mounted()
     {
      console.log(localStorage.getItem('token'));
-      
     }
   };
 </script>
