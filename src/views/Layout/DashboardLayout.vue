@@ -35,7 +35,7 @@
          <sidebar-item v-if="role_id == 'Trainer'"
             :link="{
               name: 'New Clients',
-              path: '/programs',
+              path: '/clients/new_client',
               icon: 'ni ni-ui-04 text-orange'
               }"
             >
