@@ -68,6 +68,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/consultation_schedules',
+        name: 'clients/consultation_schedules',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ConsulationScheduleList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/icons',
         name: 'icons',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Icons.vue')

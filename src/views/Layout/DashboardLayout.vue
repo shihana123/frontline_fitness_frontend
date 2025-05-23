@@ -41,6 +41,15 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Trainer'"
+            :link="{
+              name: 'Consultation Schedules',
+              path: '/clients/consultation_schedules',
+              icon: 'ni ni-bullet-list-67 text-yellow'
+              }"
+            >
+        </sidebar-item>
+
         <sidebar-item
               :link="{
                 name: 'Maps',
