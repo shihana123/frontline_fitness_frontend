@@ -9,6 +9,11 @@
         <el-table class="table-responsive table"
                   header-row-class-name="thead-light"
                   :data="users">
+
+            <el-table-column label="User ID"
+                             min-width="140px"
+                             prop="user_id">
+            </el-table-column>
             <el-table-column label="Name"
                              min-width="140px"
                              prop="name">
