@@ -64,13 +64,19 @@ const routes = [
       {
         path: '/clients/new_client',
         name: 'clients/new_client',
-        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientList.vue'),
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/NewClientList.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: '/clients/consultation_schedules',
         name: 'clients/consultation_schedules',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ConsulationScheduleList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/clients',
+        name: 'clients/clients',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientList.vue'),
         meta: { requiresAuth: true }
       },
       {

@@ -50,6 +50,15 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Trainer'"
+            :link="{
+              name: 'Clients',
+              path: '/clients/clients',
+              icon: 'ni ni-single-02 text-info'
+              }"
+            >
+        </sidebar-item>
+
         <sidebar-item
               :link="{
                 name: 'Maps',

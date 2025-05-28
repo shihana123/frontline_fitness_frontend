@@ -9,6 +9,11 @@
         <el-table class="table-responsive table"
                   header-row-class-name="thead-light"
                   :data="clients">
+
+            <el-table-column label="ID"
+                             min-width="90px"
+                             prop="client_id">
+            </el-table-column>
             <el-table-column label="Name"
                              min-width="90px"
                              prop="name">
@@ -210,7 +215,7 @@
     },
     methods:{
         async newclientList(){
-            axios.get('http://127.0.0.1:8000/api/user/clientList')
+            axios.get('http://127.0.0.1:8000/api/user/newclientList')
             .then(response => {
                 this.clients = response.data;
                 console.log(response.data);

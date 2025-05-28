@@ -17,7 +17,7 @@
   import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
   import projects from '../Tables/projects'
   import users from '../Tables/users'
-  import ClientTable from "./ClientTable/ClientTable";
+  import ClientTable from "./ClientTable/NewClientTable";
 
   export default {
     components: {
