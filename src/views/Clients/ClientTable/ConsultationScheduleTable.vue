@@ -64,13 +64,27 @@
         <b-form @submit.prevent="schedule">
             <h6 class="heading-small text-muted mb-2">Schedule Next Consulation</h6>
             <div class="pl-lg-12">
+                {{ completed_consultation }}
                 <b-row >
                     <b-col lg="12">
                         <base-input
                         type="datetime-local"
                         label="Schedule Date & Time"
-                        placeholder="Schedule Date & Timee"
+                        placeholder="Schedule Date & Time"
                         v-model="scheduledata.scheduledate"
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                </b-row>
+
+                <b-row v-if="completed_consultation == 0">
+                    <b-col lg="12">
+                        <base-input
+                        type="date"
+                        label="Workout Start Date"
+                        placeholder="Workout start Date"
+                        v-model="scheduledata.workoutdate"
                         >
                         </base-input>
                         
@@ -107,9 +121,11 @@
         scheduledata:{
             scheduledate : '',
             type: 'trainer',
-            no_of_consultation: ''
+            no_of_consultation: '',
+            workoutdate: ''
         },
-        selectedClientID: ''
+        selectedClientID: '',
+        completed_consultation: 0
       };
     },
     methods:{
@@ -139,7 +155,9 @@
             formData.append('client', this.selectedClientID);
             formData.append('type', this.scheduledata.type);
             formData.append('no_of_consultation', this.no_of_consultation);
-
+            // formData.append('no_of_consultation', this.no_of_consultation);
+            formData.append('workout_start_date', this.scheduledata.workoutdate);
+            
             axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
             headers: { Authorization: `Token ${token}` }
             })
@@ -156,6 +174,7 @@
         {
             this.selectedClientID = client.client.id;
             this.no_of_consultation = client.no_of_consultation + 1;
+            this.completed_consultation = client.completed_consultations;
             console.log(this.selectedClientID);
         }
     },

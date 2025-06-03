@@ -25,19 +25,19 @@
           <user-card></user-card>
         </b-col>
         <b-col xl="8" class="order-xl-1">
-          <edit-profile-form></edit-profile-form>
+          <!-- <edit-profile-form></edit-profile-form> -->
         </b-col>
       </b-row>
     </b-container>
   </div>
 </template>
 <script>
-  import EditProfileForm from './UserProfile/EditProfileForm.vue';
+  // import EditProfileForm from './UserProfile/EditProfileForm.vue';
   import UserCard from './UserProfile/UserCard.vue';
 
   export default {
     components: {
-      EditProfileForm,
+      // EditProfileForm,
       UserCard
     }
   };

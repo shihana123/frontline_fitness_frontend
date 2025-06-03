@@ -215,7 +215,10 @@
     },
     methods:{
         async newclientList(){
-            axios.get('http://127.0.0.1:8000/api/user/newclientList')
+            const token = localStorage.getItem('token');
+            axios.get('http://127.0.0.1:8000/api/user/newclientList', {
+            headers: { Authorization: `Token ${token}` }
+            })
             .then(response => {
                 this.clients = response.data;
                 console.log(response.data);

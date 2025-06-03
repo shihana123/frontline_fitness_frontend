@@ -80,6 +80,18 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/view/:id',
+        name: 'clients/view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/workout_view/:id',
+        name: 'clients/workout_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientWorkoutView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/icons',
         name: 'icons',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Icons.vue')
