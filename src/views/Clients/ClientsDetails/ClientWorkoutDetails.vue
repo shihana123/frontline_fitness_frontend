@@ -15,16 +15,16 @@
         <a href="#" class="btn btn-sm btn-info mr-4">Weekly Workout Updates</a>
       </div>
     </b-card-header>
-    <b-card-header class="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-      <div class="d-flex justify-content-between">
-        <a href="#" v-b-toggle.collapse-2 class="btn btn-sm btn-info mr-4">Week1</a>
-        
-      </div>
-    </b-card-header>
-
-    <b-card-body class="pt-0">
+    <div v-for="(week, index) in workoutDetails" :key="index">
+      <b-card-header  class="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+        <div class="d-flex justify-content-between">
+          <!-- <a href="#" v-b-toggle.collapse-1 class="btn btn-sm btn-success mr-4">Week{{ week['week_no'] }}</a> -->
+          <a href="#" v-b-toggle="'collapse-' + week['week_no']" class="btn btn-sm btn-success mr-4">Week {{ week['week_no'] }}</a>
+        </div>
+      </b-card-header>
+      <b-card-body class="pt-0">
         <b-row>
-            <b-collapse id="collapse-2">
+            <b-collapse :id="'collapse-' + week['week_no']">
                 
                 <el-table class="table-responsive table"
                   header-row-class-name="thead-light"
@@ -37,24 +37,28 @@
                 <b-card>  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.</b-card>
             </b-collapse>
         </b-row>
-      <b-row>
-        <b-col >
-          <div class="card-profile-stats d-flex justify-content-center mt-md-5">
-            <div class="d-flex justify-content-between">
-                <a href="#" class="btn btn-sm btn-warning mr-4">Add Updates</a>
+        <b-row>
+          <b-col >
+            <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+              <div class="d-flex justify-content-between">
+                  <a href="#" class="btn btn-sm btn-warning mr-4">Add Updates</a>
+              </div>
             </div>
-          </div>
-        </b-col>
-      </b-row>
-      <!-- <div class="text-center">
-        <base-button
-            type="primary"
-            size="small"
-            class="table_button" @click="workoutView(client[0].id)">
-            Weekly Workout Plan
-        </base-button>
-      </div> -->
-    </b-card-body>
+          </b-col>
+        </b-row>
+        <!-- <div class="text-center">
+          <base-button
+              type="primary"
+              size="small"
+              class="table_button" @click="workoutView(client[0].id)">
+              Weekly Workout Plan
+          </base-button>
+        </div> -->
+      </b-card-body>
+    </div>
+    
+
+    
   </b-card>
 </template>
 <script>
@@ -62,7 +66,8 @@
     export default {
         data() {
             return {
-                client: []
+                client: [],
+                workoutDetails: []
             }
         },
         methods:{
@@ -83,10 +88,28 @@
 
                 });
             },
+            async WeeklyWorkoutUpdates(id)
+            {
+                const token = localStorage.getItem('token');
+                axios.get(`http://127.0.0.1:8000/api/user/weekworkoutDetails/${id}/`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    this.workoutDetails = response.data;
+                    console.log(response.data);
+                    
+                    // console.log('programs fetched successfully:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+                });
+            }
         },
         mounted(){
             const id = this.$route.params.id;
             this.clientDetails(id);
+            this.WeeklyWorkoutUpdates(id);
         }
     };
 </script>
