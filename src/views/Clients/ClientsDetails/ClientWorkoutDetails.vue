@@ -25,16 +25,58 @@
       <b-card-body class="pt-0">
         <b-row>
             <b-collapse :id="'collapse-' + week['week_no']">
-                
-                <el-table class="table-responsive table"
-                  header-row-class-name="thead-light"
-                  :data="client">
-                    <el-table-column label="Workout type"
-                             
-                             min-width="140px">
-                    </el-table-column>
-                </el-table>
-                <b-card>  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.</b-card>
+              <b-container fluid>
+                <b-row>
+                  <b-col xl="6" md="6" sm="6" v-for="l in week['week_no_of_days']" :key="l">
+                    <div p-2 class="el-table table-responsive table el-table--fit el-table--enable-row-hover el-table--enable-row-transition">
+                        <table class="table table-flush workout_table el-table__header">
+                        <thead class="thead-light">
+                          <tr>
+                            <th width="10">Slno</th>
+                            <th>Workout Type</th>
+                            <th>Sets</th>
+                            <th>Reps</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="n in 10" :key="n">
+                            <td class="table_row">{{ n }}</td>
+                            <td class="table_row">
+                              <base-input
+                                type="text"
+                                placeholder="Workout type"
+                                v-validate="'required|alpha'"
+                                class="table_input"
+                                >
+                              </base-input>
+                            </td>
+                            <td class="table_row">
+                              <base-input
+                                type="text"
+                                placeholder="Sets"
+                                v-validate="'required|alpha'"
+                                class="table_input"
+                                >
+                              </base-input>
+                            </td>
+                            <td class="table_row">
+                              <base-input
+                                type="text"
+                                placeholder="Reps"
+                                v-validate="'required|alpha'"
+                                class="table_input"
+                                >
+                              </base-input>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                      
+                  </b-col>
+                </b-row>
+              </b-container>
+              
             </b-collapse>
         </b-row>
         <b-row>
@@ -67,7 +109,8 @@
         data() {
             return {
                 client: [],
-                workoutDetails: []
+                workoutDetails: [],
+                week_days: 0
             }
         },
         methods:{
@@ -79,7 +122,6 @@
                 })
                 .then(response => {
                     this.client = response.data;
-                    console.log(response.data);
                     
                     // console.log('programs fetched successfully:', response.data);
                 })
@@ -97,8 +139,7 @@
                 .then(response => {
                     this.workoutDetails = response.data;
                     console.log(response.data);
-                    
-                    // console.log('programs fetched successfully:', response.data);
+                    this.week_days = response.data[0].week_no_of_days;
                 })
                 .catch(error => {
                     console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
@@ -113,4 +154,21 @@
         }
     };
 </script>
-<style></style>
+<style>
+  .table_row
+  {
+    padding: 10px !important;
+    font-size: 10px !important;
+  }
+  .table_input
+  {
+    font-size: 10px !important;
+  }
+  .form-group {
+    margin-bottom: 0rem;
+  }
+  .workout_table
+  {
+    border: 1px solid #f1e7e7;
+  }
+</style>
