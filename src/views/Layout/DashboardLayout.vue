@@ -59,6 +59,15 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Trainer'"
+            :link="{
+              name: 'Attendance',
+              path: '/clients/attendance',
+              icon: 'ni ni-calendar-grid-58 text-pink'
+              }"
+            >
+        </sidebar-item>
+
         <sidebar-item
               :link="{
                 name: 'Maps',

@@ -92,6 +92,18 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/attendance',
+        name: 'clients/attendance',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientAttendanceView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/attendance_view/:id',
+        name: 'clients/attendance_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientAttendanceMonthlyView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/icons',
         name: 'icons',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Icons.vue')

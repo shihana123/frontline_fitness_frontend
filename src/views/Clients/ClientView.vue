@@ -6,12 +6,12 @@
 
     <b-container fluid class="mt--6">
       <b-row>
-        <b-col xl="4" class="order-xl-2 mb-5">
+        <b-col xl="12" class="order-xl-2 mb-5">
           <client-card></client-card>
         </b-col>
-        <b-col xl="8" class="order-xl-1">
+        <!-- <b-col xl="8" class="order-xl-1">
           <client-details></client-details>
-        </b-col>
+        </b-col> -->
       </b-row>
     </b-container>
   </div>

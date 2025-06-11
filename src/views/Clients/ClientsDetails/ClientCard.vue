@@ -56,6 +56,12 @@
             class="table_button" @click="workoutView(client[0].id)">
             Weekly Workout Plan
         </base-button>
+        <base-button
+            type="primary"
+            size="small"
+            class="table_button" @click="ClientAttendanceView(client[0].id)">
+            Attendance Details
+        </base-button>
 
       </div>
     </b-card-body>
@@ -91,6 +97,10 @@
             {
                 // console.log(client_id);
                 this.$router.push({ name: 'clients/workout_view', params: { id: client_id } });
+            },
+            ClientAttendanceView(client_id)
+            {
+                this.$router.push({ name: 'clients/attendance_view', params: { id: client_id } });
             }
         },
         mounted(){

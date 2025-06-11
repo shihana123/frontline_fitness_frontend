@@ -86,7 +86,9 @@
                       </div>
                         
                     </b-col>
-                    <b-row>
+                    
+                  </b-row>
+                  <b-row>
                       <b-col >
                         <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                           <div class="d-flex justify-content-between">
@@ -95,7 +97,6 @@
                         </div>
                       </b-col>
                     </b-row>
-                  </b-row>
                 </b-container>
                 
               </b-collapse>
@@ -119,8 +120,8 @@
           <b-collapse :id="'collapse-' + week['week_no']">
             <b-container fluid>
               <b-row>
-                <b-col xl="6" md="6" sm="6" v-for="l in week['week_no_of_days']" :key="l">
-                  <span class="text-nowrap">{{ week.week_workout_dates[l-1] }} - {{ week.week_workout_days[l-1] }}</span>
+                <b-col xl="6" md="6" sm="6" v-for="m in week['week_no_of_days']" :key="m">
+                  <span class="text-nowrap">{{ week.week_workout_dates[m-1] }} - {{ week.week_workout_days[m-1] }}</span>
                   <br>
                   <div p-2 class="el-table table-responsive table el-table--fit el-table--enable-row-hover el-table--enable-row-transition">
                     <table class="table table-flush workout_table el-table__header">
@@ -133,7 +134,7 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <tr v-for="(daily_work, index) in week.daily_workouts" :key="daily_work" v-if="daily_work['day_no'] == l">
+                            <tr v-for="(daily_work, index) in week.daily_workouts" :key="daily_work" v-if="daily_work['day_no'] == m">
                                 <!-- <td>{{ index + 1 }}</td> -->
                                 <td>{{ daily_work['workout_type'] }}</td>
                                 <td>{{ daily_work['workout_sets'] }}</td>
@@ -296,5 +297,9 @@
   .workout_table
   {
     border: 1px solid #f1e7e7;
+  }
+  .collapse 
+  {
+    width: 100%;
   }
 </style>
