@@ -104,6 +104,18 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/trainer/availability',
+        name: 'trainer/availability',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/TrainerAvailability.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/leads/create',
+        name: 'leads/create',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/CreateLeads.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/icons',
         name: 'icons',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Icons.vue')

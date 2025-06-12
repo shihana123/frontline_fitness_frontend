@@ -68,7 +68,26 @@
             >
         </sidebar-item>
 
-        <sidebar-item
+        <sidebar-item v-if="role_id == 'Sales'"
+            :link="{
+              name: 'Trainer Availability',
+              path: '/trainer/availability',
+              icon: 'ni ni-calendar-grid-58 text-yellow'
+              }"
+            >
+        </sidebar-item>
+
+        <sidebar-item v-if="role_id == 'Sales'"
+            :link="{
+              name: 'Lead Management',
+              path: '/leads/create',
+              icon: 'ni ni-circle-08 text-pink'
+              }"
+            >
+        </sidebar-item>
+        
+
+        <!-- <sidebar-item
               :link="{
                 name: 'Maps',
                 path: '/maps',
@@ -105,7 +124,7 @@
                     path: '/register',
                     icon: 'ni ni-circle-08 text-pink'
                   }">
-        </sidebar-item>
+        </sidebar-item> -->
       </template>
 
     </side-bar>

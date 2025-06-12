@@ -1,0 +1,278 @@
+<template>
+  <card>
+    <b-row align-v="center" slot="header" >
+      <b-col cols="8">
+        <h3 class="mb-0">Leads - Create</h3>
+      </b-col>
+    </b-row>
+
+    <b-form @submit.prevent="createUser">
+      <h6 class="heading-small text-muted mb-4">Leads information</h6>
+
+      <div class="pl-lg-4">
+        
+        <b-row >
+          <b-col lg="6">
+            <base-input
+              type="text"
+              label="Name"
+              placeholder="Name"
+              v-model="user.name"
+              v-validate="'required|alpha'"
+            >
+            </base-input>
+          </b-col>
+          
+        </b-row>
+
+        <b-row>
+            <b-col lg="6">
+                <base-input
+                type="tel"
+                label="Phone Number"
+                placeholder="Phone Number"
+                v-model="user.phonenumber"
+                >
+                </base-input>
+            </b-col>
+            <b-col lg="6">
+                <base-input
+                type="email"
+                label="Username/Email"
+                placeholder="Username"
+                v-model="user.email   "
+                >
+                </base-input>
+            </b-col>
+          
+        </b-row>
+
+      </div>
+     
+      <hr class="my-4">
+      <!-- Description -->
+      <h6 class="heading-small text-muted mb-4">Program Data</h6>
+      <div class="pl-lg-4">
+        <b-row>
+          <b-col lg="6">
+            <label class="form-control-label">Program Needed</label>
+            <multiselect
+              v-model="user.language"
+              :options="languages"
+              :multiple="true"
+              :taggable="true"
+              placeholder="Select languages"
+            />
+          </b-col>
+          <b-col lg="6">
+            <base-input
+              type="date"
+              label="Joining Date"
+              placeholder="Joining Date"
+              v-model="user.joiningDate"
+            >
+            </base-input>
+          </b-col>
+          
+        </b-row>
+
+        <b-row>
+          <b-col lg="12">
+            <base-input label="Days">
+                <b-form-checkbox-group
+                v-model="user.selectedDays"
+                :options="days"
+                name="days"
+                stacked
+                >
+                </b-form-checkbox-group>
+            </base-input>
+            
+          </b-col>
+        </b-row>
+
+        <b-button type="submit" variant="success" class="submit_btn">Create User</b-button>
+      </div>
+
+    </b-form>
+  </card>
+</template>
+<script>
+  import axios from 'axios'
+  import VueSlider from 'vue-slider-component'
+  import 'vue-slider-component/theme/default.css'
+  import Multiselect from 'vue-multiselect'
+  import 'vue-multiselect/dist/vue-multiselect.min.css'
+
+  export default {
+    components: {
+      VueSlider, // <-- Add this
+      Multiselect
+    },
+    data() {
+      return {
+        user: {
+          name: '',
+          email: '',
+          password: '',
+          role: '',
+          phonenumber: '',
+          age: '',
+          gender: '',
+          address: '',
+          city: '',
+          country: '',
+          postalCode: '',
+          resume: '',
+          contract: '',
+          joiningDate: '',
+          language: [],
+          selectedDays: [],
+          timeRanges : [
+            { value : [540, 720] }
+          ]
+        },
+        days: [
+          { text: 'Sunday', value: 'sunday' },
+          { text: 'Monday', value: 'monday' },
+          { text: 'Tuesday', value: 'tuesday' },
+          { text: 'Wednesday', value: 'wednesday' },
+          { text: 'Thursday', value: 'thursday' },
+          { text: 'Friday', value: 'friday' },
+          { text: 'Saturday', value: 'saturday' },
+        ],
+        languages: ['English', 'Spanish', 'French', 'German', 'Hindi', 'Malayalam', 'Tamil', 'Telugu'],
+        roles: [],
+      };
+    },
+    computed: {
+      timeMarks() {
+        const marks = {}
+        for (let i = 0; i <= 1440; i += 60) {
+          marks[i] = this.formatTime(i)
+        }
+        return marks
+      }
+    },
+    methods: {
+      
+      formatTime(minutes) {
+        const h = Math.floor(minutes / 60)
+        const m = minutes % 60
+        const hour = h % 24
+        const suffix = hour >= 12 ? 'PM' : 'AM'
+        const displayHour = hour % 12 === 0 ? 12 : hour % 12
+        const displayMin = m.toString().padStart(2, '0')
+        return `${displayHour}:${displayMin} ${suffix}`
+      },
+      addRange() {
+        this.user.timeRanges.push({ value: [600, 720] }) // default new range: 10:00 AM to 12:00 PM
+      },
+      createUser()
+      {
+        const formData = new FormData();
+        formData.append('name', this.user.name);
+        formData.append('email', this.user.email);
+        formData.append('role_id', this.user.role);
+        formData.append('password', this.user.password);
+        formData.append('phone', this.user.phonenumber);
+        formData.append('age', this.user.age);
+        formData.append('gender', this.user.gender);
+        formData.append('address', this.user.address);
+        formData.append('city', this.user.city);
+        formData.append('country', this.user.country);
+        formData.append('pincode', this.user.postalCode);
+        formData.append('joining_date', this.user.joiningDate);
+        // formData.append('available_time', this.user.timeRanges);
+
+        // Append file inputs
+        if (this.user.resume) {
+          formData.append('resume', this.user.resume);
+        }
+        if (this.user.contract) {
+          formData.append('contract', this.user.contract);
+        }
+
+        // For arrays, use JSON.stringify
+        formData.append('language', JSON.stringify(this.user.language));
+        formData.append('available_days', JSON.stringify(this.user.selectedDays));
+        formData.append('available_time', JSON.stringify(this.user.timeRanges));
+
+        axios.post('http://127.0.0.1:8000/api/user/userCreate', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(response => {
+          console.log('User created successfully:', response.data);
+        })
+        .catch(error => {
+          console.error('Error creating user:', error.response && error.response.data ? error.response.data : error);
+
+        });
+        // axios.post('http://127.0.0.1:8000/api/user/userCreate', {
+        //   name: this.user.name,
+        //   email: this.user.email,
+        //   role_id: this.user.role,
+        //   password: this.user.password,
+        //   phone: this.user.phonenumber,
+        //   age: this.user.age,
+        //   gender: this.user.gender,
+        //   address: this.user.address,
+        //   city: this.user.city,
+        //   country: this.user.country,
+        //   pincode: this.user.postalCode,
+        //   resume: this.user.resume,
+        //   contract: this.user.contract,
+        //   joining_date: this.user.joiningDate,
+        //   language: this.user.language,
+        //   available_days: this.user.selectedDays,
+        //   available_time: this.user.timeRanges,
+        // })
+        // .then(response => {
+          
+        //   console.log(response);
+          
+        // })
+        // .catch(error => {
+        //   console.log(error);
+          
+        // })
+        
+      },
+      async fetchRoles() {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/user/roles/');
+          console.log(response);
+          this.roles = response.data;
+          
+          // this.roles = response.data;
+        } catch (error) {
+          console.error('Error fetching roles:', error);
+        }
+      },
+      handleFileUpload(event, field) {
+        this.user[field] = event.target.files[0];
+      }
+
+    },
+    mounted(){
+      this.fetchRoles();
+    }
+  };
+</script>
+<style>
+  .custom-control {
+    position: relative;
+    display: inline !important;
+    min-height: 1.5rem;
+    padding-left: 4rem !important;
+  }
+  .vue-slider-mark-label {
+    font-size: 6px !important;
+  }
+  .submit_btn
+  {
+    float: right;
+  }
+</style>
