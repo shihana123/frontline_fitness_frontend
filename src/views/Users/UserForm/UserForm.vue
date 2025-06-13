@@ -211,7 +211,7 @@
               Available Time
             </label>
             <div>
-              <div v-for="(range, index) in user.timeRanges" :key="index" class="mb-4">
+              <!-- <div v-for="(range, index) in user.timeRanges" :key="index" class="mb-4">
                 <vue-slider
                   v-model="range.value"
                   :min="0"
@@ -235,9 +235,22 @@
                   Range {{ index + 1 }}: {{ formatTime(range.value[0]) }} - {{ formatTime(range.value[1]) }}
                 </div>
               </div>
-              <base-button icon type="primary" @click="addRange">Add More Time Range</base-button>
-              <!-- <button @click="addRange">Add Time Range</button> -->
-              <!-- <pre>{{ user.timeRanges }}</pre> -->
+              <base-button icon type="primary" @click="addRange">Add More Time Range</base-button> -->
+              <div v-for="(slot, index) in user.timeRanges" :key="index" class="slot-row">
+                        <input
+                          type="time"
+                          v-model="slot.value[0]"
+                          
+                        />
+                        <span>to</span>
+                        <input
+                          type="time"
+                          v-model="slot.value[1]"
+                          
+                        />
+                        <b-button type="button" @click="removeSlot(index)">❌</b-button>
+                      </div>
+                      <b-button type="button" @click="addSlot()">➕ Add Time Slot</b-button>
             </div>
           </b-col>
           
@@ -279,8 +292,11 @@
           joiningDate: '',
           language: [],
           selectedDays: [],
-          timeRanges : [
-            { value : [540, 720] }
+          // timeRanges : [
+          //   { value : [540, 720] }
+          // ],
+          timeRanges: [
+            { value : ['', ''] }
           ]
         },
         days: [
@@ -319,6 +335,25 @@
       addRange() {
         this.user.timeRanges.push({ value: [600, 720] }) // default new range: 10:00 AM to 12:00 PM
       },
+      addSlot() {
+          
+          // this.program.timeSlots1.push({ start: '', end: '' })
+          const key = 'timeRanges'
+          if (!this.user[key]) {
+            
+            this.$set(this.user, key, []) // Ensure it's reactive
+          }
+          console.log(this.user[key]);
+          
+          this.user[key].push({ value: ['', ''] })
+      },
+      removeSlot(index) {
+          const key = 'timeRanges'
+          if (!this.user[key]) {
+            this.$set(this.user, key, []) // Ensure it's reactive
+          }
+          this.user[key].splice(index, 1)
+      },
       createUser()
       {
         const formData = new FormData();
@@ -347,8 +382,17 @@
         // For arrays, use JSON.stringify
         formData.append('language', JSON.stringify(this.user.language));
         formData.append('available_days', JSON.stringify(this.user.selectedDays));
-        formData.append('available_time', JSON.stringify(this.user.timeRanges));
+        
+        const timeSlotsKey = `timeRanges`;
+        
+        const timeSlots = (this.user[timeSlotsKey] && this.user[timeSlotsKey].filter(slot => slot.value[0] && slot.value[1])) || [];
 
+        if (timeSlots.length > 0) {
+          const timeSlotValues = timeSlots.map(slot => slot.value);
+          formData.append('available_time', JSON.stringify(timeSlotValues));
+        }
+        console.log(formData);
+        
         axios.post('http://127.0.0.1:8000/api/user/userCreate', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -361,34 +405,6 @@
           console.error('Error creating user:', error.response && error.response.data ? error.response.data : error);
 
         });
-        // axios.post('http://127.0.0.1:8000/api/user/userCreate', {
-        //   name: this.user.name,
-        //   email: this.user.email,
-        //   role_id: this.user.role,
-        //   password: this.user.password,
-        //   phone: this.user.phonenumber,
-        //   age: this.user.age,
-        //   gender: this.user.gender,
-        //   address: this.user.address,
-        //   city: this.user.city,
-        //   country: this.user.country,
-        //   pincode: this.user.postalCode,
-        //   resume: this.user.resume,
-        //   contract: this.user.contract,
-        //   joining_date: this.user.joiningDate,
-        //   language: this.user.language,
-        //   available_days: this.user.selectedDays,
-        //   available_time: this.user.timeRanges,
-        // })
-        // .then(response => {
-          
-        //   console.log(response);
-          
-        // })
-        // .catch(error => {
-        //   console.log(error);
-          
-        // })
         
       },
       async fetchRoles() {
