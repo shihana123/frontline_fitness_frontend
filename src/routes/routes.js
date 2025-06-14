@@ -110,9 +110,21 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/leads',
+        name: 'leads',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/LeadsList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/leads/create',
         name: 'leads/create',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/CreateLeads.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/leads/edit/:id',
+        name: 'leads/edit',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/UpdateLeads.vue'),
         meta: { requiresAuth: true }
       },
       {

@@ -186,31 +186,31 @@ import axios from 'axios'
         //     return 'free';
         // },
         getCellClass(day, time) {
-  const sessions = this.schedule[day] || [];
+            const sessions = this.schedule[day] || [];
 
-  // Occupied class for booked sessions
-  for (const session of sessions) {
-    if (this.isTimeInRange(time, session.start, session.end)) {
-      return 'occupied';
-    }
-  }
+            // Occupied class for booked sessions
+            for (const session of sessions) {
+                if (this.isTimeInRange(time, session.start, session.end)) {
+                return 'occupied';
+                }
+            }
 
-  // Check for unavailable day
-  if (!this.availableSchedule.available_days.includes(day)) {
-    return 'unavailable-day';
-  }
+            // Check for unavailable day
+            if (!this.availableSchedule.available_days.includes(day)) {
+                return 'unavailable-day';
+            }
 
-  // Check for unavailable time
-  const isWithinAvailableTime = this.availableSchedule.available_time.some(([start, end]) =>
-    this.isTimeInRange(time, start, end)
-  );
+            // Check for unavailable time
+            const isWithinAvailableTime = this.availableSchedule.available_time.some(([start, end]) =>
+                this.isTimeInRange(time, start, end)
+            );
 
-  if (!isWithinAvailableTime) {
-    return 'unavailable-time';
-  }
+            if (!isWithinAvailableTime) {
+                return 'unavailable-time';
+            }
 
-  return 'free';
-},
+            return 'free';
+        },
         // getCellContent(day, time) {
         //     const sessions = this.schedule[day] || [];
         //     for (const session of sessions) {

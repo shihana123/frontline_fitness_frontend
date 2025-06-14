@@ -80,7 +80,7 @@
         <sidebar-item v-if="role_id == 'Sales'"
             :link="{
               name: 'Lead Management',
-              path: '/leads/create',
+              path: '/leads',
               icon: 'ni ni-circle-08 text-pink'
               }"
             >
