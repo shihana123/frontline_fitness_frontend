@@ -6,7 +6,7 @@
       </b-col>
     </b-row>
 
-    <b-form @submit.prevent="createLead">
+    <b-form @submit.prevent="updateLead">
       <h6 class="heading-small text-muted mb-4">Leads information</h6>
 
       <div class="pl-lg-4">
@@ -131,7 +131,20 @@
           </b-col>
           
         </b-row>
-
+        <br>
+        <b-row>
+          <b-col lg="6">
+            <label class="form-control-label">
+              Previous Follow ups: {{ followups.length - 1 }}
+            </label>
+            <div class="d-flex justify-content-between">
+              <a href="#" @click.prevent v-b-toggle="'collapse'" class="btn btn-sm btn-success mr-4">show</a>
+            </div>
+            <b-collapse :id="'collapse'">
+              <li v-for="(followup, f_index) in followups" v-if="followup.status == 1">{{ followup.follow_up_date }}</li>
+            </b-collapse>
+          </b-col>
+        </b-row>
         <b-row>
             <b-col lg="6">
               <base-input
@@ -194,6 +207,7 @@
           lead_date: '',
           followup_date: '',
           notes: '',
+          followups: []
         },
         days: [
           { text: 'Sunday', value: 'sunday' },
@@ -210,8 +224,46 @@
         countries: []
       };
     },
+    watch: {
+      'lead.program_type'(newType) {
+        this.fetchProgram();
+      }
+    },
     methods: {
-      createLead()
+      async leadDetails(id)
+      {
+        const token = localStorage.getItem('token');
+            await axios.get(`http://127.0.0.1:8000/api/user/fetchLead/${id}`, {
+                headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                this.lead.name = response.data[0].name;
+                this.lead.source = response.data[0].source;
+                this.lead.phone_no = response.data[0].phone;
+                this.lead.email = response.data[0].email;
+                this.lead.status = response.data[0].status;
+                this.lead.country = response.data[0].country;
+                this.lead.program_type = response.data[0].program_type;
+                this.fetchProgram();
+                this.lead.program = response.data[0].program_name;
+                this.lead.preferred_time = response.data[0].preferred_time.map(range => ({
+                  value: range
+                }));
+                this.lead.preferred_days = response.data[0].preferred_days;
+                this.lead.lead_date = response.data[0].lead_date;
+                this.lead.followup_date = response.data[0].follow_up_date;
+                this.lead.notes = response.data[0].notes;
+                this.followups = response.data[0].followups;
+                console.log(response.data[0].preferred_time);
+                
+                
+            })
+            .catch(error => {
+                console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+            });
+        
+      },
+      updateLead()
       {
         const formData = new FormData();
         formData.append('name', this.lead.name);
@@ -298,13 +350,17 @@
             .catch(error => {
                 console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
             });
-      }
+      },
+      
     
     },
+    
     mounted(){
       
       this.fetchProgram();
       this.fetchCountries();
+      const id = this.$route.params.id;
+      this.leadDetails(id)
 
     }
   };
