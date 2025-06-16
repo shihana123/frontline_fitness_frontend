@@ -41,7 +41,7 @@
                 type="tel"
                 label="Phone Number"
                 placeholder="Phone Number"
-                v-model="lead.phonenumber"
+                v-model="lead.phone"
                 >
                 </base-input>
             </b-col>
@@ -174,7 +174,7 @@
           </b-col>
         </b-row>
 
-        <b-button type="submit" variant="success" class="submit_btn">Create Lead</b-button>
+        <b-button type="submit" variant="success" class="submit_btn">Update Lead</b-button>
       </div>
 
     </b-form>
@@ -192,9 +192,10 @@
     data() {
       return {
         lead: {
+          id: this.$route.params.id,
           name: '',
           source: '',
-          phone_no: '',
+          phone: '',
           email: '',
           status: 'New Lead',
           country: 100,
@@ -239,7 +240,7 @@
             .then(response => {
                 this.lead.name = response.data[0].name;
                 this.lead.source = response.data[0].source;
-                this.lead.phone_no = response.data[0].phone;
+                this.lead.phone = response.data[0].phone;
                 this.lead.email = response.data[0].email;
                 this.lead.status = response.data[0].status;
                 this.lead.country = response.data[0].country;
@@ -269,7 +270,8 @@
         formData.append('name', this.lead.name);
         formData.append('source', this.lead.source);
         formData.append('email', this.lead.email);
-        formData.append('phone', this.lead.phonenumber);
+        formData.append('phone', this.lead.phone);
+        formData.append('status', this.lead.status);
         formData.append('country', this.lead.country);
         formData.append('program_type', this.lead.program_type);
         formData.append('program_name', this.lead.program);
@@ -286,36 +288,20 @@
           const timeSlotValues = timeSlots.map(slot => slot.value);
           formData.append('preferred_time', JSON.stringify(timeSlotValues));
         }
+
+        console.log(formData);
+        
         const token = localStorage.getItem('token');
-        axios.post('http://127.0.0.1:8000/api/user/leadCreate', formData,{
+        axios.post(`http://127.0.0.1:8000/api/user/leadUpdate/${this.lead.id}`, formData,{
                 headers: { Authorization: `Token ${token}` }
         })
         .then(response => {
-          console.log('Program created successfully:', response.data);
+          console.log('Lead Updated successfully:', response.data);
         })
         .catch(error => {
-          console.error('Error creating program:', error.response && error.response.data ? error.response.data : error);
+          console.error('Error updating lead:', error.response && error.response.data ? error.response.data : error);
         });
         
-      },
-      addSlot() {
-          
-          // this.program.timeSlots1.push({ start: '', end: '' })
-          const key = 'preferred_time'
-          if (!this.lead[key]) {
-            
-            this.$set(this.lead, key, []) // Ensure it's reactive
-          }
-          console.log(this.lead[key]);
-          
-          this.lead[key].push({ value: ['', ''] })
-      },
-      removeSlot(index) {
-          const key = 'preferred_time'
-          if (!this.lead[key]) {
-            this.$set(this.lead, key, []) // Ensure it's reactive
-          }
-          this.lead[key].splice(index, 1)
       },
       async fetchProgram()
       {
