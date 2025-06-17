@@ -85,6 +85,15 @@
               }"
             >
         </sidebar-item>
+
+        <sidebar-item v-if="role_id == 'Sales'"
+            :link="{
+              name: 'Clients',
+              path: '/clients/sales_clients',
+              icon: 'ni ni-single-02 text-orange'
+              }"
+            >
+        </sidebar-item>
         
 
         <!-- <sidebar-item
