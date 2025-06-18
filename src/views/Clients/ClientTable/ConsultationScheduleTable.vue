@@ -147,7 +147,6 @@
         },
         schedule()
         {
-            console.log(this.selectedClientID);
             
             const token = localStorage.getItem('token');
             const formData = new FormData();

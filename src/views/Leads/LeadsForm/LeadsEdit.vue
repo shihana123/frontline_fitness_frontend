@@ -110,7 +110,7 @@
         </b-row>
 
         <b-row>
-          <b-col lg="12">
+          <b-col lg="6">
             <label class="form-control-label">
               Preferred Time
             </label>
@@ -119,12 +119,13 @@
                   <input
                     type="time"
                     v-model="slot.value[0]"
-                          
+                    class="time_field" 
                   />
-                  <span>to</span>
+                  <span>  to  </span>
                   <input
                     type="time"
                     v-model="slot.value[1]" 
+                    class="time_field" 
                   />
               </div>
             </div>
@@ -132,47 +133,7 @@
           
         </b-row>
         <br>
-        <b-row>
-          <b-col lg="6">
-            <label class="form-control-label">
-              Previous Follow ups: {{ followups.length - 1 }}
-            </label>
-            <div class="d-flex justify-content-between">
-              <a href="#" @click.prevent v-b-toggle="'collapse'" class="btn btn-sm btn-success mr-4">show</a>
-            </div>
-            <b-collapse :id="'collapse'">
-              <li v-for="(followup, f_index) in followups" v-if="followup.status == 1">{{ followup.follow_up_date }}</li>
-            </b-collapse>
-          </b-col>
-        </b-row>
-        <b-row>
-            <b-col lg="6">
-              <base-input
-                type="date"
-                label="Lead Date"
-                placeholder="Joining Date"
-                v-model="lead.lead_date"
-              >
-              </base-input>
-            </b-col>
-            <b-col lg="6">
-              <base-input
-                type="date"
-                label="Follow-up Date"
-                placeholder="Follow-up Date"
-                v-model="lead.followup_date"
-              >
-              </base-input>
-            </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col lg="12">
-            <base-input label="Notes">
-              <textarea class="form-control" id="notes" rows="3" v-model="lead.notes"></textarea>
-            </base-input>
-          </b-col>
-        </b-row>
+      
 
         <b-button type="submit" variant="success" class="submit_btn">Update Lead</b-button>
       </div>
@@ -275,9 +236,6 @@
         formData.append('country', this.lead.country);
         formData.append('program_type', this.lead.program_type);
         formData.append('program_name', this.lead.program);
-        formData.append('lead_date', this.lead.lead_date);
-        formData.append('follow_up_date', this.lead.followup_date);
-        formData.append('notes', this.lead.notes);
         formData.append('preferred_days', JSON.stringify(this.lead.preferred_days));
 
         const timeSlotsKey = `preferred_time`;
@@ -364,5 +322,12 @@
   .submit_btn
   {
     float: right;
+  }
+   .time_field
+  {
+    border: 1px solid #dcd0d0;
+    width: 30%;
+    padding: 5px;
+    border-radius: 7px;
   }
 </style>

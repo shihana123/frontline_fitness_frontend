@@ -38,11 +38,18 @@
             <el-table-column label="Action"
                              min-width="240px">
                 <template #default="scope">
-                    <b-button  variant="info"  @click="followup(scope.row.id)">Follow up</b-button>
+                    <div class="btn_display">
+                        <b-button  variant="info"  @click="followup(scope.row.id)">Update</b-button>
+                        <base-button v-b-modal.modal-1
+                            type="primary"
+                            size="small"
+                            @click="redirectLead(scope.row)" class="table_button">
+                            Follow Ups
+                        </base-button>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>
-
         <b-card-footer class="py-4 d-flex justify-content-end">
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
         </b-card-footer>
@@ -60,7 +67,8 @@
     data() {
       return {
         leads: [],
-        currentPage: 1
+        currentPage: 1,
+        selectedLeadID: ''
       };
     },
     methods:{
@@ -84,6 +92,11 @@
         {
            this.$router.push(`/leads/edit/${id}`);
             
+        },
+        redirectLead(lead)
+        {  
+            this.selectedLeadID = lead.id;
+            this.$router.push(`/leads/follow_ups/${this.selectedLeadID}`);
         },
         redirect()
         {
@@ -110,5 +123,9 @@
     .create_btn
     {
         float: inline-end;
+    }
+    .btn_display
+    {
+        display: inline-flex;
     }
 </style>

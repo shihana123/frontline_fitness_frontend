@@ -40,19 +40,19 @@
                 <template #default="scope">
                     <div>
                         <span v-if="!scope.row.trainer_first_consultation" class="text-warning">
-                            🏋️ Trainer Consultation Pending
+                            🏋️ Trainer Consultation Scheduling Pending
                         </span>
                         <span v-else class="text-success">
-                            ✅ Trainer Consultation Completed
+                            ✅ Trainer Consultation Scheduled
                         </span>
                     </div>
 
                     <div>
                         <span v-if="!scope.row.diet_first_consultation" class="text-warning">
-                            🥗 Diet Consultation Pending
+                            🥗 Diet Consultation Scheduling Pending
                         </span>
                         <span v-else class="text-success">
-                            ✅ Diet Consultation Completed
+                            ✅ Diet Consultation Scheduled
                         </span>
                     </div>
                 </template>

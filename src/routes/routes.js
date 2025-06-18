@@ -134,6 +134,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/leads/follow_ups/:id',
+        name: 'leads/follow_ups',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/FollowupList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/icons',
         name: 'icons',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Icons.vue')
