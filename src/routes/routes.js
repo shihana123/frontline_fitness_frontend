@@ -104,9 +104,15 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/trainer/availability',
-        name: 'trainer/availability',
+        path: '/trainer/availabilityDay',
+        name: 'trainer/availabilityDay',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/TrainerAvailability.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/trainer/availabilityTime',
+        name: 'trainer/availabilityTime',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/TrainerAvailabilityTime.vue'),
         meta: { requiresAuth: true }
       },
       {

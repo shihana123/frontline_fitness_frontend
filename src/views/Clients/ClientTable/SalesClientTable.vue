@@ -75,7 +75,7 @@
 
                     <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
                     <base-button v-b-modal.modal-1
-                    v-if="!scope.row.programs[0].dietitian || !scope.row.programs[0].trainer"
+                    v-if="scope.row.programs[0].dietitian || !scope.row.programs[0].trainer"
                     type="primary"
                     size="small"
                     @click="assignTrainerView(scope.row)" class="table_button">

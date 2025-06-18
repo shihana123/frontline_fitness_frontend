@@ -68,14 +68,38 @@
             >
         </sidebar-item>
 
-        <sidebar-item v-if="role_id == 'Sales'"
+        <!-- <sidebar-item v-if="role_id == 'Sales'"
             :link="{
               name: 'Trainer Availability',
               path: '/trainer/availability',
               icon: 'ni ni-calendar-grid-58 text-yellow'
               }"
             >
-        </sidebar-item>
+        </sidebar-item> -->
+
+        <div @click="toggleDropdown('sales')" class="sidebar-item d-flex justify-content-between align-items-center" v-if="role_id == 'Sales'">
+            <div class="d-flex align-items-center dropdown_slide_items">
+              <i class="ni ni-calendar-grid-58 text-yellow text-primary mr-2"></i>
+              <span>Availability</span>
+            </div>
+            <i :class="dropdowns.sales ? 'ni ni-bold-down' : 'ni ni-bold-right'" class="dropdown_slide_arrow"></i>
+        </div>
+
+          <!-- Dropdown child items -->
+        <div v-if="dropdowns.sales" class="ml-4">
+            <sidebar-item
+              :link="{ 
+                name: 'Trainer Availability - Day', 
+                path: '/trainer/availabilityDay', 
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+            <sidebar-item
+              :link="{ 
+                name: 'Trainer Availability - Time', 
+                path: '/trainer/availabilityTime', 
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+        </div>
 
         <sidebar-item v-if="role_id == 'Sales'"
             :link="{
@@ -86,6 +110,7 @@
             >
         </sidebar-item>
 
+          
         <sidebar-item v-if="role_id == 'Sales'"
             :link="{
               name: 'Clients',
@@ -186,9 +211,16 @@
     data() {
       return {
         role_id: '',
+        dropdowns: {
+      sales: false,
+      dashboard: false,
+    },
       };
     },
     methods: {
+      toggleDropdown(item) {
+      this.dropdowns[item] = !this.dropdowns[item];
+    },
       initScrollbar() {
         let isWindows = navigator.platform.startsWith('Win');
         if (isWindows) {
@@ -216,4 +248,31 @@
   };
 </script>
 <style lang="scss">
+.sidebar-item {
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.ml-4 {
+  margin-left: 1rem;
+}
+.dropdown_slide_items
+{
+  padding: 0.1rem 1.1rem !important;
+  font-size: 0.9rem !important;
+}
+.dropdown_slide_icon
+{
+  min-width: 2.25rem;
+  font-size: .9375rem;
+  line-height: 1.5rem;
+}
+.dropdown_slide_arrow
+{
+  margin-right: 30px;
+  font-size: 13px;
+}
+.dropdown_slide_items span
+{
+  margin-left: 10px;
+}
 </style>
