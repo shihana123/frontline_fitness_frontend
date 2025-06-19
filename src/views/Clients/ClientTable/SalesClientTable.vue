@@ -11,36 +11,30 @@
                   :data="clients">
 
             <el-table-column label="ID"
-                             min-width="90px"
+                             width="120"
                              prop="client_id">
             </el-table-column>
             <el-table-column label="Name"
-                             min-width="90px"
+                             
                              prop="name">
             </el-table-column>
-           
-            <el-table-column label="Email"
-                             min-width="110px"
-                             prop="email">
-            </el-table-column>
-
             <el-table-column label="Phone"
-                             min-width="80px"
+                             
                              prop="phone">
             </el-table-column>
 
             <el-table-column label="Program"
-                             min-width="100px"
+                            
                              prop="programs[0].program.name">
             </el-table-column>
             
-            <el-table-column label="Consulation Status"
-                             min-width="140px"
+            <!-- <el-table-column label="Consulation Status"
+                             
                              prop="consulationstatus">
                 <template #default="scope">
                     <div v-if="scope.row.programs[0].trainer">
                         <span v-if="!scope.row.trainer_first_consultation" class="text-warning">
-                            🏋️ Trainer Consultation Scheduling Pending -- {{ scope.row.programs[0].trainer }}
+                            🏋️ Trainer Consultation Scheduling Pending
                         </span>
                         <span v-else class="text-success">
                             ✅ Trainer Consultation Scheduling Completed 
@@ -66,38 +60,32 @@
                         </span>
                     </div>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
            
             <el-table-column label="Action"
                              prop="completion"
-                             min-width="95px">
+                             >
                 <template #default="scope">
+                    <div class="btn_display">
+                        <base-button v-b-modal.modal-1
+                        v-if="!scope.row.programs[0].dietitian || !scope.row.programs[0].trainer"
+                        type="primary"
+                        size="small"
+                        @click="assignTrainerView(scope.row)" class="table_button">
+                        Assign
+                        </base-button>
+                        <base-button  v-else type="success" size="small" class="table_button">Done</base-button>
 
-                    <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
-                    <base-button v-b-modal.modal-1
-                    v-if="scope.row.programs[0].dietitian || !scope.row.programs[0].trainer"
-                    type="primary"
-                    size="small"
-                    @click="assignTrainerView(scope.row)" class="table_button">
-                    Assign
-                    </base-button>
-
-
-                    <!-- <base-button v-b-modal.modal-2
-                    v-else-if="scope.row.new_client && scope.row.trainer_first_consultation == 2"
-                    type="warning"
-                    size="small"
-                    @click="handleNewClient(scope.row)" class="table_button">
-                        Enter Data
-                    </base-button>
-
-                    <base-button
-                    v-else-if="scope.row.new_client && scope.row.trainer_first_consultation == 3"
-                    type="success"
-                    size="small"
-                    class="table_button">
-                        Completed
-                    </base-button> -->
+                        <base-button
+                        type="primary"
+                        size="small"
+                        @click="redirectClient(scope.row.id)" class="table_button">
+                            View
+                        </base-button>
+                    </div>
+                    
+                    
+                    
                 </template>
             </el-table-column>
         </el-table>
@@ -106,7 +94,7 @@
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
         </b-card-footer>
     </b-card>
-    <b-modal id="modal-1" title="Assign Trainer & Dietitian" hide-footer v-if="showModal" @close="showModal = false">
+    <b-modal id="modal-1" size="lg" title="Assign Trainer & Dietitian" hide-footer v-if="showModal" @close="showModal = false">
         <b-form @submit.prevent="assignTrainer">
             <h6 class="heading-small text-muted mb-2">Assign Trainer & Dietitian</h6>
             <div class="pl-lg-12">
@@ -126,6 +114,22 @@
                         label="Program Time"
                         v-model="selectedProgramTime"
                         disabled
+                        >
+                        </base-input>
+                    </b-col>
+                    <b-col lg="6">
+                        <base-input label="Choose Program Months">
+                            <select class="form-control" v-model="assignedata.program_month" required>
+                                <option v-for="program_month in program_months" :key="program_month" :value="program_month">{{ program_month }}</option>
+                            </select>
+                        </base-input>
+                    </b-col>
+                    <b-col lg="6">
+                        <base-input
+                        type="text"
+                        label="Amount"
+                        v-model="assignedata.amount"
+                        required
                         >
                         </base-input>
                     </b-col>
@@ -153,65 +157,7 @@
         </b-form>
     </b-modal>
 
-    <b-modal id="modal-2" title="Details of Client" hide-footer>
-        <b-form @submit.prevent="enterClientDetails">
-            <h6 class="heading-small text-muted mb-2">Enter Details after First Consulation</h6>
-            <div class="pl-lg-12">
-                <b-row >
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Current Activity Level"
-                        placeholder="Current Activity Level"
-                        v-model="clientdetails.current_acitivity_level"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Current Workouts"
-                        placeholder="Current Workouts"
-                        v-model="clientdetails.current_workouts"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Past Workouts/Physical Activities"
-                        placeholder="Past Workouts/Physical Activities"
-                        v-model="clientdetails.past_workouts"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Physical Limitations/Injuries"
-                        placeholder="Physical Limitations/Injuries"
-                        v-model="clientdetails.physical_limitations"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Fitness Equipment Owned"
-                        placeholder="Fitness Equipment Owned"
-                        v-model="clientdetails.equipment_owned"
-                        >
-                        </base-input>
-                    </b-col>
-                </b-row>
-            </div>
-            <!-- Custom buttons -->
-            <div>
-                <b-button variant="secondary" @click="$bvModal.hide('modal-2')">Cancel</b-button>
-                <b-button type="submit" variant="primary">Save</b-button>
-            </div>
-        </b-form>
-    </b-modal>
+    
 
     
 </div>
@@ -234,7 +180,9 @@
         currentPage: 1,
         assignedata:{
             trainer : '',
-            dietitian: ''
+            dietitian: '',
+            program_month: 3,
+            amount: 0
         },
         clientdetails:{
             current_acitivity_level: '',
@@ -247,7 +195,8 @@
         selectedProgram: '',
         selectedProgramTime: '',
         trainers: [],
-        dietitians: []
+        dietitians: [],
+        program_months: [1,3,6,9,12]
       };
     },
     methods:{
@@ -308,6 +257,8 @@
             const formData = new FormData();
             formData.append('dietitian_id', this.assignedata.dietitian);
             formData.append('trainer_id', this.assignedata.trainer);
+            formData.append('program_month', this.assignedata.program_month);
+            formData.append('amount', this.assignedata.amount);
             formData.append('client_id', this.selectedClientID);
 
             axios.post('http://127.0.0.1:8000/api/user/assignTrainerDietitian', formData,{
@@ -322,6 +273,10 @@
             console.error('Error:', error.response && error.response.data ? error.response.data : error);
 
             });
+        },
+        redirectClient(client)
+        {
+            this.$router.push({ name: 'clients/view', params: { id: client } });
         }
     },
     mounted()
@@ -350,7 +305,11 @@
     }
     .table_button
     {
-        font-size: 10px !important;
+        font-size: 9px !important;
         padding: 9px !important;
+    }
+     .btn_display
+    {
+        display: inline-flex;
     }
 </style>

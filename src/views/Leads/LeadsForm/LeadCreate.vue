@@ -5,6 +5,9 @@
         <h3 class="mb-0">Leads - Create</h3>
       </b-col>
     </b-row>
+     <b-modal id="modal-1" title="New message to undefined" v-if="showModal_success">
+      <p class="my-4">...</p>
+    </b-modal>
 
     <b-form @submit.prevent="createLead">
       <h6 class="heading-small text-muted mb-4">Leads information</h6>
@@ -18,9 +21,10 @@
               label="Name"
               placeholder="Name"
               v-model="lead.name"
-              v-validate="'required|alpha'"
+              v-validate="'required'"
             >
             </base-input>
+           
           </b-col>
           <b-col lg="6">
             <base-input
@@ -146,19 +150,39 @@
       </div>
 
     </b-form>
+
+    <b-modal
+      id="lead-success-modal"
+      title="Lead Management"
+      hide-footer
+      v-model="showSuccessModal"
+    >
+      <div class="text-center">
+        <b-alert show variant="success">
+          <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-text"><strong>Success!</strong> Lead Created Successfully!</span>
+        </b-alert>
+
+
+        <b-button variant="primary" @click="goToLeadsList">Close</b-button>
+        <b-button variant="info" class="ml-2" @click="addMoreLead">Add More</b-button>
+      </div>
+    </b-modal>
+   
+
   </card>
+
+  
 </template>
 <script>
   import axios from 'axios'
-  import Multiselect from 'vue-multiselect'
-  import 'vue-multiselect/dist/vue-multiselect.min.css'
+ 
+ 
 
   export default {
-    components: {
-      Multiselect
-    },
     data() {
       return {
+        showSuccessModal: false,
         lead: {
           name: '',
           source: '',
@@ -188,12 +212,15 @@
         status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
         programs: [],
-        countries: []
+        countries: [],
+        
       };
     },
     methods: {
       createLead()
       {
+        
+        
         const formData = new FormData();
         formData.append('name', this.lead.name);
         formData.append('source', this.lead.source);
@@ -202,9 +229,7 @@
         formData.append('country', this.lead.country);
         formData.append('program_type', this.lead.program_type);
         formData.append('program_name', this.lead.program);
-        // formData.append('lead_date', this.lead.lead_date);
         formData.append('follow_up_date', this.lead.followup_date);
-        // formData.append('notes', this.lead.notes);
         formData.append('preferred_days', JSON.stringify(this.lead.preferred_days));
 
         const timeSlotsKey = `preferred_time`;
@@ -220,15 +245,44 @@
                 headers: { Authorization: `Token ${token}` }
         })
         .then(response => {
-          console.log('Program created successfully:', response.data);
+          console.log('Lead created successfully:', response.data);
+          this.showSuccessModal = true;
         })
         .catch(error => {
-          console.error('Error creating program:', error.response && error.response.data ? error.response.data : error);
+          console.error('Error creating Lead:', error.response && error.response.data ? error.response.data : error);
+          alert('Error in creating Lead');
         });
         
       },
-      addSlot() {
-          
+      goToLeadsList()
+      {
+        this.showSuccessModal = false;
+        this.$router.push({ name: 'leads' });
+      },
+      addMoreLead()
+      {
+        this.showSuccessModal = false;
+        // Reset form
+        this.lead = {
+          name: '',
+          source: '',
+          phone_no: '',
+          email: '',
+          status: 'New Lead',
+          country: 100,
+          program_type: 'Personal Training',
+          program: '',
+          preferred_time: [
+            { value : ['', ''] }
+          ],
+          preferred_days: [],
+          lead_date: '',
+          followup_date: '',
+        };
+        this.errors.clear();
+        this.$validator.reset();
+      },
+      addSlot() { 
           // this.program.timeSlots1.push({ start: '', end: '' })
           const key = 'preferred_time'
           if (!this.lead[key]) {
@@ -256,8 +310,6 @@
             })
             .then(response => {
                 this.programs = response.data;
-                // console.log(programs.length);
-                
                 
             })
             .catch(error => {
@@ -272,8 +324,6 @@
             })
             .then(response => {
                 this.countries = response.data;
-                // console.log(programs.length);
-                
                 
             })
             .catch(error => {

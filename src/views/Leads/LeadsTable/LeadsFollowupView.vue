@@ -80,8 +80,7 @@
 
          </b-row>
          
-        <b-modal id="modal-1" size="lg" title="Follow up Schedule" hide-footer v-if="showModal_followupdone" @close="showModal_followupdone
-          = false">
+        <b-modal id="modal-1" size="lg" title="Follow up Schedule" hide-footer v-if="showModal_followupdone" @close="showModal_followupdone = false">
             <b-form @submit.prevent="followupDone">
                 <h6 class="heading-small text-muted mb-2">Follow Up Schedule</h6>
                 <div class="pl-lg-12">
@@ -211,6 +210,7 @@
                 formData.append('notes', this.notes);
                 formData.append('lead_status', this.lead_status);
                 formData.append('activity_type', this.activity_type);
+                formData.append('followup_date', this.scheduled_followupdate);
                 
                 axios.post('http://127.0.0.1:8000/api/user/followupStatusUpdate', formData,{
                 headers: { Authorization: `Token ${token}` }
