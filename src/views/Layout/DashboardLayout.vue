@@ -3,7 +3,7 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-        <sidebar-item v-if="role_id == 'Admin' || 'Trainer'"
+        <sidebar-item v-if="role_id == 'Sales'"
           :link="{
             name: 'Dashboard',
             path: '/dashboard',
@@ -97,6 +97,12 @@
               :link="{ 
                 name: 'Trainer Availability - Time', 
                 path: '/trainer/availabilityTime', 
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+            <sidebar-item
+              :link="{ 
+                name: 'Group - Availability', 
+                path: '/program/groupAvailability', 
                 icon: 'ni ni-bullet-list-67 text-warning' }"
             />
         </div>
@@ -235,8 +241,6 @@
           headers: { Authorization: `Token ${token}` }
         });
         this.role_id = userRes.data.roles[0].role.rolename;
-        
-        // localStorage.setItem('userRole', userRes.data.role);
         
       }
     },

@@ -34,7 +34,7 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "demo" */ '../views/Dashboard.vue'),
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Dashboard/SalesDashboard.vue'),
         meta: { requiresAuth: true }
       },
       {
@@ -143,6 +143,12 @@ const routes = [
         path: '/leads/follow_ups/:id',
         name: 'leads/follow_ups',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/FollowupList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/program/groupAvailability',
+        name: 'program/groupAvailability',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Programs/GroupAvaliabilityList.vue'),
         meta: { requiresAuth: true }
       },
       {

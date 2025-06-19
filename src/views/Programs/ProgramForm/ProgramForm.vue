@@ -117,11 +117,11 @@
                     </b-col>
                     <b-col lg="4">
                         <base-input label="Select Trainer">
-                        <select class="form-control" v-model="program.group_trainer_level1">
-                            <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
-                            {{ trainer.name }}
-                            </option>
-                        </select>
+                          <select class="form-control" v-model="program.group_trainer_level1">
+                              <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
+                              {{ trainer.name }}
+                              </option>
+                          </select>
                         </base-input>
                     </b-col>
                     <b-col lg="4">
