@@ -17,7 +17,7 @@
         <b-col xl="3" md="6">
           <stats-card title="New Leads"
                       type="gradient-red"
-                      :sub-title=newLeadcount
+                      :sub-title=new_Leadcount
                       icon="ni ni-active-40"
                       class="mb-4">
 
@@ -31,26 +31,26 @@
         <b-col xl="3" md="6">
           <stats-card title="Converted"
                       type="gradient-orange"
-                      sub-title="2,356"
+                      :sub-title=converted_count
                       icon="ni ni-chart-pie-35"
                       class="mb-4">
 
             <template slot="footer">
-              <span class="text-success mr-2">12.18%</span>
-              <span class="text-nowrap">Since last month</span>
+              <span class="text-success mr-2"></span>
+              <span class="text-nowrap">{{currentMonth}},{{currentYear}}</span>
             </template>
           </stats-card>
         </b-col>
         <b-col xl="3" md="6">
           <stats-card title="Upcoming Followups"
                       type="gradient-green"
-                      sub-title="924"
+                      :sub-title=followup_count
                       icon="ni ni-calendar-grid-58"
                       class="mb-4">
 
             <template slot="footer">
-              <span class="text-danger mr-2">5.72%</span>
-              <span class="text-nowrap">Since last month</span>
+              <span class="text-danger mr-2"></span>
+              <span class="text-nowrap">{{currentMonth}},{{currentYear}}</span>
             </template>
           </stats-card>
 
@@ -58,13 +58,13 @@
         <b-col xl="3" md="6">
           <stats-card title="Revenue"
                       type="gradient-info"
-                      sub-title="49,65%"
+                      :sub-title=monthly_revenue
                       icon="ni ni-money-coins"
                       class="mb-4">
 
             <template slot="footer">
-              <span class="text-success mr-2">54.8%</span>
-              <span class="text-nowrap">Since last month</span>
+              <span class="text-success mr-2"></span>
+              <span class="text-nowrap">{{currentMonth}},{{currentYear}}</span>
             </template>
           </stats-card>
         </b-col>
@@ -83,7 +83,10 @@
         ];
         const years = [2025]
         return {
-            newLeadcount : 0,
+            new_Leadcount : 0,
+            converted_count: 0,
+            followup_count: 0,
+            monthly_revenue: 0,
             currentYear: today.getFullYear().toString(),  // "2025"
             currentMonth: monthNames[today.getMonth()], 
             months: monthNames,
@@ -98,13 +101,20 @@
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
-                    console.log(response);
-                    this.newLeadcount = response.data.leads_count
+                    console.log(response.data.leads_count);
+                    this.new_Leadcount = response.data.leads_count;
+                    this.converted_count = response.data.converted_count;
+                    this.followup_count = response.data.followup_count;
+                    this.monthly_revenue = response.data.monthly_revenue;
                 })
                 .catch(error => {
                     console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
 
                 });
+        },
+        onDataChange()
+        {
+          this.newLeadCount();
         }
      
     },
