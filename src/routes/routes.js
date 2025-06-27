@@ -39,6 +39,16 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: 'dietitan/dashboard',
+        name: 'dietitan/dashboard',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Dashboard.vue'),
+        // component: () => import(/* webpackChunkName: "demo" */ '../views/Dashboard/SalesDashboard.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/users',
         name: 'users',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Users/UserList.vue'),
@@ -63,8 +73,14 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/clients/new_client',
-        name: 'clients/new_client',
+        path: '/clients/trainer/new_client',
+        name: 'clients/trainer/new_client',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/NewClientList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/dietitian/new_client',
+        name: 'clients/dietitian/new_client',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/NewClientList.vue'),
         meta: { requiresAuth: true }
       },

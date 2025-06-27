@@ -78,29 +78,77 @@
         cred: {
           email: '',
           password: '',
-          rememberMe: false
-        }
+          rememberMe: false,
+        },
+        role: ''
       };
     },
     methods: {
-      handleSubmit() {
+      async handleSubmit() {
         // this will be called only after form is valid. You can do api call here to login
+
+        try {
+        const response = await axios.post('http://127.0.0.1:8000/api/auth/login', {
+          email: this.cred.email,
+          password: this.cred.password
+        });
+
+        const token = response.data.key;
+        localStorage.setItem('token', token);
+
+        // Wait for userDetails to finish
+        await this.userDetails();
+
+        // Only after userDetails completes
+        console.log(this.role);
+        localStorage.setItem('role_name', this.role);
+        if(this.role == 'Sales')
+        {
+          this.$router.push('/dashboard');
+        }
+        else if(this.role == 'Dietitian')
+        {
+          this.$router.push('dietitan/dashboard');
+        }
         
-        axios.post('http://127.0.0.1:8000/api/auth/login', {
-          email : this.cred.email,
-          password : this.cred.password
+
+      } catch (error) {
+        console.log(error);
+      }
+        
+        // axios.post('http://127.0.0.1:8000/api/auth/login', {
+        //   email : this.cred.email,
+        //   password : this.cred.password
+        // })
+        // .then(response => {
+        //   const token = response.data.key
+        //   localStorage.setItem('token', token) 
+        //   await this.userDetails();
+        //   console.log(this.role);
+          
+        //   this.$router.push('/dashboard')
+        //   console.log(response);
+          
+        // })
+        // .catch(error => {
+        //   console.log(error);
+          
+        // })
+      },
+      async userDetails()
+      {
+        const token = localStorage.getItem('token');
+        await axios.get(`http://127.0.0.1:8000/api/user/userDetails/`, {
+        headers: { Authorization: `Token ${token}` }
         })
         .then(response => {
-          const token = response.data.key
-          localStorage.setItem('token', token) 
-          this.$router.push('/dashboard')
-          console.log(response);
-          
+            console.log(response.data);
+            this.role = response.data.roles[0].role.rolename;
         })
         .catch(error => {
-          console.log(error);
-          
-        })
+            console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+        });
       }
     },
     mounted()

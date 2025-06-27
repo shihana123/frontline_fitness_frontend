@@ -12,6 +12,15 @@
         >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Dietitian'"
+          :link="{
+            name: 'Dashboard',
+            path: 'dietitian/dashboard',
+            icon: 'ni ni-tv-2 text-primary',
+          }"
+        >
+        </sidebar-item>
+
         <sidebar-item v-if="role_id == 'Admin'"
             :link="{
               name: 'Users',
@@ -31,17 +40,26 @@
         </sidebar-item>
 
 
-        <!-- trainer -->
-         <sidebar-item v-if="role_id == 'Trainer'"
+        <!-- trainer & Dietitian -->
+        <sidebar-item v-if="role_id == 'Trainer'"
             :link="{
               name: 'New Clients',
-              path: '/clients/new_client',
+              path: '/clients/trainer/new_client',
               icon: 'ni ni-ui-04 text-orange'
               }"
             >
         </sidebar-item>
 
-        <sidebar-item v-if="role_id == 'Trainer'"
+        <sidebar-item v-if="role_id == 'Dietitian'"
+            :link="{
+              name: 'New Clients',
+              path: '/clients/trainer/new_client',
+              icon: 'ni ni-ui-04 text-orange'
+              }"
+            >
+        </sidebar-item>
+
+        <sidebar-item v-if="role_id == 'Trainer' || role_id == 'Dietitian'"
             :link="{
               name: 'Consultation Schedules',
               path: '/clients/consultation_schedules',
@@ -50,7 +68,7 @@
             >
         </sidebar-item>
 
-        <sidebar-item v-if="role_id == 'Trainer'"
+        <sidebar-item v-if="role_id == 'Trainer' || role_id == 'Dietitian'"
             :link="{
               name: 'Clients',
               path: '/clients/clients',
@@ -68,15 +86,9 @@
             >
         </sidebar-item>
 
-        <!-- <sidebar-item v-if="role_id == 'Sales'"
-            :link="{
-              name: 'Trainer Availability',
-              path: '/trainer/availability',
-              icon: 'ni ni-calendar-grid-58 text-yellow'
-              }"
-            >
-        </sidebar-item> -->
+        <!-- Trainer  & Dietitian -->
 
+        <!-- Sales -->
         <div @click="toggleDropdown('sales')" class="sidebar-item d-flex justify-content-between align-items-center" v-if="role_id == 'Sales'">
             <div class="d-flex align-items-center dropdown_slide_items">
               <i class="ni ni-calendar-grid-58 text-yellow text-primary mr-2"></i>
