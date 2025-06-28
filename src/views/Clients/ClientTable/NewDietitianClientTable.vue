@@ -74,7 +74,7 @@
 
 
                     <base-button v-b-modal.modal-2
-                    v-else-if="scope.row.new_client && scope.row.trainer_first_consultation == 2"
+                    v-else-if="scope.row.new_client && scope.row.diet_first_consultation == 2"
                     type="warning"
                     size="small"
                     @click="handleNewClient(scope.row)" class="table_button">
@@ -82,7 +82,7 @@
                     </base-button>
 
                     <base-button
-                    v-else-if="scope.row.new_client && scope.row.trainer_first_consultation == 3"
+                    v-else-if="scope.row.new_client && scope.row.diet_first_consultation == 3"
                     type="success"
                     size="small"
                     class="table_button">
@@ -122,61 +122,260 @@
 
     <b-modal id="modal-2" title="Details of Client" hide-footer>
         <b-form @submit.prevent="enterClientDetails">
-            <h6 class="heading-small text-muted mb-2">Enter Details after First Consulation</h6>
-            <div class="pl-lg-12">
-                <b-row >
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Current Activity Level"
-                        placeholder="Current Activity Level"
-                        v-model="clientdetails.current_acitivity_level"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Current Workouts"
-                        placeholder="Current Workouts"
-                        v-model="clientdetails.current_workouts"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Past Workouts/Physical Activities"
-                        placeholder="Past Workouts/Physical Activities"
-                        v-model="clientdetails.past_workouts"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Physical Limitations/Injuries"
-                        placeholder="Physical Limitations/Injuries"
-                        v-model="clientdetails.physical_limitations"
-                        >
-                        </base-input>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Fitness Equipment Owned"
-                        placeholder="Fitness Equipment Owned"
-                        v-model="clientdetails.equipment_owned"
-                        >
-                        </base-input>
-                    </b-col>
-                </b-row>
+            <div v-show="dietary_div">
+                <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
+                <div class="pl-lg-12">
+                    <b-row >
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Diet Preference"
+                            placeholder="Diet Preference"
+                            v-model="clientdetails.diet_preferences"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Current Eating Pattern"
+                            placeholder="Current Eating Pattern"
+                            v-model="clientdetails.current_eating_pattern"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Appetite Level"
+                            placeholder="Appetite Level"
+                            v-model="clientdetails.appetite_level"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="No.of Meals per Day"
+                            placeholder="No.of Meals per Day"
+                            v-model="clientdetails.no_of_meals_per_day"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Cooking at Home/Eat Out"
+                            placeholder="Cooking at Home/Eat Out"
+                            v-model="clientdetails.cook_at_home_out"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Food Allergies and Intolerance"
+                            placeholder="Food Allergies and Intolerance"
+                            v-model="clientdetails.food_allergies"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Specific Diets Tried Before"
+                            placeholder="Specific Diets Tried Before"
+                            v-model="clientdetails.diet_before"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Snacking Habits"
+                            placeholder="Snacking Habits"
+                            v-model="clientdetails.snacking_habits"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Nutrient Deficiencies"
+                            placeholder="Nutrient Deficiencies"
+                            v-model="clientdetails.nutrient_deficiencies"
+                            >
+                            </base-input>
+                        </b-col>
+
+                    </b-row>
+                </div>
+                <!-- Custom buttons -->
+                <div>
+                    <b-button variant="secondary" @click="$bvModal.hide('modal-2')">Cancel</b-button>
+                    <b-button @click="showlifestyle_div" variant="primary">Next</b-button>
+                </div>
             </div>
-            <!-- Custom buttons -->
-            <div>
-                <b-button variant="secondary" @click="$bvModal.hide('modal-2')">Cancel</b-button>
-                <b-button type="submit" variant="primary">Save</b-button>
+
+            <div v-show="lifestyle_div">
+                <h6 class="heading-small text-muted mb-2">Lifestyle Pattern</h6>
+                <div class="pl-lg-12">
+                    <b-row >
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Sleeping Duration"
+                            placeholder="Sleeping Duration"
+                            v-model="clientdetails.sleeping_duration"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Total Water Intake per Day"
+                            placeholder="Total Water Intake per Day"
+                            v-model="clientdetails.water_intake_per_day"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Working Schedule"
+                            placeholder="Working Schedule"
+                            v-model="clientdetails.working_schedule"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Sleep Quality"
+                            placeholder="Sleep Quality"
+                            v-model="clientdetails.sleep_quality"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Stress"
+                            placeholder="Stress"
+                            v-model="clientdetails.stress"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Hobbies"
+                            placeholder="Hobbies"
+                            v-model="clientdetails.hobbies"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Screen Time"
+                            placeholder="Screen Time"
+                            v-model="clientdetails.screen_time"
+                            >
+                            </base-input>
+                        </b-col>
+                    </b-row>
+                </div>
+                <div>
+                    <b-button variant="secondary" @click="showdietary_div">Prev</b-button>
+                    <b-button @click="showmedical_div" variant="primary">Next</b-button>
+                </div>
             </div>
+
+            <div v-show="medical_div">
+                <h6 class="heading-small text-muted mb-2">Medical History</h6>
+                <div class="pl-lg-12">
+                    <b-row >
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Pre-existing conditions"
+                            placeholder="Pre-existing conditions"
+                            v-model="clientdetails.pre_existing_conditions"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Past Surgeries"
+                            placeholder="Past Surgeries"
+                            v-model="clientdetails.past_surgeries"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Medications"
+                            placeholder="Medications"
+                            v-model="clientdetails.medication"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Menstrual History"
+                            placeholder="Menstrual History"
+                            v-model="clientdetails.menstrual_history"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Pregnancy History"
+                            placeholder="Pregnancy History"
+                            v-model="clientdetails.pregnancy_history"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Breastfeeding"
+                            placeholder="Breastfeeding"
+                            v-model="clientdetails.breast_feeding"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Supplements"
+                            placeholder="Supplements"
+                            v-model="clientdetails.supplements"
+                            >
+                            </base-input>
+                        </b-col>
+                        <b-col lg="12">
+                            <base-input
+                            type="text"
+                            label="Medical Tests"
+                            placeholder="Medical Tests"
+                            v-model="clientdetails.medical_tests"
+                            >
+                            </base-input>
+                        </b-col>
+                    </b-row>
+                </div>
+                <div>
+                    <b-button variant="secondary" @click="showlifestyle_div">Prev</b-button>
+                    <b-button type="submit" variant="primary">Save</b-button>
+                </div>
+            </div>
+            
         </b-form>
     </b-modal>
 
@@ -204,16 +403,57 @@
             no_of_consultation: 1
         },
         clientdetails:{
-            current_acitivity_level: '',
-            current_workouts: '',
-            physical_limitations: '',
-            equipment_owned: '',
+            diet_preferences: '',
+            current_eating_pattern: '',
+            appetite_level: '',
+            no_of_meals_per_day: '',
+            cook_at_home_out: '',
+            food_allergies: '',
+            diet_before: '',
+            snacking_habits: '',
+            nutrient_deficiencies: '',
+            sleeping_duration: '',
+            water_intake_per_day: '',
+            working_schedule: '',
+            sleep_quality: '',
+            stress: '',
+            hobbies: '',
+            screen_time: '',
+            pre_existing_conditions: '',
+            past_surgeries: '',
+            medication: '',
+            menstrual_history: '',
+            pregnancy_history: '',
+            breast_feeding: '',
+            supplements: '',
+            medical_tests: '',
             no_of_consultation: 1
         },
-        selectedClientID: ''
+        selectedClientID: '',
+        dietary_div: true,
+        lifestyle_div: false,
+        medical_div: false,
       };
     },
     methods:{
+        showlifestyle_div()
+        {
+            this.dietary_div = false;
+            this.medical_div = false;
+            this.lifestyle_div = true;
+        },
+        showdietary_div()
+        {
+            this.dietary_div = true;
+            this.medical_div = false;
+            this.lifestyle_div = false;
+        },
+        showmedical_div()
+        {
+            this.dietary_div = false;
+            this.medical_div = true;
+            this.lifestyle_div = false;
+        },
         async newclientList(){
             const token = localStorage.getItem('token');
             axios.get('http://127.0.0.1:8000/api/user/newclientListDietitian', {
@@ -254,18 +494,39 @@
         {
             const token = localStorage.getItem('token');
             const formData = new FormData();
-            formData.append('current_acitivity_level', this.clientdetails.current_acitivity_level);
+            
             formData.append('client', this.selectedClientID);
-            formData.append('current_workouts', this.clientdetails.current_workouts);
-            formData.append('physical_limitations', this.clientdetails.physical_limitations);
-            formData.append('equipment_owned', this.clientdetails.equipment_owned);
-             formData.append('no_of_consultation', this.clientdetails.no_of_consultation);
+            formData.append('no_of_consultation', this.clientdetails.no_of_consultation);
+            formData.append('diet_preferences', this.clientdetails.diet_preferences);
+            formData.append('current_eating_pattern', this.clientdetails.current_eating_pattern);
+            formData.append('appetite_level', this.clientdetails.appetite_level);
+            formData.append('no_of_meals_per_day', this.clientdetails.no_of_meals_per_day);
+            formData.append('cook_at_home_out', this.clientdetails.cook_at_home_out);
+            formData.append('food_allergies', this.clientdetails.food_allergies);
+            formData.append('diet_before', this.clientdetails.diet_before);
+            formData.append('snacking_habits', this.clientdetails.snacking_habits);
+            formData.append('nutrient_deficiencies', this.clientdetails.nutrient_deficiencies);
+            formData.append('sleeping_duration', this.clientdetails.sleeping_duration);
+            formData.append('water_intake_per_day', this.clientdetails.water_intake_per_day);
+            formData.append('working_schedule', this.clientdetails.working_schedule);
+            formData.append('sleep_quality', this.clientdetails.sleep_quality);
+            formData.append('stress', this.clientdetails.stress);
+            formData.append('hobbies', this.clientdetails.hobbies);
+            formData.append('screen_time', this.clientdetails.screen_time);
+            formData.append('pre_existing_conditions', this.clientdetails.pre_existing_conditions);
+            formData.append('past_surgeries', this.clientdetails.past_surgeries);
+            formData.append('medication', this.clientdetails.medication);
+            formData.append('menstrual_history', this.clientdetails.menstrual_history);
+            formData.append('pregnancy_history', this.clientdetails.pregnancy_history);
+            formData.append('breast_feeding', this.clientdetails.breast_feeding);
+            formData.append('supplements', this.clientdetails.supplements);
+            formData.append('medical_tests', this.clientdetails.medical_tests);
 
-            axios.post('http://127.0.0.1:8000/api/user/trainerconsulation_details', formData,{
+            axios.post('http://127.0.0.1:8000/api/user/dietitianconsulation_details', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
-            console.log('Program created successfully:', response.data);
+            console.log('data created successfully:', response.data);
             })
             .catch(error => {
             console.error('Error creating program:', error.response && error.response.data ? error.response.data : error);

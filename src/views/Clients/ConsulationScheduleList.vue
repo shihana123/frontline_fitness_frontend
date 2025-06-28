@@ -5,8 +5,12 @@
     </base-header>
     <b-container fluid class="mt--7">
       <b-row>
-        <b-col>
-          <consultation-table/>
+        
+        <b-col v-if="role == 'Trainer'">
+          <consultation-table></consultation-table>
+        </b-col>
+        <b-col v-else-if="role == 'Dietitian'">
+          <dietitian-consultation-table></dietitian-consultation-table>
         </b-col>
       </b-row>
       
@@ -15,23 +19,17 @@
 </template>
 <script>
   import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
-  import projects from '../Tables/projects'
-  import users from '../Tables/users'
   import ConsultationTable from "./ClientTable/ConsultationScheduleTable";
+  import DietitianConsultationTable from "./ClientTable/DietitianConsultationScheduleTable";
 
   export default {
     components: {
       ConsultationTable,
-      [Dropdown.name]: Dropdown,
-      [DropdownItem.name]: DropdownItem,
-      [DropdownMenu.name]: DropdownMenu,
-      [Table.name]: Table,
-      [TableColumn.name]: TableColumn
+      DietitianConsultationTable
     },
     data() {
       return {
-        projects,
-        users
+        role: localStorage.getItem('role_name')
       };
     }
   };

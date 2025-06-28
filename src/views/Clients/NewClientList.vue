@@ -5,7 +5,7 @@
     </base-header>
     <b-container fluid class="mt--7">
       <b-row>
-        <b-col v-if="role == 'Trainer'">{{ role}}
+        <b-col v-if="role == 'Trainer'">
           <client-trainer-table></client-trainer-table>
         </b-col>
         <b-col v-else-if="role == 'Dietitian'">

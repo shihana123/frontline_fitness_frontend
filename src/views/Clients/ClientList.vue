@@ -11,6 +11,9 @@
         <b-col v-else-if="usersRole == 'Sales'">
           <sales-client-table></sales-client-table>
         </b-col>
+        <b-col v-else-if="usersRole == 'Dietitian'">
+          <dietitian-client-table></dietitian-client-table>
+        </b-col>
       </b-row>
       
     </b-container>
@@ -20,11 +23,13 @@
   import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
   import SalesClientTable from "./ClientTable/SalesClientTable";
   import ClientTable from "./ClientTable/ClientTable";
+  import DietitianClientTable from "./ClientTable/DietitianClientTable";
   import axios from 'axios'
   export default {
     components: {
       ClientTable,
       SalesClientTable,
+      DietitianClientTable,
       [Dropdown.name]: Dropdown,
       [DropdownItem.name]: DropdownItem,
       [DropdownMenu.name]: DropdownMenu,

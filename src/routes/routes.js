@@ -78,12 +78,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/NewClientList.vue'),
         meta: { requiresAuth: true }
       },
-      {
-        path: '/clients/dietitian/new_client',
-        name: 'clients/dietitian/new_client',
-        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/NewClientList.vue'),
-        meta: { requiresAuth: true }
-      },
+      // {
+      //   path: '/clients/dietitian/new_client',
+      //   name: 'clients/dietitian/new_client',
+      //   component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/NewClientList.vue'),
+      //   meta: { requiresAuth: true }
+      // },
       {
         path: '/clients/consultation_schedules',
         name: 'clients/consultation_schedules',
