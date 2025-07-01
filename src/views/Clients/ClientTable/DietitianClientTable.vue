@@ -38,7 +38,6 @@
                              min-width="90px"
                              prop="workout_start_date">
             </el-table-column>
-            
            
             <el-table-column label="Action"
                              prop="completion"
@@ -51,7 +50,6 @@
                     View
                     </base-button>
                 </template>
-                
 
             </el-table-column>
         </el-table>

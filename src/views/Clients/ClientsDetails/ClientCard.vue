@@ -8,7 +8,7 @@
           </a>
         </div>
       </b-col>
-    </b-row>
+    </b-row>{{ role_id }}
 
     <b-card-header class="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
       <div class="d-flex justify-content-between">
@@ -35,10 +35,13 @@
         <div class="h5 font-weight-300">
           <i class="ni location_pin mr-2"></i>{{ client[0].phone }}
         </div>
-        <div class="h5 mt-4">
+        <div class="h5 mt-4" v-if="role_id == 'Sales'">
           <h5><i class="ni business_briefcase-24 mr-2"></i>Selected Program - {{ client[0].programs[0].program.name }}</h5>
-          <h5><i class="ni business_briefcase-24 mr-2" v-if="role_id == 'Sales'"></i>Program Choosen for - {{ client[0].program_months }} Months</h5>
-          <h5><i class="ni business_briefcase-24 mr-2" v-if="role_id == 'Sales'"></i>Amount Paid - ₹{{ client[0].amount }}</h5>
+          <h5><i class="ni business_briefcase-24 mr-2"></i>Program Choosen for - {{ client[0].program_months }} Months</h5>
+          <h5><i class="ni business_briefcase-24 mr-2"></i>Amount Paid - ₹{{ client[0].amount }}</h5>
+        </div>
+        <div v-else>
+          <h5><i class="ni business_briefcase-24 mr-2"></i>Selected Program - {{ client[0].programs[0].program.name }}</h5>
         </div>
         
         <div>
@@ -48,10 +51,10 @@
           <i class="ni education_hat mr-2"></i>Selected Time - {{ client[0].programs[0].preferred_time }}
         </div> -->
         <div>
-          <i class="ni education_hat mr-2"></i>Selected Time - IST {{ formatPreferredTime(client[0].programs[0].preferred_time) }}
+          <i class="ni education_hat mr-2"></i>Workout Selected Time - IST {{ formatPreferredTime(client[0].programs[0].preferred_time) }}
         </div>
         <div>
-          <i class="ni education_hat mr-2"></i>Selected Days - {{ formatPreferredDays(client[0].programs[0].workout_days) }}
+          <i class="ni education_hat mr-2"></i>Workout Selected Days - {{ formatPreferredDays(client[0].programs[0].workout_days) }}
         </div>
         
         <hr class="my-4">
@@ -69,6 +72,15 @@
             Attendance Details
         </base-button>
         <!-- Trainer -->
+
+        <!-- Dietitian -->
+         <base-button v-if="role_id == 'Dietitian'"
+            type="primary"
+            size="small"
+            class="table_button" @click="dietView(client[0].id)">
+            Weekly Diet Plan
+        </base-button>
+        <!-- Dietitian -->
 
         <!-- Sales -->
         <base-button v-if="role_id == 'Sales'"
@@ -98,7 +110,7 @@
         data() {
             return {
                 client: [],
-                role_id: '',
+                role_id: localStorage.getItem('role_name'),
                 followups: []
             }
         },
@@ -125,6 +137,10 @@
                 // console.log(client_id);
                 this.$router.push({ name: 'clients/workout_view', params: { id: client_id } });
             },
+            dietView(client_id)
+            {
+              this.$router.push({ name: 'clients/diet_view', params: { id: client_id } });
+            },
             ClientAttendanceView(client_id)
             {
                 this.$router.push({ name: 'clients/attendance_view', params: { id: client_id } });
@@ -136,7 +152,7 @@
               var userRes = await axios.get('http://127.0.0.1:8000/api/user/userDetails/', {
                 headers: { Authorization: `Token ${token}` }
               });
-              this.role_id = userRes.data.roles[0].role.rolename;
+              
               
             },
             formatPreferredTime(times) {

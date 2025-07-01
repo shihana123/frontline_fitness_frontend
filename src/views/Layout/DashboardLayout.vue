@@ -15,7 +15,7 @@
         <sidebar-item v-if="role_id == 'Dietitian'"
           :link="{
             name: 'Dashboard',
-            path: 'dietitian/dashboard',
+            path: '/dietitan/dashboard',
             icon: 'ni ni-tv-2 text-primary',
           }"
         >
