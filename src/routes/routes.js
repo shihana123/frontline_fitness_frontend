@@ -91,6 +91,30 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/upcoming_consultation_schedules',
+        name: 'clients/upcoming_consultation_schedules',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/UpcomingConsulationScheduleList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/missed_consultation_schedules',
+        name: 'clients/missed_consultation_schedules',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/MissedConsulationScheduleList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/consultation_details/:id',
+        name: 'clients/consultation_details',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ConsultationDetails.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/graphical_view/:id',
+        name: 'clients/graphical_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/graphicalView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/clients',
         name: 'clients/clients',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientList.vue'),

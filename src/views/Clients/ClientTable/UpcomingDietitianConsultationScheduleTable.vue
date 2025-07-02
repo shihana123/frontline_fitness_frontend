@@ -60,57 +60,10 @@
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
         </b-card-footer>
     </b-card>
-    <b-modal id="modal-1" title="Schedule Next Consultation" hide-footer v-if="modal_1">
+    <b-modal id="modal-1" title="Schedule Next Consultation" hide-footer>
         <b-form @submit.prevent="schedule">
             <h6 class="heading-small text-muted mb-2">Schedule Next Consulation</h6>
-            <div class="pl-lg-12" v-if="consult_data">
-                <b-row >
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Height (cm)"
-                        placeholder="Height (cm)"
-                        v-model="scheduledata.height"
-                        requied
-                        >
-                        </base-input>
-                        
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="Weight (kg)"
-                        placeholder="Weight (kg)"
-                        v-model="scheduledata.weight"
-                        required
-                        >
-                        </base-input>
-                        
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="text"
-                        label="BMI"
-                        placeholder="BMI"
-                        v-model="scheduledata.bmi"
-                        disabled
-                        >
-                        </base-input>
-                        
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input label="Notes">
-                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="scheduledata.notes" required></textarea>
-                        </base-input>
-                        
-                    </b-col>
-                    <div>
-                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
-                        <b-button type="button" @click="showSchedule"  variant="primary">Next</b-button>
-                    </div> 
-                </b-row>
-            </div>
-            <div class="pl-lg-12" v-if="consulat_schedule">
+            <div class="pl-lg-12">
                 
                 <b-row >
                     <b-col lg="12">
@@ -123,13 +76,13 @@
                         </base-input>
                         
                     </b-col>
-                    <div>
-                        <b-button variant="secondary" @click="showConsultData()">Back</b-button>
-                        <b-button type="submit" variant="primary">Done & Schedule Next</b-button>
-                    </div>
                 </b-row>
             </div>
-            
+            <!-- Custom buttons -->
+            <div>
+                <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
+                <b-button type="submit" variant="primary">Done & Schedule Next</b-button>
+            </div>
         </b-form>
     </b-modal>
 
@@ -149,9 +102,6 @@
     },
     data() {
       return {
-        modal_1: false,
-        consulat_schedule: false,
-        consult_data: true,
         consultations: [],
         currentPage: 1,
         no_of_consultation: '',
@@ -159,46 +109,16 @@
             scheduledate : '',
             type: 'dietitian',
             no_of_consultation: '',
-            height: '',
-            weight: '',
-            bmi: 0,
-            notes: ''
-
+            workoutdate: ''
         },
         selectedClientID: '',
         completed_consultation: 0
       };
     },
-    watch: {
-    'scheduledata.height': 'calculateBMI',
-    'scheduledata.weight': 'calculateBMI'
-    },
     methods:{
-        showSchedule()
-        {
-            this.consulat_schedule = true;
-            this.consult_data = false;
-        },
-        showConsultData()
-        {
-            this.consulat_schedule = false;
-            this.consult_data = true;
-        },
-        calculateBMI() {
-            const height = parseFloat(this.scheduledata.height);
-            const weight = parseFloat(this.scheduledata.weight);
-
-            if (height > 0 && weight > 0) {
-            const heightInMeters = height / 100;
-            const bmi = weight / (heightInMeters * heightInMeters);
-            this.scheduledata.bmi = bmi.toFixed(2); // Rounded to 2 decimal places
-            } else {
-            this.scheduledata.bmi = '';
-            }
-        },
         async consultationList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/dietconsulationscheduleList', {
+            axios.get('http://127.0.0.1:8000/api/user/dietupcomingconsulationscheduleList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -221,36 +141,19 @@
             formData.append('client', this.selectedClientID);
             formData.append('type', this.scheduledata.type);
             formData.append('no_of_consultation', this.no_of_consultation);
-            formData.append('height', this.scheduledata.height);
-            formData.append('weight', this.scheduledata.weight);
-            formData.append('bmi', this.scheduledata.bmi);
-            formData.append('notes', this.scheduledata.notes);
+            // formData.append('no_of_consultation', this.no_of_consultation);
+            // formData.append('workout_start_date', this.scheduledata.workoutdate);
             
             axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
-                console.log('Consultation scheduled successfully:', response.data);
-                this.modal_1 = false;
-                this.consultationList();
-                this.resetForm();
+            console.log('Consultation scheduled successfully:', response.data);
             })
             .catch(error => {
             console.error('Error:', error.response && error.response.data ? error.response.data : error);
 
             });
-        },
-        resetForm() {
-            this.scheduledata = {
-            client: null,
-            height: '',
-            weight: '',
-            bmi: '',
-            no_of_consultation: '',
-            datetime: '',
-            type: '',
-            notes: ''
-            };
         },
         
         handleNewClient(client)
@@ -259,7 +162,6 @@
             this.no_of_consultation = client.no_of_consultation + 1;
             this.completed_consultation = client.completed_consultations;
             console.log(this.selectedClientID);
-            this.modal_1 = true;
         }
     },
     mounted()

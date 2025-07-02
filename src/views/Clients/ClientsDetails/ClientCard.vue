@@ -8,12 +8,26 @@
           </a>
         </div>
       </b-col>
-    </b-row>{{ role_id }}
+    </b-row>
 
     <b-card-header class="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
       <div class="d-flex justify-content-between">
-        <a href="#" class="btn btn-sm btn-info mr-4" v-if="role_id != 'Sales'">Consultation Details</a>
-        <a href="#" class="btn btn-sm btn-default float-right" v-if="role_id != 'Sales'">More Details</a>
+        <!-- <a href="" class="btn btn-sm btn-info mr-4" v-if="role_id == 'Dietitian'">Consultation Details</a> -->
+        <router-link
+          :to="{ name: 'clients/consultation_details', params: { id: client[0].id } }"
+          class="btn btn-sm btn-info mr-4"
+          v-if="role_id == 'Dietitian'"
+        >
+          Consultation Details
+        </router-link>
+        <router-link
+          :to="{ name: 'clients/graphical_view', params: { id: client[0].id } }"
+          class="btn btn-sm btn-default mr-4"
+          v-if="role_id == 'Dietitian'"
+        >
+          More Details
+        </router-link>
+        <!-- <a href="#" class="btn btn-sm btn-default float-right" v-if="role_id != 'Sales'">More Details</a> -->
       </div>
     </b-card-header>
 

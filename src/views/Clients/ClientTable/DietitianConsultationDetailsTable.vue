@@ -1,0 +1,455 @@
+<template>
+    <div>
+    <b-card no-body>
+        <b-card-header class="border-0 header-sec">
+            <h3 class="mb-0">Consulation Details - {{ client[0].name }}</h3>
+            <!-- <b-button  variant="success" class="create_btn" @click="redirect()">Create Program</b-button> -->
+        </b-card-header>
+        <el-table class="table-responsive table"
+                  header-row-class-name="thead-light"
+                  :data="consultations">
+            <el-table-column label="Consultation" min-width="90px">
+                <template v-slot="scope">
+                    Consultation {{ scope.row.no_of_consultation }}
+                </template>
+            </el-table-column>
+          
+
+            <el-table-column label="Date" min-width="150px">
+                <template v-slot="scope">
+                    {{ formatDate(scope.row.datetime) }}
+                </template>
+            </el-table-column>
+
+            <el-table-column label="Status" min-width="150px">
+                <template v-slot="scope">
+                    <span :style="{ color: scope.row.status ? 'green' : 'red' }">
+                        {{ scope.row.status ? 'Completed' : 'Pending' }}
+                    </span>
+                </template>
+            </el-table-column>
+
+            <el-table-column label="Action"
+                             prop="completion"
+                             min-width="95px">
+                <template #default="scope">
+
+                    <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
+                    <base-button v-b-modal.modal-2
+                    type="primary"
+                    size="small"
+                    @click="viewConsultDetails(scope.row)" class="table_button" v-if="scope.row.status">
+                    View
+                    </base-button>
+
+                    <base-button v-b-modal.modal-1
+                    type="warning"
+                    size="small"
+                    @click="handleNewClient(scope.row)" class="table_button" v-else>
+                    Update
+                    </base-button>
+
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <b-card-footer class="py-4 d-flex justify-content-end">
+            <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
+        </b-card-footer>
+    </b-card>
+    <b-modal id="modal-1" title="Schedule Next Consultation" hide-footer v-if="modal_1">
+        <b-form @submit.prevent="schedule">
+            <h6 class="heading-small text-muted mb-2">Schedule Next Consulation</h6>
+            <div class="pl-lg-12" v-if="consult_data">
+                <b-row >
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Height (cm)"
+                        placeholder="Height (cm)"
+                        v-model="scheduledata.height"
+                        requied
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Weight (kg)"
+                        placeholder="Weight (kg)"
+                        v-model="scheduledata.weight"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="BMI"
+                        placeholder="BMI"
+                        v-model="scheduledata.bmi"
+                        disabled
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input label="Notes">
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="scheduledata.notes" required></textarea>
+                        </base-input>
+                        
+                    </b-col>
+                    <div>
+                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
+                        <b-button type="button" @click="showSchedule"  variant="primary">Next</b-button>
+                    </div> 
+                </b-row>
+            </div>
+            <div class="pl-lg-12" v-if="consulat_schedule">
+                
+                <b-row >
+                    <b-col lg="12">
+                        <base-input
+                        type="datetime-local"
+                        label="Schedule Date & Time"
+                        placeholder="Schedule Date & Time"
+                        v-model="scheduledata.scheduledate"
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <div>
+                        <b-button variant="secondary" @click="showConsultData()">Back</b-button>
+                        <b-button type="submit" variant="primary">Done & Schedule Next</b-button>
+                    </div>
+                </b-row>
+            </div>
+            
+        </b-form>
+    </b-modal>
+
+    <b-modal size="lg" id="modal-2" title="Details of Consultation" hide-footer v-if="modal_2">
+        <div class="pl-lg-6" v-if="no_of_consultation == 1">
+            <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Diet Preferrence : <span>{{ diet_preferences }}</span></h5>
+                        <h5>Current Eating Pattern : <span>{{ current_eating_pattern }}</span></h5>
+                        <h5>Appetite Level : <span>{{ appetite_level }}</span></h5>
+                        <h5>No.of Meals per Day : <span>{{ no_of_meals_per_day }}</span></h5>
+                        <h5>Cooking at Home/Eat Out : <span>{{ cook_at_home_out }}</span></h5>
+                        <h5>Food Allergies and Intolerance : <span>{{ food_allergies }}</span></h5>
+                        <h5>Specific Diets Tried Before : <span>{{ diet_before }}</span></h5>
+                        <h5>Snacking Habits : <span>{{ snacking_habits }}</span></h5>
+                        <h5>Nutrient Deficiencies : <span>{{ nutrient_deficiencies }}</span></h5>
+                        
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+        <div class="pl-lg-6" v-if="no_of_consultation == 1">
+            <h6 class="heading-small text-muted mb-2">Lifestyle Pattern</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Sleeping Duration : <span>{{ sleeping_duration }}</span></h5>
+                        <h5>Total Water Intake per Day : <span>{{ water_intake_per_day }}</span></h5>
+                        <h5>Working Schedule : <span>{{ working_schedule }}</span></h5>
+                        <h5>Sleep Quality : <span>{{ sleep_quality }}</span></h5>
+                        <h5>Stress : <span>{{ stress }}</span></h5>
+                        <h5>Hobbies : <span>{{ hobbies }}</span></h5>
+                        <h5>Screen Time : <span>{{ screen_time }}</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+
+        <div class="pl-lg-6" v-if="no_of_consultation == 1">
+            <h6 class="heading-small text-muted mb-2">Medical History</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Pre-existing conditions : <span>{{ pre_existing_conditions }}</span></h5>
+                        <h5>Past Surgeries : <span>{{ past_surgeries }}</span></h5>
+                        <h5>Medications : <span>{{ medication }}</span></h5>
+                        <h5>Menstrual History : <span>{{ menstrual_history }}</span></h5>
+                        <h5>Pregnancy History : <span>{{ pregnancy_history }}</span></h5>
+                        <h5>Breastfeeding : <span>{{ breast_feeding }}</span></h5>
+                        <h5>Supplements : <span>{{ supplements }}</span></h5>
+                        <h5>Medical Tests : <span>{{ medical_tests }}</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+
+        <div class="pl-lg-6" >
+            <h6 class="heading-small text-muted mb-2">Details</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Height : <span>{{ height }} cm</span></h5>
+                        <h5>Weight : <span>{{ weight }} kg</span></h5>
+                        <h5>BMI : <span>{{ bmi }}</span></h5>
+                        <h5>Notes : <span>{{ notes }}</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+        
+    </b-modal>
+   
+</div>
+</template>
+
+<script>
+  import axios from 'axios'
+  import projects from '../../Tables/projects'
+  import { Table, TableColumn} from 'element-ui'
+  export default {
+    name: 'light-table',
+    components: {
+      [Table.name]: Table,
+      [TableColumn.name]: TableColumn
+    },
+    data() {
+      return {
+        modal_1: false,
+        modal_2: false,
+        consulat_schedule: false,
+        consult_data: true,
+        consultations: [],
+        currentPage: 1,
+        no_of_consultation: '',
+        scheduledata:{
+            scheduledate : '',
+            type: 'dietitian',
+            no_of_consultation: '',
+            height: '',
+            weight: '',
+            bmi: 0,
+            notes: ''
+
+        },
+        selectedClientID: '',
+        completed_consultation: 0,
+        client: [],
+        diet_preferences: '',
+            current_eating_pattern: '',
+            appetite_level: '',
+            no_of_meals_per_day: '',
+            cook_at_home_out: '',
+            food_allergies: '',
+            diet_before: '',
+            snacking_habits: '',
+            nutrient_deficiencies: '',
+            sleeping_duration: '',
+            water_intake_per_day: '',
+            working_schedule: '',
+            sleep_quality: '',
+            stress: '',
+            hobbies: '',
+            screen_time: '',
+            pre_existing_conditions: '',
+            past_surgeries: '',
+            medication: '',
+            menstrual_history: '',
+            pregnancy_history: '',
+            breast_feeding: '',
+            supplements: '',
+            medical_tests: '',
+            height: '',
+            weight: '',
+            bmi: '',
+            notes: ''
+      };
+    },
+    watch: {
+    'scheduledata.height': 'calculateBMI',
+    'scheduledata.weight': 'calculateBMI'
+    },
+    methods:{
+        showSchedule()
+        {
+            this.consulat_schedule = true;
+            this.consult_data = false;
+        },
+        showConsultData()
+        {
+            this.consulat_schedule = false;
+            this.consult_data = true;
+        },
+        calculateBMI() {
+            const height = parseFloat(this.scheduledata.height);
+            const weight = parseFloat(this.scheduledata.weight);
+
+            if (height > 0 && weight > 0) {
+            const heightInMeters = height / 100;
+            const bmi = weight / (heightInMeters * heightInMeters);
+            this.scheduledata.bmi = bmi.toFixed(2); // Rounded to 2 decimal places
+            } else {
+            this.scheduledata.bmi = '';
+            }
+        },
+        async consultationDetails(){
+            const token = localStorage.getItem('token');
+            axios.get(`http://127.0.0.1:8000/api/user/dietconsulationDetails/${this.$route.params.id}`, {
+            headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                this.consultations = response.data;
+                console.log(response.data);
+                
+                // console.log('programs fetched successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+            });
+        },
+        schedule()
+        {
+            
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('datetime', this.scheduledata.scheduledate);
+            formData.append('client', this.selectedClientID);
+            formData.append('type', this.scheduledata.type);
+            formData.append('no_of_consultation', this.no_of_consultation);
+            formData.append('height', this.scheduledata.height);
+            formData.append('weight', this.scheduledata.weight);
+            formData.append('bmi', this.scheduledata.bmi);
+            formData.append('notes', this.scheduledata.notes);
+            
+            axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
+            headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                console.log('Consultation scheduled successfully:', response.data);
+                this.modal_1 = false;
+                this.clientDetails();
+                this.resetForm();
+            })
+            .catch(error => {
+            console.error('Error:', error.response && error.response.data ? error.response.data : error);
+
+            });
+        },
+        formatDate(datetime) {
+            if (!datetime) return '';
+            const date = new Date(datetime);
+            return new Intl.DateTimeFormat('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC'
+            }).format(date);
+        },
+        resetForm() {
+            this.scheduledata = {
+            client: null,
+            height: '',
+            weight: '',
+            bmi: '',
+            no_of_consultation: '',
+            datetime: '',
+            type: '',
+            notes: ''
+            };
+        },
+        
+        handleNewClient(client)
+        {
+            console.log(client);
+            
+            this.selectedClientID = this.$route.params.id;
+            this.no_of_consultation = client.no_of_consultation + 1;
+            this.completed_consultation = client.completed_consultations;
+            console.log(this.selectedClientID);
+            this.modal_1 = true;
+        },
+        viewConsultDetails(client)
+        {
+            this.modal_2 = true;
+            this.no_of_consultation = client.no_of_consultation;
+            this.diet_preferences = client.dietitian_consultation_details.diet_preferences;
+            this.current_eating_pattern = client.dietitian_consultation_details.current_eating_pattern;
+            this.appetite_level = client.dietitian_consultation_details.appetite_level;
+            this.no_of_meals_per_day = client.dietitian_consultation_details.no_of_meals_per_day;
+            this.cook_at_home_out = client.dietitian_consultation_details.cook_at_home_out;
+            this.food_allergies = client.dietitian_consultation_details.food_allergies;
+            this.diet_before = client.dietitian_consultation_details.diet_before;
+            this.snacking_habits = client.dietitian_consultation_details.snacking_habits;
+            this.nutrient_deficiencies = client.dietitian_consultation_details.nutrient_deficiencies;
+            this.sleeping_duration = client.dietitian_consultation_details.sleeping_duration;
+            this.water_intake_per_day = client.dietitian_consultation_details.water_intake_per_day;
+            this.working_schedule = client.dietitian_consultation_details.working_schedule;
+            this.sleep_quality = client.dietitian_consultation_details.sleep_quality;
+            this.stress = client.dietitian_consultation_details.stress;
+            this.hobbies = client.dietitian_consultation_details.hobbies;
+            this.screen_time = client.dietitian_consultation_details.screen_time;
+            this.pre_existing_conditions = client.dietitian_consultation_details.pre_existing_conditions;
+            this.past_surgeries = client.dietitian_consultation_details.past_surgeries
+            this.medication = client.dietitian_consultation_details.medication;
+            this.menstrual_history = client.dietitian_consultation_details.menstrual_history;
+            this.pregnancy_history = client.dietitian_consultation_details.pregnancy_history;
+            this.breast_feeding = client.dietitian_consultation_details.breast_feeding;
+            this.supplements = client.dietitian_consultation_details.supplements;
+            this.medical_tests = client.dietitian_consultation_details.medical_tests;
+            this.height = client.monthly_diet_consultation_details.height;
+            this.weight = client.monthly_diet_consultation_details.weight;
+            this.bmi = client.monthly_diet_consultation_details.bmi;
+            this.notes = client.monthly_diet_consultation_details.notes;
+        },
+        async clientDetails(id)
+            {
+                const token = localStorage.getItem('token');
+                axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    this.client = response.data;
+                    console.log(response.data);
+                    
+                    // console.log('programs fetched successfully:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+                });
+            },
+    },
+    mounted()
+    {
+        this.consultationDetails();
+        const id = this.$route.params.id;
+        this.clientDetails(id);
+    }
+
+  }
+</script>
+<style>
+    .table-icons
+    {
+        margin: 6px;
+        font-size: 15px !important;
+    }
+    .header-sec
+    {
+        display: block ruby;
+    }
+    .create_btn
+    {
+        float: inline-end;
+    }
+    .table_button
+    {
+        font-size: 10px !important;
+        padding: 9px !important;
+    }
+</style>

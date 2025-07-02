@@ -8,14 +8,14 @@
     <!-- Navbar links -->
     <b-navbar-nav class="align-items-center ml-md-auto">
       <!-- This item dont have <b-nav-item> because item have data-action/data-target on tag <a>, wich we cant add -->
-      <li class="nav-item d-sm-none">
+      <!-- <li class="nav-item d-sm-none">
         <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
           <i class="ni ni-zoom-split-in"></i>
         </a>
-      </li>
+      </li> -->
     </b-navbar-nav>
     <b-navbar-nav class="align-items-center ml-auto ml-md-0">
-        <b-form class="navbar-search form-inline mr-sm-3"
+        <!-- <b-form class="navbar-search form-inline mr-sm-3"
             :class="{'navbar-search-dark': type === 'default', 'navbar-search-light': type === 'light'}"
             id="navbar-search-main">
         <b-form-group class="mb-0">
@@ -27,7 +27,7 @@
             </div>
           </b-input-group>
         </b-form-group>
-      </b-form>
+      </b-form> -->
       <base-dropdown menu-on-right
                      class="nav-item"
                      tag="li"
@@ -39,7 +39,7 @@
                     <img alt="Image placeholder" src="img/theme/team-4.jpg">
                   </span>
             <b-media-body class="ml-2 d-none d-lg-block">
-              <span class="mb-0 text-sm  font-weight-bold">John Snow</span>
+              <span class="mb-0 text-sm  font-weight-bold">{{ user_name }}</span>
             </b-media-body>
           </b-media>
         </a>
@@ -53,7 +53,7 @@
             <i class="ni ni-single-02"></i>
             <span>My profile</span>
           </b-dropdown-item>
-          <b-dropdown-item href="#!">
+          <!-- <b-dropdown-item href="#!">
             <i class="ni ni-settings-gear-65"></i>
             <span>Settings</span>
           </b-dropdown-item>
@@ -64,7 +64,7 @@
           <b-dropdown-item href="#!">
             <i class="ni ni-support-16"></i>
             <span>Support</span>
-          </b-dropdown-item>
+          </b-dropdown-item> -->
           <div class="dropdown-divider"></div>
           <b-dropdown-item href="#!" @click="logout">
             <i class="ni ni-user-run"></i>
@@ -136,7 +136,23 @@ export default {
           
         })
      
+    },
+    async userData()
+      {
+        const token = localStorage.getItem('token');
+        // console.log(localStorage.getItem('token'));
+        var userRes = await axios.get('http://127.0.0.1:8000/api/user/userDetails/', {
+          headers: { Authorization: `Token ${token}` }
+        });
+        console.log(userRes);
+        
+        this.user_name = userRes.data.name;
+        
+      }
+  },
+  mounted() {
+      
+      this.userData()
     }
-  }
 };
 </script>

@@ -1,49 +1,55 @@
 <template>
-    <base-header class="pb-6 pb-8 pt-5 pt-md-8 bg-gradient-success">
+    <base-header class=" pb-8 pt-5 pt-md-8 bg-gradient-success">
         <b-row>
             <b-col xl="3" md="6">
-                <stats-card title="Active Clients"
+                <router-link :to="{ name: 'clients/clients' }" class="no-underline">
+                    <stats-card title="Active Clients"
                       type="gradient-red"
-                      :sub-title='count_active_clients'
+                      :sub-title='String(count_active_clients)'
                       icon="ni ni-satisfied"
-                      class="mb-4">
+                      class="mb-4"
+                      @click="viewclients()">
 
-                    <template slot="footer">
-                    
-                    <span class="text-nowrap mr-2"></span>
-                    <span class="text-success">{{currentMonth}},{{currentYear}}</span>
-                    </template>
-                </stats-card>
+                        <template slot="footer">
+                            <span class="text-nowrap mr-2"></span>
+                            <span class="text-success">view</span>
+                        </template>
+                    </stats-card>
+                </router-link>
+                
+
             </b-col>
 
             <b-col xl="3" md="6">
-                <stats-card title="Upcoming Consultations"
+                <router-link :to="{ name: 'clients/upcoming_consultation_schedules' }" class="no-underline">
+                    <stats-card title="Upcoming Consultations"
                       type="gradient-orange"
-                      :sub-title='count_upcoming_consultation'
+                      :sub-title='String(count_upcoming_consultation)'
                       icon="ni ni-calendar-grid-58"
                       class="mb-4">
-
-                    <template slot="footer">
-                    
-                    <span class="text-nowrap mr-2"></span>
-                    <span class="text-success">{{currentMonth}},{{currentYear}}</span>
-                    </template>
-                </stats-card>
+                        <template slot="footer">
+                            <span class="text-nowrap mr-2"></span>
+                            <span class="text-success">view</span>
+                        </template>
+                    </stats-card>
+                </router-link>
+                
             </b-col>
 
             <b-col xl="3" md="6">
-                <stats-card title="Missed Consultation"
+                <router-link :to="{ name: 'clients/missed_consultation_schedules' }" class="no-underline">
+                    <stats-card title="Missed Consultation"
                       type="gradient-green"
-                      :sub-title='count_missed_consultation'
+                      :sub-title="count_missed_consultation"
                       icon="ni ni-time-alarm"
                       class="mb-4">
-
-                    <template slot="footer">
-                    
-                    <span class="text-nowrap mr-2"></span>
-                    <span class="text-success">{{currentMonth}},{{currentYear}}</span>
-                    </template>
-                </stats-card>
+                        <template slot="footer">
+                            <span class="text-nowrap mr-2"></span>
+                            <span class="text-success">view</span>
+                        </template>
+                    </stats-card>
+                </router-link>
+                
             </b-col>
         </b-row>
 
@@ -60,6 +66,7 @@
                 count_missed_consultation: 0,
             };
         },
+        
         methods:{
             async active_clients()
             {
@@ -93,6 +100,10 @@
                     console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
 
                 });
+            },
+            viewclients()
+            {
+
             }
         },
         mounted(){
@@ -101,3 +112,9 @@
         }
     }
 </script>
+<style>
+    .font_red
+    {
+        color: red;
+    }
+</style>
