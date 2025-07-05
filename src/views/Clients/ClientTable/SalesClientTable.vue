@@ -74,7 +74,7 @@
                         @click="assignTrainerView(scope.row)" class="table_button">
                         Assign
                         </base-button>
-                        <base-button  v-else type="success" size="small" class="table_button">Done</base-button>
+                        <base-button  v-else type="success" size="small" class="table_button">Assigned</base-button>
 
                         <base-button
                         type="primary"
@@ -134,6 +134,24 @@
                         </base-input>
                     </b-col>
                     <b-col lg="6">
+                        <base-input
+                        type="date"
+                        label="Program Start Date"
+                        v-model="assignedata.program_start_date"
+                        required
+                        >
+                        </base-input>
+                    </b-col>
+                    <b-col lg="6">
+                        <base-input
+                        type="date"
+                        label="Program End Date"
+                        v-model="assignedata.program_end_date"
+                        disabled
+                        >
+                        </base-input>
+                    </b-col>
+                    <b-col lg="6">
                         <base-input label="Choose Trainer">
                             <select class="form-control" v-model="assignedata.trainer" required>
                                 <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">{{ trainer.name }}</option>
@@ -173,7 +191,15 @@
       [Table.name]: Table,
       [TableColumn.name]: TableColumn
     },
+    watch: {
+        'assignedata.program_start_date': 'updateEndDate',
+        'assignedata.program_month': 'updateEndDate',
+    },
     data() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const yyyy = today.getFullYear();
       return {
         showModal: false,
         clients: [],
@@ -182,7 +208,9 @@
             trainer : '',
             dietitian: '',
             program_month: 3,
-            amount: 0
+            amount: 0,
+            program_start_date: `${yyyy}-${mm}-${dd}`,
+            program_end_date: ''
         },
         clientdetails:{
             current_acitivity_level: '',
@@ -193,13 +221,32 @@
         },
         selectedClientID: '',
         selectedProgram: '',
+        selectedProgramId: '',
         selectedProgramTime: '',
         trainers: [],
         dietitians: [],
         program_months: [1,3,6,9,12]
       };
     },
+    created() {
+        this.updateEndDate(); // call once to initialize program_end_date
+    },
     methods:{
+        updateEndDate() {
+            if (!this.assignedata.program_start_date || !this.assignedata.program_month) return;
+
+            const startDate = new Date(this.assignedata.program_start_date);
+            const monthsToAdd = parseInt(this.assignedata.program_month);
+
+            // Calculate new end date
+            const endDate = new Date(startDate.setMonth(startDate.getMonth() + monthsToAdd));
+
+            const yyyy = endDate.getFullYear();
+            const mm = String(endDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(endDate.getDate()).padStart(2, '0');
+
+            this.assignedata.program_end_date = `${yyyy}-${mm}-${dd}`;
+        },
         async newclientList(){
             const token = localStorage.getItem('token');
             axios.get('http://127.0.0.1:8000/api/user/salesclientList', {
@@ -222,6 +269,8 @@
             this.selectedClientID = client.id;
             this.selectedProgram = client.programs[0].program.name;
             this.selectedProgramTime = client.programs[0].preferred_time[0];
+            this.selectedProgramId = client.programs[0].program.id;
+            
         },
         async fetchTrainers()
         {
@@ -260,6 +309,9 @@
             formData.append('program_month', this.assignedata.program_month);
             formData.append('amount', this.assignedata.amount);
             formData.append('client_id', this.selectedClientID);
+            formData.append('program_start_date', this.assignedata.program_start_date);
+            formData.append('program_end_date', this.assignedata.program_end_date);
+            formData.append('program_id', this.selectedProgramId);
 
             axios.post('http://127.0.0.1:8000/api/user/assignTrainerDietitian', formData,{
             headers: { Authorization: `Token ${token}` }
@@ -284,7 +336,8 @@
         this.newclientList();
         this.fetchTrainers();
         this.fetchDietitians();
-
+        console.log(this.assignedata.program_start_date);
+        
     }
 
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="main-content bg-default">
+  <div class="main-content bg-default auth_bg">
     <base-nav
       v-model="showMenu"
       :transparent="true"
@@ -9,7 +9,7 @@
     >
       <div slot="brand" class="navbar-wrapper">
         <b-navbar-brand to="/">
-          <img src="img/brand/FF_logo.jpg">
+          <!-- <img src="img/brand/FF_logo.jpg"> -->
         </b-navbar-brand>
       </div>
 
@@ -46,7 +46,7 @@
       <b-container >
         <b-row align-v="center" class="justify-content-xl-between">
           <b-col xl="6">
-            <div class="copyright text-center text-xl-left text-muted">
+            <div class="copyright text-center text-xl-left text-muted copyright_font">
               © {{year}} <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">Frontline Fitness</a>
             </div>
           </b-col>
@@ -175,5 +175,13 @@
 
   .main-content .zoomOut {
     animation-name: zoomOut8;
+  }
+  .auth_bg
+  {
+    background-color: #00835c !important;
+  }
+  .copyright_font
+  {
+    color: #fff !important;
   }
 </style>

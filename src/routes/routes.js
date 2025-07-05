@@ -139,6 +139,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/biweekly_view/:id',
+        name: 'clients/biweekly_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientBiweeklyView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/attendance',
         name: 'clients/attendance',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientAttendanceView.vue'),

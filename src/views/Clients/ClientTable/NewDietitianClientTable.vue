@@ -19,10 +19,10 @@
                              prop="name">
             </el-table-column>
            
-            <el-table-column label="Email"
+            <!-- <el-table-column label="Email"
                              min-width="110px"
                              prop="email">
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column label="Phone"
                              min-width="80px"
@@ -65,7 +65,7 @@
 
                     <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
                     <base-button v-b-modal.modal-1
-                    v-if="scope.row.new_client && scope.row.trainer_first_consultation == 0"
+                    v-if="scope.row.diet_first_consultation == 0"
                     type="primary"
                     size="small"
                     @click="handleNewClient(scope.row)" class="table_button">
@@ -74,15 +74,15 @@
 
 
                     <base-button v-b-modal.modal-2
-                    v-else-if="scope.row.new_client && scope.row.diet_first_consultation == 2"
+                    v-else-if="scope.row.diet_first_consultation == 2"
                     type="warning"
                     size="small"
-                    @click="handleNewClient(scope.row)" class="table_button">
+                    @click="enterData(scope.row)" class="table_button">
                         Enter Data
                     </base-button>
 
                     <base-button
-                    v-else-if="scope.row.new_client && scope.row.diet_first_consultation == 3"
+                    v-else-if="scope.row.diet_first_consultation == 3"
                     type="success"
                     size="small"
                     class="table_button">
@@ -96,7 +96,7 @@
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
         </b-card-footer>
     </b-card>
-    <b-modal id="modal-1" title="Schedule First Consultation" hide-footer>
+    <b-modal id="modal-1" title="Schedule First Consultation" hide-footer v-if="modal_1">
         <b-form @submit.prevent="schedule">
             <h6 class="heading-small text-muted mb-2">Schedule First Consulation</h6>
             <div class="pl-lg-12">
@@ -120,7 +120,7 @@
         </b-form>
     </b-modal>
 
-    <b-modal id="modal-2" title="Details of Client" hide-footer>
+    <b-modal id="modal-2" title="Details of Client" hide-footer v-if="modal_2">
         <b-form @submit.prevent="enterClientDetails">
             <div v-show="dietary_div">
                 <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
@@ -395,6 +395,8 @@
     },
     data() {
       return {
+        modal_1: false,
+        modal_2: false,
         clients: [],
         currentPage: 1,
         scheduledata:{
@@ -483,7 +485,9 @@
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
-            console.log('Program created successfully:', response.data);
+                console.log('Scheduled successfully:', response.data);
+                this.modal_1 = false;
+                this.newclientList();
             })
             .catch(error => {
             console.error('Error creating program:', error.response && error.response.data ? error.response.data : error);
@@ -526,7 +530,9 @@
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
-            console.log('data created successfully:', response.data);
+                console.log('data created successfully:', response.data);
+                this.modal_2 = false;
+                this.newclientList();
             })
             .catch(error => {
             console.error('Error creating program:', error.response && error.response.data ? error.response.data : error);
@@ -537,6 +543,12 @@
         {
             this.selectedClientID = client.id;
             console.log(this.selectedClientID);
+            this.modal_1 = true;
+        },
+        enterData(client)
+        {
+            this.selectedClientID = client.id;
+            this.modal_2 = true;
         }
     },
     mounted()

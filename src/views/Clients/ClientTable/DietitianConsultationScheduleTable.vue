@@ -2,7 +2,7 @@
     <div>
     <b-card no-body>
         <b-card-header class="border-0 header-sec">
-            <h3 class="mb-0">Consulation Schedule List</h3>
+            <h3 class="mb-0">First Consulation Schedule List</h3>
             <!-- <b-button  variant="success" class="create_btn" @click="redirect()">Create Program</b-button> -->
         </b-card-header>
        
@@ -29,12 +29,12 @@
                              prop="client.programs[0].program.name">
             </el-table-column>
 
-            <el-table-column label="Completed Consultation"
+            <!-- <el-table-column label="Completed Consultation"
                              min-width="100px"
                              prop="completed_consultations">
-            </el-table-column>
+            </el-table-column> -->
 
-            <el-table-column label="Next Consultation Date"
+            <el-table-column label="Consultation Date"
                              min-width="100px"
                              prop="last_consultation_datetime">
             </el-table-column>

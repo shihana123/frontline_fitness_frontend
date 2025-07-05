@@ -88,11 +88,17 @@
         <!-- Trainer -->
 
         <!-- Dietitian -->
-         <base-button v-if="role_id == 'Dietitian'"
+        <base-button v-if="role_id == 'Dietitian'"
             type="primary"
             size="small"
             class="table_button" @click="dietView(client[0].id)">
             Weekly Diet Plan
+        </base-button>
+        <base-button v-if="role_id == 'Dietitian'"
+            type="primary"
+            size="small"
+            class="table_button" @click="biweeklyView(client[0].id)">
+            Bi-weekly Updates
         </base-button>
         <!-- Dietitian -->
 
@@ -154,6 +160,10 @@
             dietView(client_id)
             {
               this.$router.push({ name: 'clients/diet_view', params: { id: client_id } });
+            },
+            biweeklyView(client_id)
+            {
+              this.$router.push({ name: 'clients/biweekly_view', params: { id: client_id } });
             },
             ClientAttendanceView(client_id)
             {

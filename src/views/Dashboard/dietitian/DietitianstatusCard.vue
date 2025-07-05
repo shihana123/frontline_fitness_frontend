@@ -35,13 +35,28 @@
                 </router-link>
                 
             </b-col>
-
             <b-col xl="3" md="6">
                 <router-link :to="{ name: 'clients/missed_consultation_schedules' }" class="no-underline">
                     <stats-card title="Missed Consultation"
                       type="gradient-green"
-                      :sub-title="count_missed_consultation"
+                      :sub-title="String(count_missed_consultation)"
                       icon="ni ni-time-alarm"
+                      class="mb-4">
+                        <template slot="footer">
+                            <span class="text-nowrap mr-2"></span>
+                            <span class="text-success">view</span>
+                        </template>
+                    </stats-card>
+                </router-link>
+                
+            </b-col>
+
+            <b-col xl="3" md="6">
+                <router-link :to="{ name: 'clients/missed_consultation_schedules' }" class="no-underline">
+                    <stats-card title="Upcoming Bi-Weekly Updations"
+                      type="gradient-blue"
+                      :sub-title="String(count_biweekly_updations)"
+                      icon="ni ni-watch-time"
                       class="mb-4">
                         <template slot="footer">
                             <span class="text-nowrap mr-2"></span>
@@ -64,6 +79,7 @@
                 count_active_clients : 0,
                 count_upcoming_consultation: 0,
                 count_missed_consultation: 0,
+                count_biweekly_updations: 0
             };
         },
         
@@ -101,6 +117,22 @@
 
                 });
             },
+            async biweekly_updation()
+            {
+                const token = localStorage.getItem('token');
+                await axios.get(`http://127.0.0.1:8000/api/user/fetchupsomingbiweeklyUpdation/`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.count_biweekly_updations = response.data.upcoming_biweekly_count;
+                    
+                })
+                .catch(error => {
+                    console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+                });
+            },
             viewclients()
             {
 
@@ -109,6 +141,7 @@
         mounted(){
             this.active_clients();
             this.consultation_details();
+            this.biweekly_updation();
         }
     }
 </script>
