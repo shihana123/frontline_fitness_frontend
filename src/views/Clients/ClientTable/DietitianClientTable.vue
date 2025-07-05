@@ -11,37 +11,37 @@
                   :data="clients">
 
             <el-table-column label="ID"
-                             min-width="90px"
+                             
                              prop="client_id">
             </el-table-column>
             <el-table-column label="Name"
-                             min-width="90px"
+                             
                              prop="name">
             </el-table-column>
            
-            <el-table-column label="Email"
-                             min-width="110px"
+            <!-- <el-table-column label="Email"
+                             
                              prop="email">
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column label="Phone"
-                             min-width="80px"
+                             
                              prop="phone">
             </el-table-column>
 
             <el-table-column label="Program"
-                             min-width="100px"
+                            
                              prop="programs[0].program.name">
             </el-table-column>
 
-            <el-table-column label="Workout Start Date"
-                             min-width="90px"
+            <!-- <el-table-column label="Workout Start Date"
+                             
                              prop="workout_start_date">
-            </el-table-column>
+            </el-table-column> -->
            
             <el-table-column label="Action"
                              prop="completion"
-                             min-width="95px">
+                             >
                 <template #default="scope">
                     <base-button
                     type="primary"

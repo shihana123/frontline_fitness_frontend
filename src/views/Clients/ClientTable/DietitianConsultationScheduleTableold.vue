@@ -196,9 +196,9 @@
             this.scheduledata.bmi = '';
             }
         },
-        async meetingLists(client_id){
+        async consultationList(){
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/dietclientMeetingList/${client_id}`, {
+            axios.get('http://127.0.0.1:8000/api/user/dietconsulationscheduleList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -264,8 +264,7 @@
     },
     mounted()
     {
-        const id = this.$route.params.id;
-        this.meetingLists(client_id);
+        this.consultationList();
     }
 
   }

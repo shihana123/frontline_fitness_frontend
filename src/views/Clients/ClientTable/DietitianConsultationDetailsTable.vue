@@ -10,14 +10,13 @@
                   :data="consultations">
             <el-table-column label="Consultation" min-width="90px">
                 <template v-slot="scope">
-                    Consultation {{ scope.row.no_of_consultation }}
+                    Meeting - Day {{ scope.row.day_no }}
                 </template>
             </el-table-column>
-          
 
             <el-table-column label="Date" min-width="150px">
                 <template v-slot="scope">
-                    {{ formatDate(scope.row.datetime) }}
+                    {{ scope.row.meeting_date }}
                 </template>
             </el-table-column>
 
@@ -33,13 +32,20 @@
                              prop="completion"
                              min-width="95px">
                 <template #default="scope">
-
+                    {{ scope.row.meeting_type }}
                     <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
                     <base-button v-b-modal.modal-2
                     type="primary"
                     size="small"
-                    @click="viewConsultDetails(scope.row)" class="table_button" v-if="scope.row.status">
+                    @click="viewConsultDetails(scope.row)" class="table_button" v-if="scope.row.meeting_type == 'day_1'">
                     View
+                    </base-button>
+
+                    <base-button v-b-modal.modal-1
+                    type="primary"
+                    size="small"
+                    @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'">
+                    Update
                     </base-button>
 
                     <base-button v-b-modal.modal-1
@@ -57,7 +63,142 @@
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
         </b-card-footer>
     </b-card>
-    <b-modal id="modal-1" title="Schedule Next Consultation" hide-footer v-if="modal_1">
+    <b-modal id="modal-1" title="Client Details" hide-footer v-if="modal_1">
+        <b-form @submit.prevent="dataUpload">
+            <h6 class="heading-small text-muted mb-2">Upload Diet Plan</h6>
+            <div class="pl-lg-12" v-if="consult_data">
+                <b-row >
+                    <b-col lg="12">
+                        <base-input
+                        type="file"
+                        label="Diet Plan"
+                        placeholder="Diet Plan"
+                        v-model="scheduledata.diet_plan"
+                        requied
+                        @change="handleFileUpload($event, 'diet_chart')"
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                </b-row>
+            </div>
+            <h6 class="heading-small text-muted mb-2">Measurement Details</h6>
+            <div>
+                <b-row>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Chest (cm)"
+                        placeholder="Chest (cm)"
+                        v-model="scheduledata.chest"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Right Arm (cm)"
+                        placeholder="Right Arm (cm)"
+                        v-model="scheduledata.right_arm"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Left Arm (cm)"
+                        placeholder="Left Arm (cm)"
+                        v-model="scheduledata.left_arm"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Waist (cm)"
+                        placeholder="Waist (cm)"
+                        v-model="scheduledata.waist"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Hip (cm)"
+                        placeholder="Hip (cm)"
+                        v-model="scheduledata.hip"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Right Thigh (cm)"
+                        placeholder="Right Thigh (cm)"
+                        v-model="scheduledata.right_thigh"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Left Thigh (cm)"
+                        placeholder="Left Thigh (cm)"
+                        v-model="scheduledata.left_thigh"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Right Calf (cm)"
+                        placeholder="Right Calf (cm)"
+                        v-model="scheduledata.right_calf"
+                        required
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input
+                        type="text"
+                        label="Left Calf (cm)"
+                        placeholder="Left Calf (cm)"
+                        v-model="scheduledata.left_calf"
+                        required
+                        >
+                        </base-input>   
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input label="Notes">
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="scheduledata.notes" required></textarea>
+                        </base-input>
+                        
+                    </b-col>
+                    <div>
+                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
+                        <b-button type="button" @click="showSchedule"  variant="primary">Save</b-button>
+                    </div> 
+                </b-row>
+            </div>
+            
+        </b-form>
+    </b-modal>
+    <b-modal id="modal-3" title="Schedule Next Consultation" hide-footer v-if="modal_1">
         <b-form @submit.prevent="schedule">
             <h6 class="heading-small text-muted mb-2">Schedule Next Consulation</h6>
             <div class="pl-lg-12" v-if="consult_data">
@@ -130,8 +271,10 @@
         </b-form>
     </b-modal>
 
+    
+
     <b-modal size="lg" id="modal-2" title="Details of Consultation" hide-footer v-if="modal_2">
-        <div class="pl-lg-6" v-if="no_of_consultation == 1">
+        <div class="pl-lg-6">
             <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
             <div class="pl-lg-12">
                 <b-row>
@@ -150,7 +293,7 @@
                 </b-row>
             </div>
         </div>
-        <div class="pl-lg-6" v-if="no_of_consultation == 1">
+        <div class="pl-lg-6">
             <h6 class="heading-small text-muted mb-2">Lifestyle Pattern</h6>
             <div class="pl-lg-12">
                 <b-row>
@@ -167,7 +310,7 @@
             </div>
         </div>
 
-        <div class="pl-lg-6" v-if="no_of_consultation == 1">
+        <div class="pl-lg-6">
             <h6 class="heading-small text-muted mb-2">Medical History</h6>
             <div class="pl-lg-12">
                 <b-row>
@@ -185,7 +328,7 @@
             </div>
         </div>
 
-        <div class="pl-lg-6" >
+        <!-- <div class="pl-lg-6" >
             <h6 class="heading-small text-muted mb-2">Details</h6>
             <div class="pl-lg-12">
                 <b-row>
@@ -197,7 +340,7 @@
                     </b-col>
                 </b-row>
             </div>
-        </div>
+        </div> -->
         
     </b-modal>
    
@@ -223,15 +366,18 @@
         consultations: [],
         currentPage: 1,
         no_of_consultation: '',
+        meeting_id: null,
         scheduledata:{
-            scheduledate : '',
-            type: 'dietitian',
-            no_of_consultation: '',
-            height: '',
-            weight: '',
-            bmi: 0,
-            notes: ''
-
+            chest : 0,
+            right_arm: 0,
+            left_arm: 0,
+            waist: 0,
+            hip: 0,
+            left_thigh: 0,
+            right_thigh: 0,
+            right_calf: 0,
+            left_calf: 0,
+            notes: '',
         },
         selectedClientID: '',
         completed_consultation: 0,
@@ -271,6 +417,9 @@
     'scheduledata.weight': 'calculateBMI'
     },
     methods:{
+        handleFileUpload(event, field) {
+            this.scheduledata[field] = event.target.files[0];
+        },
         showSchedule()
         {
             this.consulat_schedule = true;
@@ -295,7 +444,7 @@
         },
         async consultationDetails(){
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/dietconsulationDetails/${this.$route.params.id}`, {
+            axios.get(`http://127.0.0.1:8000/api/user/dietclientMeetingList/${this.$route.params.id}`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -309,22 +458,28 @@
 
             });
         },
-        schedule()
+        dataUpload()
         {
             
             const token = localStorage.getItem('token');
             const formData = new FormData();
-            formData.append('datetime', this.scheduledata.scheduledate);
-            formData.append('client', this.selectedClientID);
-            formData.append('type', this.scheduledata.type);
-            formData.append('no_of_consultation', this.no_of_consultation);
-            formData.append('height', this.scheduledata.height);
-            formData.append('weight', this.scheduledata.weight);
-            formData.append('bmi', this.scheduledata.bmi);
-            formData.append('notes', this.scheduledata.notes);
+
+            formData.append('chest', this.scheduledata.chest);
+            formData.append('right_arm', this.right_arm);
+            formData.append('left_arm', this.scheduledata.left_arm);
+            formData.append('waist', this.waist);
+            formData.append('hip', this.scheduledata.hip);
+            formData.append('left_thigh', this.scheduledata.left_thigh);
+            formData.append('right_thigh', this.scheduledata.right_thigh);
+            formData.append('right_calf', this.scheduledata.right_calf);
+            formData.append('left_calf', this.scheduledata.left_calf);
+            formData.append('meeting_id', this.meeting_id);
+            if (this.scheduledata.diet_chart) {
+                formData.append('diet_chart', this.scheduledata.diet_chart);
+            }
             
-            axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
-            headers: { Authorization: `Token ${token}` }
+            axios.post('http://127.0.0.1:8000/api/user/dietMeetingUpdations', formData,{
+                headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
                 console.log('Consultation scheduled successfully:', response.data);
@@ -373,38 +528,57 @@
             console.log(this.selectedClientID);
             this.modal_1 = true;
         },
+        viewDay3Modal(client)
+        {
+            console.log(client.id);
+            this.meeting_id = client.id;
+            this.modal_1 = true;
+        },
         viewConsultDetails(client)
         {
-            this.modal_2 = true;
-            this.no_of_consultation = client.no_of_consultation;
-            this.diet_preferences = client.dietitian_consultation_details.diet_preferences;
-            this.current_eating_pattern = client.dietitian_consultation_details.current_eating_pattern;
-            this.appetite_level = client.dietitian_consultation_details.appetite_level;
-            this.no_of_meals_per_day = client.dietitian_consultation_details.no_of_meals_per_day;
-            this.cook_at_home_out = client.dietitian_consultation_details.cook_at_home_out;
-            this.food_allergies = client.dietitian_consultation_details.food_allergies;
-            this.diet_before = client.dietitian_consultation_details.diet_before;
-            this.snacking_habits = client.dietitian_consultation_details.snacking_habits;
-            this.nutrient_deficiencies = client.dietitian_consultation_details.nutrient_deficiencies;
-            this.sleeping_duration = client.dietitian_consultation_details.sleeping_duration;
-            this.water_intake_per_day = client.dietitian_consultation_details.water_intake_per_day;
-            this.working_schedule = client.dietitian_consultation_details.working_schedule;
-            this.sleep_quality = client.dietitian_consultation_details.sleep_quality;
-            this.stress = client.dietitian_consultation_details.stress;
-            this.hobbies = client.dietitian_consultation_details.hobbies;
-            this.screen_time = client.dietitian_consultation_details.screen_time;
-            this.pre_existing_conditions = client.dietitian_consultation_details.pre_existing_conditions;
-            this.past_surgeries = client.dietitian_consultation_details.past_surgeries
-            this.medication = client.dietitian_consultation_details.medication;
-            this.menstrual_history = client.dietitian_consultation_details.menstrual_history;
-            this.pregnancy_history = client.dietitian_consultation_details.pregnancy_history;
-            this.breast_feeding = client.dietitian_consultation_details.breast_feeding;
-            this.supplements = client.dietitian_consultation_details.supplements;
-            this.medical_tests = client.dietitian_consultation_details.medical_tests;
-            this.height = client.monthly_diet_consultation_details.height;
-            this.weight = client.monthly_diet_consultation_details.weight;
-            this.bmi = client.monthly_diet_consultation_details.bmi;
-            this.notes = client.monthly_diet_consultation_details.notes;
+            const token = localStorage.getItem('token');
+            axios.get(`http://127.0.0.1:8000/api/user/dietfirstconsulationdetails/${this.$route.params.id}`,{
+                headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                console.log(response);
+                
+                this.no_of_consultation = response.data.no_of_consultation;
+                this.diet_preferences = response.data.diet_preferences;
+                this.current_eating_pattern = response.data.current_eating_pattern;
+                this.appetite_level = response.data.appetite_level;
+                this.no_of_meals_per_day = response.data.no_of_meals_per_day;
+                this.cook_at_home_out = response.data.cook_at_home_out;
+                this.food_allergies = response.data.food_allergies;
+                this.diet_before = response.data.diet_before;
+                this.snacking_habits = response.data.snacking_habits;
+                this.nutrient_deficiencies = response.data.nutrient_deficiencies;
+                this.sleeping_duration = response.data.sleeping_duration;
+                this.water_intake_per_day = response.data.water_intake_per_day;
+                this.working_schedule = response.data.working_schedule;
+                this.sleep_quality = response.data.sleep_quality;
+                this.stress = response.data.stress;
+                this.hobbies = response.data.hobbies;
+                this.screen_time = response.data.screen_time;
+                this.pre_existing_conditions = response.data.pre_existing_conditions;
+                this.past_surgeries = response.data.past_surgeries
+                this.medication = response.data.medication;
+                this.menstrual_history = response.data.menstrual_history;
+                this.pregnancy_history = response.data.pregnancy_history;
+                this.breast_feeding = response.data.breast_feeding;
+                this.supplements = response.data.supplements;
+                this.medical_tests = response.data.medical_tests;
+                this.modal_2 = true;
+                // this.height = client.monthly_diet_consultation_details.height;
+                // this.weight = client.monthly_diet_consultation_details.weight;
+                // this.bmi = client.monthly_diet_consultation_details.bmi;
+                // this.notes = client.monthly_diet_consultation_details.notes;
+            })
+            .catch(error => {
+            console.error('Error:', error.response && error.response.data ? error.response.data : error);
+
+            });
+            
         },
         async clientDetails(id)
             {
