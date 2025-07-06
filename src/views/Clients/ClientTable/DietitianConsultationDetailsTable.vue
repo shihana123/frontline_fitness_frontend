@@ -32,7 +32,6 @@
                              prop="completion"
                              min-width="95px">
                 <template #default="scope">
-                    {{ scope.row.meeting_type }}
                     <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
                     <base-button v-b-modal.modal-2
                     type="primary"
@@ -42,18 +41,67 @@
                     </base-button>
 
                     <base-button v-b-modal.modal-1
-                    type="primary"
+                    type="warning"
                     size="small"
-                    @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'">
+                    @click="updateDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'  && scope.row.status == false">
                     Update
                     </base-button>
 
-                    <base-button v-b-modal.modal-1
+                    <base-button v-b-modal.modal-3
+                    type="primary"
+                    size="small"
+                    @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'  && scope.row.status == true">
+                    View
+                    </base-button>
+
+                    <base-button v-b-modal.modal-3
+                    type="primary"
+                    size="small"
+                    @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.need_meeting == 2" disabled>
+                    No Meeting 
+                    </base-button>
+                    
+                    <base-button v-b-modal.modal-4
                     type="warning"
                     size="small"
-                    @click="handleNewClient(scope.row)" class="table_button" v-else>
+                    @click="updateDay10Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.status == false">
                     Update
                     </base-button>
+
+                    <base-button v-b-modal.modal-5
+                    type="primary"
+                    size="small"
+                    @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.status == true">
+                    View
+                    </base-button>
+
+                    <base-button v-b-modal.modal-6
+                    type="warning"
+                    size="small"
+                    @click="viewTDCModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == false">
+                    Update
+                    </base-button>
+
+                    <base-button v-b-modal.modal-
+                    type="warning"
+                    size="small"
+                    @click="viewTDCModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'Renewal'  && scope.row.status == false">
+                    Update
+                    </base-button>  
+
+                    <base-button v-b-modal.modal-5
+                    type="primary"
+                    size="small"
+                    @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == true">
+                    View
+                    </base-button> 
+
+                    <base-button v-b-modal.modal-5
+                    type="primary"
+                    size="small"
+                    @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'Renewal'  && scope.row.status == true">
+                    View
+                    </base-button> 
 
                 </template>
             </el-table-column>
@@ -66,7 +114,7 @@
     <b-modal id="modal-1" title="Client Details" hide-footer v-if="modal_1">
         <b-form @submit.prevent="dataUpload">
             <h6 class="heading-small text-muted mb-2">Upload Diet Plan</h6>
-            <div class="pl-lg-12" v-if="consult_data">
+            <div class="pl-lg-12">
                 <b-row >
                     <b-col lg="12">
                         <base-input
@@ -191,14 +239,210 @@
                     </b-col>
                     <div>
                         <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
-                        <b-button type="button" @click="showSchedule"  variant="primary">Save</b-button>
+                        <b-button type="submit" variant="primary">Save</b-button>
                     </div> 
                 </b-row>
             </div>
             
         </b-form>
     </b-modal>
-    <b-modal id="modal-3" title="Schedule Next Consultation" hide-footer v-if="modal_1">
+    <b-modal size="lg" id="modal-2" title="Details of Client" hide-footer v-if="modal_2">
+        <div class="pl-lg-6">
+            <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Diet Preferrence : <span>{{ diet_preferences }}</span></h5>
+                        <h5>Current Eating Pattern : <span>{{ current_eating_pattern }}</span></h5>
+                        <h5>Appetite Level : <span>{{ appetite_level }}</span></h5>
+                        <h5>No.of Meals per Day : <span>{{ no_of_meals_per_day }}</span></h5>
+                        <h5>Cooking at Home/Eat Out : <span>{{ cook_at_home_out }}</span></h5>
+                        <h5>Food Allergies and Intolerance : <span>{{ food_allergies }}</span></h5>
+                        <h5>Specific Diets Tried Before : <span>{{ diet_before }}</span></h5>
+                        <h5>Snacking Habits : <span>{{ snacking_habits }}</span></h5>
+                        <h5>Nutrient Deficiencies : <span>{{ nutrient_deficiencies }}</span></h5>
+                        
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+        <div class="pl-lg-6">
+            <h6 class="heading-small text-muted mb-2">Lifestyle Pattern</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Sleeping Duration : <span>{{ sleeping_duration }}</span></h5>
+                        <h5>Total Water Intake per Day : <span>{{ water_intake_per_day }}</span></h5>
+                        <h5>Working Schedule : <span>{{ working_schedule }}</span></h5>
+                        <h5>Sleep Quality : <span>{{ sleep_quality }}</span></h5>
+                        <h5>Stress : <span>{{ stress }}</span></h5>
+                        <h5>Hobbies : <span>{{ hobbies }}</span></h5>
+                        <h5>Screen Time : <span>{{ screen_time }}</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+
+        <div class="pl-lg-6">
+            <h6 class="heading-small text-muted mb-2">Medical History</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Pre-existing conditions : <span>{{ pre_existing_conditions }}</span></h5>
+                        <h5>Past Surgeries : <span>{{ past_surgeries }}</span></h5>
+                        <h5>Medications : <span>{{ medication }}</span></h5>
+                        <h5>Menstrual History : <span>{{ menstrual_history }}</span></h5>
+                        <h5>Pregnancy History : <span>{{ pregnancy_history }}</span></h5>
+                        <h5>Breastfeeding : <span>{{ breast_feeding }}</span></h5>
+                        <h5>Supplements : <span>{{ supplements }}</span></h5>
+                        <h5>Medical Tests : <span>{{ medical_tests }}</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+
+        <!-- <div class="pl-lg-6" >
+            <h6 class="heading-small text-muted mb-2">Details</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Height : <span>{{ height }} cm</span></h5>
+                        <h5>Weight : <span>{{ weight }} kg</span></h5>
+                        <h5>BMI : <span>{{ bmi }}</span></h5>
+                        <h5>Notes : <span>{{ notes }}</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div> -->
+        
+    </b-modal>
+    <b-modal size="lg" id="modal-3" title="Details of Client" hide-footer v-if="modal_3">
+        <div class="pl-lg-6">
+            <h6 class="heading-small text-muted mb-2">Measurements</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Chest : <span>{{ meetingDetails.measurements.chest }} cm</span></h5>
+                        <h5>Right Arm : <span>{{ meetingDetails.measurements.right_arm }} cm</span></h5>
+                        <h5>Left Arm : <span>{{ meetingDetails.measurements.left_arm }} cm</span></h5>
+                        <h5>Waist : <span>{{ meetingDetails.measurements.waist }} cm</span></h5>
+                        <h5>Hip : <span>{{ meetingDetails.measurements.hip }} cm</span></h5>
+                        <h5>Right Thigh : <span>{{ meetingDetails.measurements.right_thigh }} cm</span></h5>
+                        <h5>Left Thigh : <span>{{ meetingDetails.measurements.left_thigh }} cm</span></h5>
+                        <h5>Right Calf : <span>{{ meetingDetails.measurements.right_calf }} cm</span></h5>
+                        <h5>Left Calf : <span>{{ meetingDetails.measurements.left_calf }} cm</span></h5>
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+        <div class="pl-lg-6">
+            <h6 class="heading-small text-muted mb-2">Diet Plan</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Diet Chart : <span><base-button size="small" class="table_button">view dietchart</base-button></span></h5>
+                        <h5>Notes : <span>{{ meetingDetails.diet_details.notes }}</span></h5>
+                        
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+    </b-modal>
+    <b-modal id="modal-4" title="Client Details" hide-footer v-if="modal_4">
+        <b-form @submit.prevent="dietdataUpload">
+            <h6 class="heading-small text-muted mb-2">Upload Diet Plan</h6>
+            <div class="pl-lg-12">
+                <b-row >
+                    <b-col lg="12">
+                        <base-input
+                        type="file"
+                        label="Diet Plan"
+                        placeholder="Diet Plan"
+                        v-model="scheduledata.diet_plan"
+                        requied
+                        @change="handleFileUpload($event, 'diet_chart')"
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                </b-row>
+            </div>
+            <div>
+                <b-row>
+                    <b-col lg="12">
+                        <base-input label="Notes">
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="scheduledata.notes" required></textarea>
+                        </base-input>
+                        
+                    </b-col>
+                    <div>
+                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
+                        <b-button type="submit" variant="primary">Save</b-button>
+                    </div> 
+                </b-row>
+            </div>
+            
+        </b-form>
+    </b-modal>
+    <b-modal size="md" id="modal-5" title="Details of Client" hide-footer v-if="modal_5">
+
+        <div class="pl-lg-6">
+            <h6 class="heading-small text-muted mb-2">Diet Plan</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <h5>Diet Chart : <span><base-button size="small" class="table_button">view dietchart</base-button></span></h5>
+                        <h5>Notes : <span>{{ meetingDetails.notes }}</span></h5>
+                        
+                    </b-col>
+                </b-row>
+            </div>
+        </div>
+    </b-modal>
+    <b-modal id="modal-6" title="Client Details" hide-footer v-if="modal_6">
+        <b-form @submit.prevent="TDCdataUpload">
+            <h6 class="heading-small text-muted mb-2">Upload Diet Plan</h6>
+            <div class="pl-lg-12">
+                <b-row>
+                    <b-col lg="12">
+                        <b-form-checkbox
+                            id="checkbox-1"
+                            v-model="showDietChart"
+                            name="checkbox-1"
+                            :value="true"
+                            :unchecked-value="false"
+                            >
+                            Change in DietChart
+                        </b-form-checkbox>
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input label="Notes">
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="scheduledata.notes" required></textarea>
+                        </base-input>
+                        
+                    </b-col>
+                    <br>
+                    <b-col lg="12" v-if="showDietChart">
+                        <base-input
+                        type="file"
+                        label="Diet Plan"
+                        placeholder="Diet Plan"
+                        v-model="scheduledata.diet_plan"
+                        @change="handleFileUpload($event, 'diet_chart')"
+                        >
+                        </base-input>
+                        
+                    </b-col>
+                </b-row>
+                <div>
+                        <b-button variant="secondary" @click="$bvModal.hide('modal-6')">Cancel</b-button>
+                        <b-button type="submit" variant="primary">Save</b-button>
+                    </div> 
+            </div>
+          
+        </b-form>
+    </b-modal>
+    <b-modal id="modal-3-old" title="Schedule Next Consultation" hide-footer v-if="modal_1">
         <b-form @submit.prevent="schedule">
             <h6 class="heading-small text-muted mb-2">Schedule Next Consulation</h6>
             <div class="pl-lg-12" v-if="consult_data">
@@ -273,76 +517,7 @@
 
     
 
-    <b-modal size="lg" id="modal-2" title="Details of Consultation" hide-footer v-if="modal_2">
-        <div class="pl-lg-6">
-            <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
-            <div class="pl-lg-12">
-                <b-row>
-                    <b-col lg="12">
-                        <h5>Diet Preferrence : <span>{{ diet_preferences }}</span></h5>
-                        <h5>Current Eating Pattern : <span>{{ current_eating_pattern }}</span></h5>
-                        <h5>Appetite Level : <span>{{ appetite_level }}</span></h5>
-                        <h5>No.of Meals per Day : <span>{{ no_of_meals_per_day }}</span></h5>
-                        <h5>Cooking at Home/Eat Out : <span>{{ cook_at_home_out }}</span></h5>
-                        <h5>Food Allergies and Intolerance : <span>{{ food_allergies }}</span></h5>
-                        <h5>Specific Diets Tried Before : <span>{{ diet_before }}</span></h5>
-                        <h5>Snacking Habits : <span>{{ snacking_habits }}</span></h5>
-                        <h5>Nutrient Deficiencies : <span>{{ nutrient_deficiencies }}</span></h5>
-                        
-                    </b-col>
-                </b-row>
-            </div>
-        </div>
-        <div class="pl-lg-6">
-            <h6 class="heading-small text-muted mb-2">Lifestyle Pattern</h6>
-            <div class="pl-lg-12">
-                <b-row>
-                    <b-col lg="12">
-                        <h5>Sleeping Duration : <span>{{ sleeping_duration }}</span></h5>
-                        <h5>Total Water Intake per Day : <span>{{ water_intake_per_day }}</span></h5>
-                        <h5>Working Schedule : <span>{{ working_schedule }}</span></h5>
-                        <h5>Sleep Quality : <span>{{ sleep_quality }}</span></h5>
-                        <h5>Stress : <span>{{ stress }}</span></h5>
-                        <h5>Hobbies : <span>{{ hobbies }}</span></h5>
-                        <h5>Screen Time : <span>{{ screen_time }}</span></h5>
-                    </b-col>
-                </b-row>
-            </div>
-        </div>
-
-        <div class="pl-lg-6">
-            <h6 class="heading-small text-muted mb-2">Medical History</h6>
-            <div class="pl-lg-12">
-                <b-row>
-                    <b-col lg="12">
-                        <h5>Pre-existing conditions : <span>{{ pre_existing_conditions }}</span></h5>
-                        <h5>Past Surgeries : <span>{{ past_surgeries }}</span></h5>
-                        <h5>Medications : <span>{{ medication }}</span></h5>
-                        <h5>Menstrual History : <span>{{ menstrual_history }}</span></h5>
-                        <h5>Pregnancy History : <span>{{ pregnancy_history }}</span></h5>
-                        <h5>Breastfeeding : <span>{{ breast_feeding }}</span></h5>
-                        <h5>Supplements : <span>{{ supplements }}</span></h5>
-                        <h5>Medical Tests : <span>{{ medical_tests }}</span></h5>
-                    </b-col>
-                </b-row>
-            </div>
-        </div>
-
-        <!-- <div class="pl-lg-6" >
-            <h6 class="heading-small text-muted mb-2">Details</h6>
-            <div class="pl-lg-12">
-                <b-row>
-                    <b-col lg="12">
-                        <h5>Height : <span>{{ height }} cm</span></h5>
-                        <h5>Weight : <span>{{ weight }} kg</span></h5>
-                        <h5>BMI : <span>{{ bmi }}</span></h5>
-                        <h5>Notes : <span>{{ notes }}</span></h5>
-                    </b-col>
-                </b-row>
-            </div>
-        </div> -->
-        
-    </b-modal>
+    
    
 </div>
 </template>
@@ -357,10 +532,22 @@
       [Table.name]: Table,
       [TableColumn.name]: TableColumn
     },
+    watch: {
+        showDietChart(val) {
+            if (!val) {
+            this.scheduledata.diet_plan = null;
+            }
+        }
+    },
     data() {
       return {
         modal_1: false,
         modal_2: false,
+        modal_3: false,
+        modal_4: false,
+        modal_5: false,
+        modal_6: false,
+        showDietChart: false,
         consulat_schedule: false,
         consult_data: true,
         consultations: [],
@@ -383,33 +570,34 @@
         completed_consultation: 0,
         client: [],
         diet_preferences: '',
-            current_eating_pattern: '',
-            appetite_level: '',
-            no_of_meals_per_day: '',
-            cook_at_home_out: '',
-            food_allergies: '',
-            diet_before: '',
-            snacking_habits: '',
-            nutrient_deficiencies: '',
-            sleeping_duration: '',
-            water_intake_per_day: '',
-            working_schedule: '',
-            sleep_quality: '',
-            stress: '',
-            hobbies: '',
-            screen_time: '',
-            pre_existing_conditions: '',
-            past_surgeries: '',
-            medication: '',
-            menstrual_history: '',
-            pregnancy_history: '',
-            breast_feeding: '',
-            supplements: '',
-            medical_tests: '',
-            height: '',
-            weight: '',
-            bmi: '',
-            notes: ''
+        current_eating_pattern: '',
+        appetite_level: '',
+        no_of_meals_per_day: '',
+        cook_at_home_out: '',
+        food_allergies: '',
+        diet_before: '',
+        snacking_habits: '',
+        nutrient_deficiencies: '',
+        sleeping_duration: '',
+        water_intake_per_day: '',
+        working_schedule: '',
+        sleep_quality: '',
+        stress: '',
+        hobbies: '',
+        screen_time: '',
+        pre_existing_conditions: '',
+        past_surgeries: '',
+        medication: '',
+        menstrual_history: '',
+        pregnancy_history: '',
+        breast_feeding: '',
+        supplements: '',
+         medical_tests: '',
+        height: '',
+        weight: '',
+        bmi: '',
+        notes: '',
+        meetingDetails: []
       };
     },
     watch: {
@@ -465,9 +653,9 @@
             const formData = new FormData();
 
             formData.append('chest', this.scheduledata.chest);
-            formData.append('right_arm', this.right_arm);
+            formData.append('right_arm', this.scheduledata.right_arm);
             formData.append('left_arm', this.scheduledata.left_arm);
-            formData.append('waist', this.waist);
+            formData.append('waist', this.scheduledata.waist);
             formData.append('hip', this.scheduledata.hip);
             formData.append('left_thigh', this.scheduledata.left_thigh);
             formData.append('right_thigh', this.scheduledata.right_thigh);
@@ -484,6 +672,55 @@
             .then(response => {
                 console.log('Consultation scheduled successfully:', response.data);
                 this.modal_1 = false;
+                this.clientDetails();
+                this.resetForm();
+            })
+            .catch(error => {
+            console.error('Error:', error.response && error.response.data ? error.response.data : error);
+
+            });
+        },
+        dietdataUpload()
+        {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('meeting_id', this.meeting_id);
+            formData.append('notes', this.scheduledata.notes);
+            if (this.scheduledata.diet_chart) {
+                formData.append('diet_chart', this.scheduledata.diet_chart);
+            }
+            
+            axios.post('http://127.0.0.1:8000/api/user/dietOnlyMeetingUpdations', formData,{
+                headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
+            })
+            .then(response => {
+                console.log('Consultation scheduled successfully:', response.data);
+                this.modal_4 = false;
+                this.clientDetails();
+                this.resetForm();
+            })
+            .catch(error => {
+            console.error('Error:', error.response && error.response.data ? error.response.data : error);
+
+            });
+        },
+        TDCdataUpload()
+        {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('meeting_id', this.meeting_id);
+            formData.append('notes', this.scheduledata.notes);
+            formData.append('showDietChart', this.showDietChart);
+            if (this.scheduledata.diet_chart) {
+                formData.append('diet_chart', this.scheduledata.diet_chart);
+            }
+            
+            axios.post('http://127.0.0.1:8000/api/user/TDCMeetingUpdations', formData,{
+                headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
+            })
+            .then(response => {
+                console.log('Consultation scheduled successfully:', response.data);
+                this.modal_6 = false;
                 this.clientDetails();
                 this.resetForm();
             })
@@ -528,11 +765,67 @@
             console.log(this.selectedClientID);
             this.modal_1 = true;
         },
-        viewDay3Modal(client)
+        updateDay3Modal(client)
         {
             console.log(client.id);
             this.meeting_id = client.id;
             this.modal_1 = true;
+        },
+        viewDay3Modal(client)
+        {
+            this.meeting_id = client.id;
+            this.viewMeetingDetails(this.meeting_id)
+            this.modal_3 = true;
+        },
+        updateDay10Modal(client)
+        {
+            this.meeting_id = client.id;
+            this.modal_4 = true;
+        },
+        viewMeetingModal(client)
+        {
+            this.meeting_id = client.id;
+            this.viewMeetingView(this.meeting_id)
+            this.modal_5 = true;
+        },
+        viewTDCModal(client)
+        {
+            this.meeting_id = client.id;
+            this.modal_6 = true;
+        },
+        viewMeetingView(meetingID)
+        {
+            const token = localStorage.getItem('token');
+            axios.get(`http://127.0.0.1:8000/api/user/fetchMeetingDetails/${meetingID}`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.meetingDetails = response.data.meeting_details[0];
+                    // console.log(this.meetingDetails);
+                    
+                })
+                .catch(error => {
+                    console.error('Error', error.response && error.response.data ? error.response.data : error);
+
+                });
+        },
+        viewMeetingDetails(meetingID)
+        {
+            const token = localStorage.getItem('token');
+            axios.get(`http://127.0.0.1:8000/api/user/getMeetingDetails/${meetingID}`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.meetingDetails = response.data;
+                    console.log(this.meetingDetails);
+                    
+                })
+                .catch(error => {
+                    console.error('Error', error.response && error.response.data ? error.response.data : error);
+
+                });
         },
         viewConsultDetails(client)
         {

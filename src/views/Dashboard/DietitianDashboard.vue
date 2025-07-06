@@ -1,9 +1,9 @@
 <template>
   <div>
 
-    <status-card></status-card>
+    <reminders></reminders>
     <div class="ml-5 mr-5">
-      <missed-consultation></missed-consultation>
+      <!-- <missed-consultation></missed-consultation> -->
     </div>
     
     
@@ -11,12 +11,12 @@
 </template>
 <script>
   // Charts
-    import StatusCard from './dietitian/DietitianstatusCard.vue';
+    import Reminders from './Reminders/Reminders.vue';
     import MissedConsultation from './../Clients/ClientTable/MissedDietitianConsultationScheduleTable.vue'
 
   export default {
     components: {
-      StatusCard,
+      Reminders,
       MissedConsultation
     },
     data() {
