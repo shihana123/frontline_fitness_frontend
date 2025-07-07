@@ -151,6 +151,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/diet_chart_view/:id',
+        name: 'clients/diet_chart_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/DietChartView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/attendance',
         name: 'clients/attendance',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientAttendanceView.vue'),

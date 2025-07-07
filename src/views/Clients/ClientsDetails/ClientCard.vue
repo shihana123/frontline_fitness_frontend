@@ -100,6 +100,13 @@
             class="table_button" @click="measurmentsView(client[0].id)">
             Measurement Updates
         </base-button>
+
+        <base-button v-if="role_id == 'Dietitian'"
+            type="primary"
+            size="small"
+            class="table_button" @click="dietChartView(client[0].id)">
+            Diet Chart
+        </base-button>
         <!-- Dietitian -->
 
         <!-- Sales -->
@@ -165,6 +172,10 @@
             {
               this.$router.push({ name: 'clients/measurement_view', params: { id: client_id } });
             },
+            dietChartView(client_id)
+            {
+              this.$router.push({ name: 'clients/diet_chart_view', params: { id: client_id } });
+            },
             ClientAttendanceView(client_id)
             {
                 this.$router.push({ name: 'clients/attendance_view', params: { id: client_id } });
@@ -176,7 +187,7 @@
               var userRes = await axios.get('http://127.0.0.1:8000/api/user/userDetails/', {
                 headers: { Authorization: `Token ${token}` }
               });
-              
+
               
             },
             formatPreferredTime(times) {

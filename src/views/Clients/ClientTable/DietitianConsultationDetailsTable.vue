@@ -360,7 +360,7 @@
                         placeholder="Diet Plan"
                         v-model="scheduledata.diet_plan"
                         requied
-                        @change="handleFileUpload($event, 'diet_chart')"
+                        @change="handleFileUpload($event, 'diet_plan')"
                         >
                         </base-input>
                         
