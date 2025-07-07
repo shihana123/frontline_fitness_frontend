@@ -10,7 +10,7 @@
           <client-card></client-card>
         </b-col> -->
         <b-col xl="12" class="order-xl-1">
-          <client-biweekly-updates></client-biweekly-updates>
+          <client-measurements-updates></client-measurements-updates>
         </b-col>
       </b-row>
     </b-container>
@@ -18,11 +18,11 @@
 </template>
 <script>
 //   import ClientCard from './ClientsDetails/ClientCard.vue';
-  import ClientBiweeklyUpdates from './ClientsDetails/ClientBiweeklyUpdates.vue';
+  import ClientMeasurementsUpdates from './ClientsDetails/ClientMeasurementUpdates.vue';
 
   export default {
     components: {
-      ClientBiweeklyUpdates,
+      ClientMeasurementsUpdates,
     //   ClientCard
     }
   };

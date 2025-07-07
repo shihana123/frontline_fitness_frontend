@@ -597,7 +597,8 @@
         weight: '',
         bmi: '',
         notes: '',
-        meetingDetails: []
+        meetingDetails: [],
+        clientId: this.$route.params.id
       };
     },
     watch: {
@@ -672,7 +673,7 @@
             .then(response => {
                 console.log('Consultation scheduled successfully:', response.data);
                 this.modal_1 = false;
-                this.clientDetails();
+                this.clientDetails(clientId);
                 this.resetForm();
             })
             .catch(error => {
@@ -696,7 +697,7 @@
             .then(response => {
                 console.log('Consultation scheduled successfully:', response.data);
                 this.modal_4 = false;
-                this.clientDetails();
+                this.clientDetails(clientId);
                 this.resetForm();
             })
             .catch(error => {
@@ -721,7 +722,7 @@
             .then(response => {
                 console.log('Consultation scheduled successfully:', response.data);
                 this.modal_6 = false;
-                this.clientDetails();
+                this.clientDetails(clientId);
                 this.resetForm();
             })
             .catch(error => {

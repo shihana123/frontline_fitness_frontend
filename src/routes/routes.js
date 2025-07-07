@@ -115,6 +115,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/measurement_graphical_view/:id',
+        name: 'clients/measurement_graphical_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/MeasurementgraphicalView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/clients',
         name: 'clients/clients',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientList.vue'),
@@ -139,9 +145,9 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/clients/biweekly_view/:id',
-        name: 'clients/biweekly_view',
-        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientBiweeklyView.vue'),
+        path: '/clients/measurement_view/:id',
+        name: 'clients/measurement_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientMeasurementView.vue'),
         meta: { requiresAuth: true }
       },
       {
