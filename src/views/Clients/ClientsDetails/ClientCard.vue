@@ -91,8 +91,8 @@
         <base-button v-if="role_id == 'Dietitian'"
             type="primary"
             size="small"
-            class="table_button" @click="dietView(client[0].id)">
-            Weekly Diet Plan
+            class="table_button" @click="WeeklymeetingtView(client[0].id)">
+            Weekly Meeting
         </base-button>
         <base-button v-if="role_id == 'Dietitian'"
             type="primary"
@@ -157,9 +157,9 @@
                 // console.log(client_id);
                 this.$router.push({ name: 'clients/workout_view', params: { id: client_id } });
             },
-            dietView(client_id)
+            WeeklymeetingtView(client_id)
             {
-              this.$router.push({ name: 'clients/diet_view', params: { id: client_id } });
+              this.$router.push({ name: 'clients/weekly_meeting_view', params: { id: client_id } });
             },
             biweeklyView(client_id)
             {

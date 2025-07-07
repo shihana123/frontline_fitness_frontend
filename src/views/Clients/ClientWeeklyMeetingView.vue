@@ -10,7 +10,7 @@
           <client-card></client-card>
         </b-col> -->
         <b-col xl="12" class="order-xl-1">
-          <client-diet-details></client-diet-details>
+          <client-weekly-meeting></client-weekly-meeting>
         </b-col>
       </b-row>
     </b-container>
@@ -18,11 +18,11 @@
 </template>
 <script>
 //   import ClientCard from './ClientsDetails/ClientCard.vue';
-  import ClientDietDetails from './ClientsDetails/ClientDietDetails.vue';
+  import ClientWeeklyMeeting from './ClientsDetails/ClientWeeklyMeeting.vue';
 
   export default {
     components: {
-      ClientDietDetails,
+      ClientWeeklyMeeting,
     //   ClientCard
     }
   };

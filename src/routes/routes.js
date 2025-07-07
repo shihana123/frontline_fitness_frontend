@@ -133,9 +133,9 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/clients/diet_view/:id',
-        name: 'clients/diet_view',
-        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientDietView.vue'),
+        path: '/clients/weekly_meeting_view/:id',
+        name: 'clients/weekly_meeting_view',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientWeeklyMeetingView.vue'),
         meta: { requiresAuth: true }
       },
       {
