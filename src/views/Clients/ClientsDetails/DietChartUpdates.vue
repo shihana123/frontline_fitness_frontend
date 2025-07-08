@@ -48,7 +48,7 @@
                                         v-if="dietchart.uploaded"
                                         class="btn btn-sm btn-success"
                                         v-b-modal.modal-2
-                                        @click="viewMeasure(dietchart.id)"
+                                        
                                     >
                                         View
                                     </button>
@@ -83,9 +83,9 @@
                         type="file"
                         label="Diet Plan"
                         placeholder="Diet Plan"
-                        v-model="dietchartdata.diet_plan"
+                        v-model="dietchartdata.diet_chart"
                         requied
-                        @change="handleFileUpload($event, 'diet_plan')"
+                        @change="handleFileUpload($event, 'diet_chart')"
                         >
                         </base-input>
                         
@@ -105,27 +105,7 @@
         </b-form>
     </b-modal>
 
-    <b-modal size="lg" id="modal-2" title="Measurememnt Details of Client" hide-footer v-if="modal_2">
-        <div class="pl-lg-6">
-            <h6 class="heading-small text-muted mb-2">Measurements</h6>
-            <div class="pl-lg-12">
-                <b-row>
-                    <b-col lg="12">
-                        <h5>Chest : <span>{{ measureDetails.chest }} cm</span></h5>
-                        <h5>Right Arm : <span>{{ measureDetails.right_arm }} cm</span></h5>
-                        <h5>Left Arm : <span>{{ measureDetails.left_arm }} cm</span></h5>
-                        <h5>Waist : <span>{{ measureDetails.waist }} cm</span></h5>
-                        <h5>Hip : <span>{{ measureDetails.hip }} cm</span></h5>
-                        <h5>Right Thigh : <span>{{ measureDetails.right_thigh }} cm</span></h5>
-                        <h5>Left Thigh : <span>{{ measureDetails.left_thigh }} cm</span></h5>
-                        <h5>Right Calf : <span>{{ measureDetails.right_calf }} cm</span></h5>
-                        <h5>Left Calf : <span>{{ measureDetails.left_calf }} cm</span></h5>
-                        
-                    </b-col>
-                </b-row>
-            </div>
-        </div>
-    </b-modal>
+    
 
   </b-card>
 </template>
@@ -135,15 +115,12 @@
         data() {
             return {
                 modal_1: false,
-                modal_2: false,
                 client: [],
                 dietchartList: [],
-                week_days: 0,
                 dietchartdata: {
                     diet_plan : '',
                     notes: '',
                 },
-                measureDetails: [],
                 dietchart_id: null,
             }
         },
@@ -182,6 +159,7 @@
             
             saveDietchart()
             {
+              
                 const token = localStorage.getItem('token');
                 const formData = new FormData();
                 formData.append('notes', this.dietchartdata.notes);
@@ -198,9 +176,11 @@
                 })
                 .then(response => {
                     this.$bvToast.toast('Weekly updated successfully!', { variant: 'success' });
-                    this.DietChartList(this.$route.params.id);
-                    this.modal_1 = false;
+                    
+                    
                     this.resetForm();
+                    this.modal_1 = false;
+                    this.DietChartList(this.$route.params.id);
                 })
                 .catch(error => {
                     console.error(error);
@@ -219,13 +199,7 @@
               this.dietchart_id = dietchart_id;
               this.modal_1 = true;
             },
-            viewMeasure(measure_id)
-            {
-              this.measure_id = measure_id;
-              this.showMeasureDetails(this.measure_id);
-              this.modal_2 = true;
-            }
-            
+         
         },
         mounted(){
             const id = this.$route.params.id;
