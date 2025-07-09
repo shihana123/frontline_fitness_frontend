@@ -59,20 +59,29 @@
             >
         </sidebar-item>
 
-        <sidebar-item v-if="role_id == 'Trainer' || role_id == 'Dietitian'"
+        <!-- <sidebar-item v-if="role_id == 'Trainer' || role_id == 'Dietitian'"
             :link="{
               name: 'Consultation Schedules',
               path: '/clients/consultation_schedules',
               icon: 'ni ni-bullet-list-67 text-yellow'
               }"
             >
-        </sidebar-item>
+        </sidebar-item> -->
 
         <sidebar-item v-if="role_id == 'Trainer' || role_id == 'Dietitian'"
             :link="{
               name: 'Clients',
               path: '/clients/clients',
               icon: 'ni ni-single-02 text-info'
+              }"
+            >
+        </sidebar-item>
+
+        <sidebar-item v-if="role_id == 'Trainer' || role_id == 'Dietitian'"
+            :link="{
+              name: 'Paused Clients',
+              path: '/clients/paused_clients',
+              icon: 'ni ni-bullet-list-67 text-yellow'
               }"
             >
         </sidebar-item>

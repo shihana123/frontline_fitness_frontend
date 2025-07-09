@@ -15,7 +15,7 @@
                              prop="client_id">
             </el-table-column>
             <el-table-column label="Name"
-                             
+                             width="120"
                              prop="name">
             </el-table-column>
             <el-table-column label="Phone"

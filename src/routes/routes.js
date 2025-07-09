@@ -127,6 +127,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/paused_clients',
+        name: 'clients/paused_clients',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/PausedClientList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/view/:id',
         name: 'clients/view',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientView.vue'),

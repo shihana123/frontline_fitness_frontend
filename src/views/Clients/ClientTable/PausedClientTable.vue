@@ -49,23 +49,6 @@
                         class="table_button" @click="clientView(scope.row.id)">
                         View
                         </base-button>
-
-                        <base-button v-if="scope.row.paused"
-                        type="danger"
-                        size="small"
-                        class="table_button" disabled>
-                        Paused
-                        </base-button>
-
-
-                        <base-button
-                        v-b-modal.modal-1
-                        v-if="scope.row.pause_info.pause_available"
-                        type="primary"
-                        size="small"
-                        class="table_button" @click="pauseClient(scope.row.id)">
-                        Pause
-                        </base-button>
                     </div>
                     
                 </template>
@@ -153,7 +136,7 @@
     methods:{
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/dietitianclientList', {
+            axios.get('http://127.0.0.1:8000/api/user/dietitianpausesclientList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
