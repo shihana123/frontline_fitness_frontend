@@ -14,6 +14,9 @@
         <b-col v-else-if="usersRole == 'Dietitian'">
           <dietitian-client-table></dietitian-client-table>
         </b-col>
+        <b-col v-else-if="usersRole == 'VMC'">
+          <vmc-client-table></vmc-client-table>
+        </b-col>
       </b-row>
       
     </b-container>
@@ -24,12 +27,14 @@
   import SalesClientTable from "./ClientTable/SalesClientTable";
   import ClientTable from "./ClientTable/ClientTable";
   import DietitianClientTable from "./ClientTable/DietitianClientTable";
+  import VmcClientTable from "./ClientTable/VMCClientTable";
   import axios from 'axios'
   export default {
     components: {
       ClientTable,
       SalesClientTable,
       DietitianClientTable,
+      VmcClientTable,
       [Dropdown.name]: Dropdown,
       [DropdownItem.name]: DropdownItem,
       [DropdownMenu.name]: DropdownMenu,

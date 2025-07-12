@@ -115,6 +115,14 @@
         {
           this.$router.push('/dashboard');
         }
+        else if(this.role == 'Admin')
+        {
+          this.$router.push('/dashboard');
+        }
+        else if(this.role == 'VMC')
+        {
+          this.$router.push('/dashboard');
+        }
         
 
       } catch (error) {

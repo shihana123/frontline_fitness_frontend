@@ -146,8 +146,25 @@
               }"
             >
         </sidebar-item>
-        
 
+
+        <!-- VMC -->
+         <sidebar-item v-if="role_id == 'VMC'"
+          :link="{
+            name: 'Dashboard',
+            path: '/VMC/dashboard',
+            icon: 'ni ni-tv-2 text-primary',
+          }"
+        >
+        </sidebar-item>
+         <sidebar-item v-if="role_id == 'VMC'"
+            :link="{
+              name: 'Clients',
+              path: '/clients/clients',
+              icon: 'ni ni-single-02 text-info'
+              }"
+            >
+        </sidebar-item>
         <!-- <sidebar-item
               :link="{
                 name: 'Maps',
