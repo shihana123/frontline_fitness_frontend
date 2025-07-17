@@ -147,6 +147,15 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Sales'"
+            :link="{
+              name: 'Clients - Paused',
+              path: '/clients/paused_sales_clients',
+              icon: 'ni ni-button-pause text-info'
+              }"
+            >
+        </sidebar-item>
+
 
         <!-- VMC -->
          <sidebar-item v-if="role_id == 'VMC'"
@@ -275,7 +284,7 @@
       {
         const token = localStorage.getItem('token');
         console.log(localStorage.getItem('token'));
-        var userRes = await axios.get('http://127.0.0.1:8000/api/user/userDetails/', {
+        var userRes = await axios.get('${process.env.VUE_APP_API_BASE_URL}userDetails/', {
           headers: { Authorization: `Token ${token}` }
         });
         this.role_id = userRes.data.roles[0].role.rolename;

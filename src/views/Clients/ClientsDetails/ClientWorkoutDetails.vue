@@ -171,7 +171,7 @@
             async clientDetails(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -187,7 +187,7 @@
             async WeeklyWorkoutUpdates(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/weekworkoutDetails/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}weekworkoutDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -244,7 +244,7 @@
               }
               const token = localStorage.getItem('token');
               
-              axios.post(`http://127.0.0.1:8000/api/user/workout/update/${this.client[0].id}/${this.week_table_id}`, payload, {
+              axios.post(`${process.env.VUE_APP_API_BASE_URL}workout/update/${this.client[0].id}/${this.week_table_id}`, payload, {
                 headers: { Authorization: `Token ${token}` }
               })
               .then(response => {

@@ -5,8 +5,11 @@
     </base-header>
     <b-container fluid class="mt--7">
       <b-row>
-        <b-col>
+        <b-col v-if="usersRole == 'Dietitian'">
           <client-table></client-table>
+        </b-col>
+        <b-col v-else-if="usersRole == 'Sales'">
+          <sales-client-table></sales-client-table>
         </b-col>
       </b-row>
       
@@ -15,15 +18,39 @@
 </template>
 <script>
   import ClientTable from "./ClientTable/PausedClientTable";
+  import SalesClientTable from "./ClientTable/SalesPausedClientTable";
   import axios from 'axios'
   export default {
     components: {
-      ClientTable
+      ClientTable,
+      SalesClientTable
     },
     data() {
       return {
         usersRole: ''
       };
+    },
+    methods:
+    {
+      async getRole()
+      {
+        const token = localStorage.getItem('token');
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}getRole`, {
+                headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                
+                this.usersRole = response.data.roles[0];
+                console.log(this.usersRole);
+            })
+            .catch(error => {
+                console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+            });
+      }
+    },
+    mounted()
+    {
+      this.getRole();
     }
   };
 </script>

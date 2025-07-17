@@ -50,7 +50,7 @@ export default {
         async measureprogressgraph()
         {
             const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/measureProgressData/${this.client_id}/`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}measureProgressData/${this.client_id}/`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -132,7 +132,7 @@ export default {
         async clientDetails(id)
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

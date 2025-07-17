@@ -87,7 +87,7 @@
             async active_clients()
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/fetchActiveClientsDietitian/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchActiveClientsDietitian/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -103,7 +103,7 @@
             async consultation_details()
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/fetchConsultationDietitian/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchConsultationDietitian/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -120,7 +120,7 @@
             async biweekly_updation()
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/fetchupsomingbiweeklyUpdation/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchupsomingbiweeklyUpdation/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

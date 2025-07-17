@@ -136,7 +136,7 @@
     methods:{
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/dietitianpausesclientList', {
+            axios.get('${process.env.VUE_APP_API_BASE_URL}dietitianpausesclientList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -150,7 +150,7 @@
         clientDetails(client_id)
         {
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/clientpauseDetail/${client_id}/`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}clientpauseDetail/${client_id}/`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -174,7 +174,7 @@
             formData.append('client_id', this.selectedClientID);
            
             
-            axios.post('http://127.0.0.1:8000/api/user/pauseClient', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}pauseClient', formData,{
                 headers: { Authorization: `Token ${token}`}
             })
             .then(response => {

@@ -73,7 +73,7 @@ import axios from 'axios'
         fetchPrograms()
         {
                 const token = localStorage.getItem('token');
-                axios.get('http://127.0.0.1:8000/api/user/group-programs', {
+                axios.get('${process.env.VUE_APP_API_BASE_URL}group-programs', {
                     headers: {
                         Authorization: `Token ${localStorage.getItem('token')}`
                     }
@@ -94,7 +94,7 @@ import axios from 'axios'
             console.log('hi');
             
             const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/single-group-programs/${this.selectedProgram}`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}single-group-programs/${this.selectedProgram}`, {
                     headers: {
                         Authorization: `Token ${localStorage.getItem('token')}`
                     }

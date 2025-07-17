@@ -131,7 +131,7 @@
             async clientDetails(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -144,7 +144,7 @@
             async DietChartList(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/dietchartList/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}dietchartList/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -168,7 +168,7 @@
                 }
                 formData.append('dietchart_id', this.dietchart_id);
               
-                axios.post(`http://127.0.0.1:8000/api/user/dietChart/update`, formData, {
+                axios.post(`${process.env.VUE_APP_API_BASE_URL}dietChart/update`, formData, {
                     headers: { 
                         Authorization: `Token ${token}`,
                         'Content-Type': 'multipart/form-data'

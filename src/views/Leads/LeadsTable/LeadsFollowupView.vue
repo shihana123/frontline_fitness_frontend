@@ -155,7 +155,7 @@
             async leadDetails(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/fetchLead/${id}`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchLead/${id}`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -212,7 +212,7 @@
                 formData.append('activity_type', this.activity_type);
                 formData.append('followup_date', this.scheduled_followupdate);
                 
-                axios.post('http://127.0.0.1:8000/api/user/followupStatusUpdate', formData,{
+                axios.post('${process.env.VUE_APP_API_BASE_URL}followupStatusUpdate', formData,{
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

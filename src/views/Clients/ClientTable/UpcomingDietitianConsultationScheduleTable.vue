@@ -118,7 +118,7 @@
     methods:{
         async consultationList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/dietupcomingconsulationscheduleList', {
+            axios.get('${process.env.VUE_APP_API_BASE_URL}dietupcomingconsulationscheduleList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -144,7 +144,7 @@
             // formData.append('no_of_consultation', this.no_of_consultation);
             // formData.append('workout_start_date', this.scheduledata.workoutdate);
             
-            axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}scheduleconsulation', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

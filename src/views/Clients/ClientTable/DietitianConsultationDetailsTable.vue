@@ -633,7 +633,7 @@
         },
         async consultationDetails(){
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/dietclientMeetingList/${this.$route.params.id}`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}dietclientMeetingList/${this.$route.params.id}`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -667,7 +667,7 @@
                 formData.append('diet_chart', this.scheduledata.diet_chart);
             }
             
-            axios.post('http://127.0.0.1:8000/api/user/dietMeetingUpdations', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}dietMeetingUpdations', formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
@@ -691,7 +691,7 @@
                 formData.append('diet_chart', this.scheduledata.diet_chart);
             }
             
-            axios.post('http://127.0.0.1:8000/api/user/dietOnlyMeetingUpdations', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}dietOnlyMeetingUpdations', formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
@@ -716,7 +716,7 @@
                 formData.append('diet_chart', this.scheduledata.diet_chart);
             }
             
-            axios.post('http://127.0.0.1:8000/api/user/TDCMeetingUpdations', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}TDCMeetingUpdations', formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
@@ -797,7 +797,7 @@
         viewMeetingView(meetingID)
         {
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/fetchMeetingDetails/${meetingID}`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchMeetingDetails/${meetingID}`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -814,7 +814,7 @@
         viewMeetingDetails(meetingID)
         {
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/getMeetingDetails/${meetingID}`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}getMeetingDetails/${meetingID}`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -831,7 +831,7 @@
         viewConsultDetails(client)
         {
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/dietfirstconsulationdetails/${this.$route.params.id}`,{
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}dietfirstconsulationdetails/${this.$route.params.id}`,{
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -877,7 +877,7 @@
         async clientDetails(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

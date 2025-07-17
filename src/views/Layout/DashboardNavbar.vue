@@ -141,7 +141,7 @@ export default {
       {
         const token = localStorage.getItem('token');
         // console.log(localStorage.getItem('token'));
-        var userRes = await axios.get('http://127.0.0.1:8000/api/user/userDetails/', {
+        var userRes = await axios.get('${process.env.VUE_APP_API_BASE_URL}userDetails/', {
           headers: { Authorization: `Token ${token}` }
         });
         console.log(userRes);

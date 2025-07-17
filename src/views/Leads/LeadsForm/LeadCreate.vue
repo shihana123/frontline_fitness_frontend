@@ -241,7 +241,7 @@
           formData.append('preferred_time', JSON.stringify(timeSlotValues));
         }
         const token = localStorage.getItem('token');
-        axios.post('http://127.0.0.1:8000/api/user/leadCreate', formData,{
+        axios.post('${process.env.VUE_APP_API_BASE_URL}leadCreate', formData,{
                 headers: { Authorization: `Token ${token}` }
         })
         .then(response => {
@@ -305,7 +305,7 @@
         const program_type = this.lead.program_type;
       
         const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/programListTrainer/${program_type}/`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}programListTrainer/${program_type}/`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -319,7 +319,7 @@
       async fetchCountries()
       {
           const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/fetchCountry/`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchCountry/`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

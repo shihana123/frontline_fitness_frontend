@@ -85,7 +85,7 @@
             async leadsCountgraph()
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/fetchleadsgraph/${this.currentMonth}/${this.currentYear}/   `, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchleadsgraph/${this.currentMonth}/${this.currentYear}/   `, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -129,7 +129,7 @@
             async revenueChart()
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/fetchrevenuegraph/${this.rev_currentYear}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchrevenuegraph/${this.rev_currentYear}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

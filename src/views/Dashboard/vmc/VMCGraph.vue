@@ -84,7 +84,7 @@
             async ClientCountgraph()
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/fetchActiveClientsgraph/${this.currentMonth}/${this.currentYear}/   `, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchActiveClientsgraph/${this.currentMonth}/${this.currentYear}/   `, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -128,7 +128,7 @@
             async YearlyClientCountgraph()
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/fetchYearlyActiveClientsgraph/${this.currentYear}/   `, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchYearlyActiveClientsgraph/${this.currentYear}/   `, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

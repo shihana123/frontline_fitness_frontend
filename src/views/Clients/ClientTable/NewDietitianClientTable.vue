@@ -458,7 +458,7 @@
         },
         async newclientList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/newclientListDietitian', {
+            axios.get('${process.env.VUE_APP_API_BASE_URL}newclientListDietitian', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -481,7 +481,7 @@
             formData.append('type', this.scheduledata.type);
             formData.append('no_of_consultation', this.scheduledata.no_of_consultation);
 
-            axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}scheduleconsulation', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -526,7 +526,7 @@
             formData.append('supplements', this.clientdetails.supplements);
             formData.append('medical_tests', this.clientdetails.medical_tests);
 
-            axios.post('http://127.0.0.1:8000/api/user/dietitianconsulation_details', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}dietitianconsulation_details', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

@@ -85,7 +85,7 @@ import axios from 'axios'
                 return;
             }
 
-            axios.post('http://127.0.0.1:8000/api/user/availabilityTrainer', {
+            axios.post('${process.env.VUE_APP_API_BASE_URL}availabilityTrainer', {
                 start_time: this.startTime,
                 end_time: this.endTime
             }, {

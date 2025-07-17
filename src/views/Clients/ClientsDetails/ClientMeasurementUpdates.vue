@@ -250,7 +250,7 @@
             async clientDetails(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -263,7 +263,7 @@
             async MeasurementList(id)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/measurementList/${id}/`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}measurementList/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -293,7 +293,7 @@
                 formData.append('left_calf', this.measureData.left_calf);
                 formData.append('meeting_id', this.measure_id);
               
-                axios.post(`http://127.0.0.1:8000/api/user/measureData/update`, formData, {
+                axios.post(`${process.env.VUE_APP_API_BASE_URL}measureData/update`, formData, {
                     headers: { 
                         Authorization: `Token ${token}`
                     }
@@ -313,7 +313,7 @@
             async showMeasureDetails(meeting_id)
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/measurementDetails/${meeting_id}/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}measurementDetails/${meeting_id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

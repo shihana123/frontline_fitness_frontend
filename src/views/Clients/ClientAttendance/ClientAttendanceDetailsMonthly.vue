@@ -101,7 +101,7 @@ import axios from 'axios'
             const monthNumber = this.months.indexOf(month) + 1;
             
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/clientListbyMonth/${clientId}/${year}/${monthNumber}/`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}clientListbyMonth/${clientId}/${year}/${monthNumber}/`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

@@ -35,7 +35,7 @@ export default {
         async weeklyprogressgraph()
         {
             const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/weeklyMeetingList/${this.client_id}`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}weeklyMeetingList/${this.client_id}`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -103,7 +103,7 @@ export default {
         async clientDetails(id)
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

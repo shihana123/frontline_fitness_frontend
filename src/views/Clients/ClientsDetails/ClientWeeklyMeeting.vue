@@ -190,7 +190,7 @@
         },
         async WeeklyMeetingList(){
             const token = localStorage.getItem('token');
-            axios.get(`http://127.0.0.1:8000/api/user/weeklyMeetingList/${this.$route.params.id}`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}weeklyMeetingList/${this.$route.params.id}`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -227,7 +227,7 @@
           const token = localStorage.getItem('token');
           try {
             // Fetch the previous meeting by week_no and client
-            const prevResponse = await axios.get(`http://127.0.0.1:8000/api/user/weeklyMeetingDetails/${meetingid}`, {
+            const prevResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}weeklyMeetingDetails/${meetingid}`, {
               headers: { Authorization: `Token ${token}` }
             });
 
@@ -244,7 +244,7 @@
 
           try {
             // Fetch current meeting first to get week_no & client ID
-            const currentResponse = await axios.get(`http://127.0.0.1:8000/api/user/weeklyMeetingDetails/${currentMeetingId}`, {
+            const currentResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}weeklyMeetingDetails/${currentMeetingId}`, {
               headers: { Authorization: `Token ${token}` }
             });
 
@@ -253,7 +253,7 @@
             const clientId = currentData.client;
 
             // Fetch the previous meeting by week_no and client
-            const prevResponse = await axios.get(`http://127.0.0.1:8000/api/user/weeklyMeetingByWeekNo?client_id=${clientId}&week_no=${prevWeekNo}`, {
+            const prevResponse = await axios.get(`${process.env.VUE_APP_API_BASE_URL}weeklyMeetingByWeekNo?client_id=${clientId}&week_no=${prevWeekNo}`, {
               headers: { Authorization: `Token ${token}` }
             });
 
@@ -269,7 +269,7 @@
         async clientDetails(id)
         {
             const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/clientDetails/${id}/`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}clientDetails/${id}/`, {
               headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -291,7 +291,7 @@
             formData.append('meeting_id', this.meeting_id);
 
             const token = localStorage.getItem('token');
-            await axios.post(`http://127.0.0.1:8000/api/user/updateWeeklydata`, formData, {
+            await axios.post(`${process.env.VUE_APP_API_BASE_URL}updateWeeklydata`, formData, {
               headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

@@ -38,30 +38,20 @@
                              prop="workout_start_date">
             </el-table-column> -->
            
-            <el-table-column label="Diet Chart"
+            <el-table-column label="Action"
                              prop="completion"
-                             > 
+                             >
                 <template #default="scope">
                     <div class="action_buttons">
                         <base-button
-                        v-if="scope.row.dietchart.length == 0"
                         v-b-modal.modal-1
-                        type="warning"
-                        size="small"
-                        class="table_button" @click="DietchartView(scope.row.id)">
-                        Upload
-                        </base-button>
-
-                        <base-button
-                        v-else
                         type="primary"
                         size="small"
-                        class="table_button" @click="clientView(scope.row.dietchart)">
+                        class="table_button" @click="clientView(scope.row)">
                         View
                         </base-button>
-                       
                     </div>
-                    
+
                 </template>
 
             </el-table-column>
@@ -72,32 +62,63 @@
         </b-card-footer>
     </b-card>
    
-    <b-modal id="modal-1" title="Upload DietChart" hide-footer v-if="modal_1">
-        <b-form @submit.prevent="uploadDietchart">
-            <h6 class="heading-small text-muted mb-2">Upload DietChart</h6>
+    <b-modal id="modal-1" title="Client Details" hide-footer v-if="modal_1">
+            <!-- <h6 class="heading-small text-muted mb-2">Pause the client</h6> -->
             <div class="pl-lg-12">
                 <b-row >
                     <b-col lg="12">
+                        <h5>Paused From: {{ clientData.latest_pause_record.paused_from }}</h5>
+                        <h5>No.of Days: {{ clientData.latest_pause_record.no_of_days }}</h5>
+                        <h5>Reactivate on: {{ clientData.latest_pause_record.program_pause_reactivate_on }}</h5>
+                        <h5>Notes: {{ clientData.latest_pause_record.notes }}</h5>
+
+                        <hr>
+
+                        <h5>Paused Days Till Now: {{ getPausedDays(clientData.latest_pause_record.program_pause_reactivate_on) }}</h5>
+                    </b-col>
+                    <!-- <b-col lg="12">
                         <base-input
-                        type="file"
-                        label="Diet Chart"
-                        placeholder="Diet Chart"
-                        v-model="dietdata.diet_plan"
-                        requied
-                        @change="handleFileUpload"
+                        type="date"
+                        label="Pause Start From"
+                        v-model="pausedata.pausedate"
+                        
                         >
                         </base-input>
                         
                     </b-col>
                     <b-col lg="12">
                         <base-input label="Notes">
-                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="dietdata.notes" required></textarea>
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="pausedata.notes" required></textarea>
                         </base-input>
                         
-                    </b-col>
+                    </b-col> -->
                     <div>
                         <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
-                        <b-button type="submit" variant="primary">Save</b-button>
+                        <b-button v-b-modal.modal-2 variant="primary" @click="ActivateclientView(clientData)">Activate</b-button>
+                    </div> 
+                </b-row>
+            </div>
+    </b-modal>
+
+    <b-modal id="modal-2" title="Activate Client" hide-footer v-if="modal_2">
+        <b-form @submit.prevent="activateClient">
+            <!-- <h6 class="heading-small text-muted mb-2">Pause the client</h6> -->
+            <div class="pl-lg-12">
+                <b-row >
+                    <b-col lg="12">
+                        <b-alert show variant="default">
+                            Are you sure you want to activate this client? They still have {{ getPausedDays(clientData.latest_pause_record.program_pause_reactivate_on) }} pause days remaining. 
+                        </b-alert>
+                    </b-col>
+                    <b-col lg="12">
+                        <base-input label="Notes">
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="pausedata.notes" required></textarea>
+                        </base-input>
+                        
+                    </b-col> 
+                    <div>
+                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
+                        <b-button type="submit" variant="primary">Activate</b-button>
                     </div> 
                 </b-row>
             </div>
@@ -120,49 +141,62 @@
     data() {
       return {
         modal_1: false,
+        modal_2: false,
         clients: [],
         currentPage: 1,
-        dietdata:{
-            diet_plan : '',
+        pausedata:{
             notes:''
         },
        
         selectedClientID: '',
+        pauseDetails: [],
+        no_of_days_available: 0,
+        clientData: []
       };
     },
     methods:{
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get('${process.env.VUE_APP_API_BASE_URL}vmcclientList', {
+            axios.get('${process.env.VUE_APP_API_BASE_URL}salespausesclientList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
                 this.clients = response.data;
-                console.log(this.clients);
-                
             })
             .catch(error => {
                 console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
 
             });
         },
-        uploadDietchart()
+        getPausedDays(reactivateOnDate) {
+            if (!reactivateOnDate) return 0;
+
+            const toDate = new Date(reactivateOnDate);
+            const today = new Date();
+
+            // Clear time part for accurate day comparison
+            toDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            const diffTime = toDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            return diffDays > 0 ? diffDays : 0;
+        },
+        activateClient()
         {
-            
             const token = localStorage.getItem('token');
             const formData = new FormData();
+            formData.append('notes', this.pausedata.notes);
             formData.append('client_id', this.selectedClientID);
-            formData.append('notes', this.dietdata.notes);
-            if (this.dietdata.diet_plan) {
-                formData.append('diet_plan', this.dietdata.diet_plan);
-            }
+           
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}vmcDietchartUpload', formData,{
-                headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
+            axios.post('${process.env.VUE_APP_API_BASE_URL}activatePauseClient', formData,{
+                headers: { Authorization: `Token ${token}`}
             })
             .then(response => {
-                
-                this.modal_1 = false;
+                console.log('Client Activated successfully:', response.data);
+                this.modal_2 = false;
                 this.clientList();
                 this.resetForm();
             })
@@ -172,33 +206,22 @@
             });
         },
         resetForm() {
-            this.dietdata = {
-                diet_plan: '',
+            this.pausedata = {
                 notes: '',
             };
         },
-        handleFileUpload(event) {
-            this.dietdata.diet_plan = event.target.files[0];
-        },
-        DietchartView(client)
+        clientView(client)
         {
-            this.selectedClientID = client;
+            this.clientData = client;
+            this.selectedClientID = client.id
             this.modal_1 = true;
-            console.log(this.selectedClientID);
         },
-        clientView(dietchart)
+        ActivateclientView(client)
         {
-            console.log(dietchart[0].diet_plan);
-            const pdfUrl = 'http://127.0.0.1:8000' + dietchart[0].diet_plan;
-            if (pdfUrl) {
-            window.open(pdfUrl, '_blank');
-            } else {
-            this.$toast.error("No diet plan file found.");
-            console.log("No diet plan file found.");
-            
-            }
-            
-        }
+            this.clientData = client;
+            this.modal_1 = false;
+            this.modal_2 = true;
+        },
     },
     mounted()
     {

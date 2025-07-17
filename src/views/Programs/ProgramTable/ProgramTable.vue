@@ -66,7 +66,7 @@
     },
     methods:{
         async userList(){
-            axios.get('http://127.0.0.1:8000/api/user/ProgramList')
+            axios.get('${process.env.VUE_APP_API_BASE_URL}ProgramList')
             .then(response => {
                 this.programs = response.data;
                 console.log(response.data[1].program_type);

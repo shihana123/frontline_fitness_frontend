@@ -159,7 +159,7 @@
             async reminderList()
             {
                 const token = localStorage.getItem('token');
-                await axios.get(`http://127.0.0.1:8000/api/user/fetchReminders/`, {
+                await axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchReminders/`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
@@ -184,7 +184,7 @@
             meetingUpdate(update, meetingId)
             {
                 const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/updateMeeting/${update}/${meetingId}`, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}updateMeeting/${update}/${meetingId}`, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

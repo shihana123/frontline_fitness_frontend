@@ -51,7 +51,7 @@
       async getRole()
       {
         const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/getRole`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}getRole`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

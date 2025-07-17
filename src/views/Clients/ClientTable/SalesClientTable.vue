@@ -249,7 +249,7 @@
         },
         async newclientList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/salesclientList', {
+            axios.get('${process.env.VUE_APP_API_BASE_URL}salesclientList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -275,7 +275,7 @@
         async fetchTrainers()
         {
             const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/byrole/3/`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}byrole/3/`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -289,7 +289,7 @@
         async fetchDietitians()
         {
             const token = localStorage.getItem('token');
-            await axios.get(`http://127.0.0.1:8000/api/user/byrole/4/`, {
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}byrole/4/`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -313,7 +313,7 @@
             formData.append('program_end_date', this.assignedata.program_end_date);
             formData.append('program_id', this.selectedProgramId);
 
-            axios.post('http://127.0.0.1:8000/api/user/assignTrainerDietitian', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}assignTrainerDietitian', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

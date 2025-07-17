@@ -216,7 +216,7 @@
     methods:{
         async newclientList(){
             const token = localStorage.getItem('token');
-            axios.get('http://127.0.0.1:8000/api/user/newclientList', {
+            axios.get('${process.env.VUE_APP_API_BASE_URL}newclientList', {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -239,7 +239,7 @@
             formData.append('type', this.scheduledata.type);
             formData.append('no_of_consultation', this.scheduledata.no_of_consultation);
 
-            axios.post('http://127.0.0.1:8000/api/user/scheduleconsulation', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}scheduleconsulation', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -261,7 +261,7 @@
             formData.append('equipment_owned', this.clientdetails.equipment_owned);
              formData.append('no_of_consultation', this.clientdetails.no_of_consultation);
 
-            axios.post('http://127.0.0.1:8000/api/user/trainerconsulation_details', formData,{
+            axios.post('${process.env.VUE_APP_API_BASE_URL}trainerconsulation_details', formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

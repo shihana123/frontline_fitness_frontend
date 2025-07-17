@@ -55,7 +55,7 @@
         async activeClientCount()
         {
             const token = localStorage.getItem('token');
-                axios.get(`http://127.0.0.1:8000/api/user/fetchActiveClients/${this.currentMonth}/${this.currentYear}/   `, {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchActiveClients/${this.currentMonth}/${this.currentYear}/   `, {
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
