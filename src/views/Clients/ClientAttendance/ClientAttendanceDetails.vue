@@ -52,8 +52,12 @@
                                         <td v-if="client.has_attendance">
                                             <b-button disabled class="btn btn-sm btn-success mr-4">Completed</b-button>
                                         </td>
+                                        <td v-else-if="client.has_reschedule">
+                                            <b-button class="btn btn-sm btn-success mr-4">Rescheduled</b-button>
+                                        </td>
                                         <td v-else>
-                                            <b-button class="btn btn-sm btn-warning mr-4" @click="markAttendance(client)">Mark Attendance</b-button>
+                                            <b-button class="btn btn-sm btn-info mr-4" @click="markAttendance(client)">Done</b-button>
+                                            <b-button v-b-modal.modal-1 class="btn btn-sm btn-warning mr-4" @click="viewModal(client)">Cancel</b-button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -88,7 +92,7 @@
                                             <b-button disabled class="btn btn-sm btn-success mr-4">Completed</b-button>
                                         </td>
                                         <td v-else>
-                                            <b-button class="btn btn-sm btn-warning mr-4" @click="markAttendance(client)">Mark Attendance</b-button>
+                                            <b-button v-b-modal.modal-1 class="btn btn-sm btn-warning mr-4" @click="markAttendance(client)">Mark Attendance</b-button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -135,6 +139,60 @@
             </div>
         </b-card-body>
     </b-card>
+
+    <b-modal id="modal-1" title="Client Details" hide-footer v-if="modal_1">
+        <b-form @submit.prevent="reSchedule">
+            
+            <div class="pl-lg-12">
+                <b-row >
+                    <b-col lg="12">
+                        <base-input label="Cancelled by">
+                            <select class="form-control" v-model="canceled_by">
+                                <option>Client</option>
+                                <option>Trainer</option>
+                            </select>
+                        </base-input>
+                    </b-col>
+
+                    <b-col lg="12" v-if="canceled_by === 'Client'">
+                        <base-input label="Do you want to reschedule?">
+                            <select class="form-control" v-model="reschedule">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </base-input>
+                        
+                    </b-col>
+
+                    <b-col lg="12" v-if="canceled_by === 'Client' && reschedule === '1'">
+                        <base-input
+                        type="date"
+                        label="Reschedule To"
+                        v-model="reschedule_to"
+                        required
+                        :min="minRescheduleDate"
+                        :max="maxRescheduleDate"
+                        >
+                        </base-input>
+                    </b-col>
+
+
+                    <b-col lg="12">
+                        <base-input label="Notes">
+                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="notes" required></textarea>
+                        </base-input>
+                        
+                    </b-col>
+
+                    <div>
+                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
+                        <b-button type="submit" variant="primary">Save</b-button>
+                    </div> 
+
+                </b-row>
+            </div>
+        </b-form>
+    </b-modal>
    
 </div>
 </template>
@@ -142,15 +200,31 @@
 <script>
 import axios from 'axios'
   export default {
+    
     data() {
         return {
             selectedDate: this.getTodayDate(), // default to today
-            clients: []
+            clients: [],
+            modal_1: false,
+            canceled_by: 'Client',
+            notes: '',
+            reschedule: '1',
+            reschedule_to: '',
+            selectedClient: ''
         };
     },
     computed: {
         today() {
         return this.getTodayDate();
+        },
+        minRescheduleDate() {
+            const date = new Date(this.selectedDate);
+            return date.toISOString().split('T')[0];
+        },
+        maxRescheduleDate() {
+            const date = new Date(this.selectedDate);
+            date.setDate(date.getDate() + 6);
+            return date.toISOString().split('T')[0];
         }
     },
     methods: {
@@ -169,7 +243,7 @@ import axios from 'axios'
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
-                this.clients = response.data;
+                this.clients = response.data.clients;
                 console.log(response);
                 
             })
@@ -203,6 +277,40 @@ import axios from 'axios'
             console.error(error);
             alert("Failed to mark attendance");
             }
+        },
+        viewModal(client)
+        {
+            this.modal_1 = true;
+            this.selectedClient = client.client_id;
+            console.log(client);
+        },
+        reSchedule()
+        {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+
+            formData.append('client_id', this.selectedClient);
+            formData.append('session_date', this.selectedDate);
+            formData.append('cancelled_by', this.canceled_by);
+            formData.append('reschedule', this.reschedule);
+            formData.append('reschedule_to', this.reschedule_to);
+            formData.append('notes', this.notes);
+            
+            
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}rescheduleSession`, formData,{
+                headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
+            })
+            .then(response => {
+                console.log('Consultation scheduled successfully:', response.data);
+                this.modal_1 = false;
+                this.clientList(this.selectedDate);
+                this.resetForm();
+            })
+            .catch(error => {
+            console.error('Error:', error.response && error.response.data ? error.response.data : error);
+
+            });
+
         }
     },
     mounted(){
