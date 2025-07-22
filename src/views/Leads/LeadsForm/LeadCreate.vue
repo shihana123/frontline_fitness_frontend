@@ -241,7 +241,7 @@
           formData.append('preferred_time', JSON.stringify(timeSlotValues));
         }
         const token = localStorage.getItem('token');
-        axios.post('${process.env.VUE_APP_API_BASE_URL}leadCreate', formData,{
+        axios.post(`${process.env.VUE_APP_API_BASE_URL}leadCreate`, formData,{
                 headers: { Authorization: `Token ${token}` }
         })
         .then(response => {

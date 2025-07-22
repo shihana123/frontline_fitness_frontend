@@ -157,7 +157,7 @@
     methods:{
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get('${process.env.VUE_APP_API_BASE_URL}salespausesclientList', {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}salespausesclientList`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -191,7 +191,7 @@
             formData.append('client_id', this.selectedClientID);
            
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}activatePauseClient', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}activatePauseClient`, formData,{
                 headers: { Authorization: `Token ${token}`}
             })
             .then(response => {

@@ -212,7 +212,7 @@
                 formData.append('activity_type', this.activity_type);
                 formData.append('followup_date', this.scheduled_followupdate);
                 
-                axios.post('${process.env.VUE_APP_API_BASE_URL}followupStatusUpdate', formData,{
+                axios.post(`${process.env.VUE_APP_API_BASE_URL}followupStatusUpdate`, formData,{
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {

@@ -19,10 +19,10 @@
                              prop="name">
             </el-table-column>
            
-            <el-table-column label="Email"
+            <!-- <el-table-column label="Email"
                              min-width="110px"
                              prop="email">
-            </el-table-column>
+            </el-table-column> -->
 
             <el-table-column label="Phone"
                              min-width="80px"
@@ -34,10 +34,10 @@
                              prop="programs[0].program.name">
             </el-table-column>
 
-            <el-table-column label="Workout Start Date"
+            <!-- <el-table-column label="Workout Start Date"
                              min-width="90px"
                              prop="workout_start_date">
-            </el-table-column>
+            </el-table-column> -->
             
            
             <el-table-column label="Action"
@@ -91,7 +91,7 @@
     methods:{
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get('${process.env.VUE_APP_API_BASE_URL}clientList', {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}clientList`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

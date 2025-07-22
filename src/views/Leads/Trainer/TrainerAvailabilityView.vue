@@ -85,7 +85,7 @@ import axios from 'axios'
                 return;
             }
 
-            axios.post('${process.env.VUE_APP_API_BASE_URL}availabilityTrainer', {
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}availabilityTrainer`, {
                 start_time: this.startTime,
                 end_time: this.endTime
             }, {

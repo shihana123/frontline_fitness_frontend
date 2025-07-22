@@ -226,7 +226,7 @@
             formData.append('bmi', this.scheduledata.bmi);
             formData.append('notes', this.scheduledata.notes);
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}scheduleconsulation', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}scheduleconsulation`, formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

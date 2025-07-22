@@ -393,7 +393,7 @@
         }
         console.log(formData);
         
-        axios.post('${process.env.VUE_APP_API_BASE_URL}userCreate', formData, {
+        axios.post(`${process.env.VUE_APP_API_BASE_URL}userCreate`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -409,7 +409,7 @@
       },
       async fetchRoles() {
         try {
-          const response = await axios.get('${process.env.VUE_APP_API_BASE_URL}roles/');
+          const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}roles/`);
           console.log(response);
           this.roles = response.data;
           

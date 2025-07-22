@@ -27,6 +27,15 @@
         >
           More Details
         </router-link>
+
+        <router-link
+          :to="{ name: 'clients/consultation_details', params: { id: client[0].id } }"
+          class="btn btn-sm btn-info mr-4"
+          v-if="role_id == 'Trainer'"
+        >
+          Consultation Details
+        </router-link>
+
         <!-- <a href="#" class="btn btn-sm btn-default float-right" v-if="role_id != 'Sales'">More Details</a> -->
       </div>
     </b-card-header>
@@ -184,7 +193,7 @@
             {
               const token = localStorage.getItem('token');
               console.log(localStorage.getItem('token'));
-              var userRes = await axios.get('${process.env.VUE_APP_API_BASE_URL}userDetails/', {
+              var userRes = await axios.get(`${process.env.VUE_APP_API_BASE_URL}userDetails/`, {
                 headers: { Authorization: `Token ${token}` }
               });
 

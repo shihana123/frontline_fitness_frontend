@@ -73,7 +73,7 @@ import axios from 'axios'
         fetchPrograms()
         {
                 const token = localStorage.getItem('token');
-                axios.get('${process.env.VUE_APP_API_BASE_URL}group-programs', {
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}group-programs`, {
                     headers: {
                         Authorization: `Token ${localStorage.getItem('token')}`
                     }

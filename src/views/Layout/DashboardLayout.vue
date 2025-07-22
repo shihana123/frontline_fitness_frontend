@@ -284,7 +284,7 @@
       {
         const token = localStorage.getItem('token');
         console.log(localStorage.getItem('token'));
-        var userRes = await axios.get('${process.env.VUE_APP_API_BASE_URL}userDetails/', {
+        var userRes = await axios.get(`${process.env.VUE_APP_API_BASE_URL}userDetails/`, {
           headers: { Authorization: `Token ${token}` }
         });
         this.role_id = userRes.data.roles[0].role.rolename;

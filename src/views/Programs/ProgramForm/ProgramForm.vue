@@ -334,7 +334,7 @@
         async fetchTrainer()
         {
             try {
-            const response = await axios.get('${process.env.VUE_APP_API_BASE_URL}byrole/3/');
+            const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}byrole/3/`);
             console.log(response);
             this.trainers = response.data;
             
@@ -383,7 +383,7 @@
               }
             }
 
-            axios.post('${process.env.VUE_APP_API_BASE_URL}programCreate', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}programCreate`, formData,{
             })
             .then(response => {
             console.log('Program created successfully:', response.data);

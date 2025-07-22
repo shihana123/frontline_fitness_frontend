@@ -667,7 +667,7 @@
                 formData.append('diet_chart', this.scheduledata.diet_chart);
             }
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}dietMeetingUpdations', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}dietMeetingUpdations`, formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
@@ -691,7 +691,7 @@
                 formData.append('diet_chart', this.scheduledata.diet_chart);
             }
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}dietOnlyMeetingUpdations', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}dietOnlyMeetingUpdations`, formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
@@ -716,7 +716,7 @@
                 formData.append('diet_chart', this.scheduledata.diet_chart);
             }
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}TDCMeetingUpdations', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}TDCMeetingUpdations`, formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {

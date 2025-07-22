@@ -249,7 +249,7 @@
         },
         async newclientList(){
             const token = localStorage.getItem('token');
-            axios.get('${process.env.VUE_APP_API_BASE_URL}salesclientList', {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}salesclientList`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -313,7 +313,7 @@
             formData.append('program_end_date', this.assignedata.program_end_date);
             formData.append('program_id', this.selectedProgramId);
 
-            axios.post('${process.env.VUE_APP_API_BASE_URL}assignTrainerDietitian', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}assignTrainerDietitian`, formData,{
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

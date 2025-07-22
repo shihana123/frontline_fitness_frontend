@@ -7,7 +7,7 @@
       <b-row>
         
         <b-col v-if="role == 'Trainer'">
-          <consultation-table></consultation-table>
+          <trainer-consultation-table></trainer-consultation-table>
         </b-col>
         <b-col v-else-if="role == 'Dietitian'">
           <dietitian-consultation-table></dietitian-consultation-table>
@@ -19,12 +19,12 @@
 </template>
 <script>
   import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
-  import ConsultationTable from "./ClientTable/ConsultationScheduleTable";
+  import TrainerConsultationTable from "./ClientTable/TrainerConsultationDetailsTable";
   import DietitianConsultationTable from "./ClientTable/DietitianConsultationDetailsTable";
 
   export default {
     components: {
-      ConsultationTable,
+      TrainerConsultationTable,
       DietitianConsultationTable
     },
     data() {

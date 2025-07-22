@@ -77,7 +77,7 @@
     },
     methods:{
         async userList(){
-            axios.get('${process.env.VUE_APP_API_BASE_URL}userList')
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}userList`)
             .then(response => {
                 this.users = response.data;
                 console.log('User fetched successfully:', response.data);

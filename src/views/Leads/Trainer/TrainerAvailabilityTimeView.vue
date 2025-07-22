@@ -82,7 +82,7 @@ import axios from 'axios'
         fetchAvailability()
         {
            
-            axios.get('${process.env.VUE_APP_API_BASE_URL}trainerHourlySchedule', {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}trainerHourlySchedule`, {
                 headers: {
                     Authorization: `Token ${localStorage.getItem('token')}`
                 }

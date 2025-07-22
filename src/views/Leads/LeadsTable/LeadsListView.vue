@@ -74,7 +74,7 @@
     methods:{
         async leadsList(){
             const token = localStorage.getItem('token');
-            axios.get('${process.env.VUE_APP_API_BASE_URL}leadsList', {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}leadsList`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

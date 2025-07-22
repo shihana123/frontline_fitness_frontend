@@ -118,6 +118,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ConsultationDetails.vue'),
         meta: { requiresAuth: true }
       },
+      
       {
         path: '/clients/graphical_view/:id',
         name: 'clients/graphical_view',

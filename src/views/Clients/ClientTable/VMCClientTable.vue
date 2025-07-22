@@ -133,7 +133,7 @@
     methods:{
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get('${process.env.VUE_APP_API_BASE_URL}vmcclientList', {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}vmcclientList`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -157,7 +157,7 @@
                 formData.append('diet_plan', this.dietdata.diet_plan);
             }
             
-            axios.post('${process.env.VUE_APP_API_BASE_URL}vmcDietchartUpload', formData,{
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}vmcDietchartUpload`, formData,{
                 headers: { Authorization: `Token ${token}`, 'Content-Type': 'multipart/form-data' }
             })
             .then(response => {
