@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider cross-env CI=false vue-cli-service build",
+    "serve": "vue-cli-se CI=false vue-cli-service build",
     "lint": "vue-cli-service lint",
     "dev": "npm run serve"
   },
