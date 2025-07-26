@@ -120,7 +120,7 @@ export default {
     },
     logout()
     {
-      axios.post('http://127.0.0.1:8000/api/auth/logout', {
+      axios.post('http://13.48.75.237//api/auth/logout', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }

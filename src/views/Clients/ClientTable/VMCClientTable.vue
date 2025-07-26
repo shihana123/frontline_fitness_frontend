@@ -189,7 +189,7 @@
         clientView(dietchart)
         {
             console.log(dietchart[0].diet_plan);
-            const pdfUrl = 'http://127.0.0.1:8000' + dietchart[0].diet_plan;
+            const pdfUrl = 'http://13.48.75.237/' + dietchart[0].diet_plan;
             if (pdfUrl) {
             window.open(pdfUrl, '_blank');
             } else {
