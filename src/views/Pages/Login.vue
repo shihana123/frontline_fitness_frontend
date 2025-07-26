@@ -89,7 +89,7 @@
         // this will be called only after form is valid. You can do api call here to login
 
         try {
-        const response = await axios.post('http://13.48.75.237/api/auth/login', {
+        const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/auth/login`, {
           email: this.cred.email,
           password: this.cred.password
         });
