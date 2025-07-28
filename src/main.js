@@ -17,12 +17,13 @@
 import Vue from 'vue';
 import DashboardPlugin from './plugins/dashboard-plugin';
 import App from './App.vue';
+import Swal from 'sweetalert2';
 
 // router setup
 import router from './routes/router';
 // plugin setup
 Vue.use(DashboardPlugin);
-
+Vue.prototype.$swal = Swal;
 
 
 /* eslint-disable no-new */
