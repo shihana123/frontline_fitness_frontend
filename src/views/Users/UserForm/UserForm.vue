@@ -15,16 +15,17 @@
           <b-col lg="6">
             <base-input
               type="text"
-              label="Name"
+              label="Name *"
               placeholder="Name"
               v-model="user.name"
               v-validate="'required|alpha'"
+              required
             >
             </base-input>
           </b-col>
           <b-col lg="6">
-            <base-input label="Select Role">
-            <select class="form-control" v-model="user.role">
+            <base-input label="Select Role *">
+            <select class="form-control" v-model="user.role" required>
                 <option v-for="role in roles" :key="role.id" :value="role.id">
                   {{ role.rolename }}
                 </option>
@@ -37,18 +38,20 @@
           <b-col lg="6">
             <base-input
               type="email"
-              label="Username/Email"
-              placeholder="Username"
-              v-model="user.email   "
+              label="Email *"
+              placeholder="Email"
+              v-model="user.email"
+              required
             >
             </base-input>
           </b-col>
           <b-col lg="6">
             <base-input
               type="password"
-              label="Password"
+              label="Password *"
               placeholder="*****"
               v-model="user.password"
+              required
             >
             </base-input>
           </b-col>
@@ -58,18 +61,20 @@
           <b-col lg="6">
             <base-input
               type="tel"
-              label="Phone Number"
+              label="Phone Number *"
               placeholder="Phone Number"
               v-model="user.phonenumber"
+              required
             >
             </base-input>
           </b-col>
           <b-col lg="6">
             <base-input
               type="number"
-              label="Age"
+              label="Age *"
               placeholder="Age"
               v-model="user.age"
+              required
             >
             </base-input>
           </b-col>
@@ -77,8 +82,8 @@
 
         <b-row>
           <b-col lg="6">
-            <base-input label="Gender" v-model="user.gender">
-            <select class="form-control">
+            <base-input label="Gender *" v-model="user.gender">
+            <select class="form-control" required>
                 <option>Male</option>
                 <option>Female</option>
                 <option>Others</option>
@@ -119,7 +124,7 @@
           <b-col lg="4">
             <base-input
               type="text"
-              label="Country"
+              label="Country *"
               placeholder="Country"
               v-model="user.country"
             >
@@ -172,9 +177,10 @@
           <b-col lg="6">
             <base-input
               type="date"
-              label="Joining Date"
+              label="Joining Date *"
               placeholder="Joining Date"
               v-model="user.joiningDate"
+              required
             >
             </base-input>
           </b-col>
@@ -192,7 +198,7 @@
 
         <b-row>
           <b-col lg="12">
-            <base-input label="Available Days">
+            <base-input label="Available Days *">
                 <b-form-checkbox-group
                 v-model="user.selectedDays"
                 :options="days"
@@ -208,7 +214,7 @@
         <b-row>
           <b-col lg="12">
             <label class="form-control-label">
-              Available Time
+              Available Time *
             </label>
             <div>
               <!-- <div v-for="(range, index) in user.timeRanges" :key="index" class="mb-4">
@@ -259,6 +265,24 @@
       </div>
 
     </b-form>
+    <b-modal
+      id="lead-success-modal"
+      title="User Management"
+      hide-footer
+      v-model="showSuccessModal"
+    >
+      <div class="text-center">
+        <b-alert show variant="success">
+          <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+          <span class="alert-text"><strong>Success!</strong> User Created Successfully!</span>
+        </b-alert>
+
+
+        <b-button variant="primary" @click="goToUserList">Close</b-button>
+        <b-button variant="info" class="ml-2" @click="addMoreUser">Add More</b-button>
+      </div>
+    </b-modal>
+
   </card>
 </template>
 <script>
@@ -275,6 +299,7 @@
     },
     data() {
       return {
+        showSuccessModal: false,
         user: {
           name: '',
           email: '',
@@ -400,6 +425,7 @@
         })
         .then(response => {
           console.log('User created successfully:', response.data);
+          this.showSuccessModal = true;
         })
         .catch(error => {
           console.error('Error creating user:', error.response && error.response.data ? error.response.data : error);
@@ -420,7 +446,43 @@
       },
       handleFileUpload(event, field) {
         this.user[field] = event.target.files[0];
-      }
+      },
+      goToUserList()
+      {
+        this.showSuccessModal = false;
+        this.$router.push({ name: 'users' });
+      },
+      addMoreUser()
+      {
+        this.showSuccessModal = false;
+        // Reset form
+        this.user = {
+          name: '',
+          email: '',
+          password: '',
+          role: '',
+          phonenumber: '',
+          age: '',
+          gender: '',
+          address: '',
+          city: '',
+          country: '',
+          postalCode: '',
+          resume: '',
+          contract: '',
+          joiningDate: '',
+          language: [],
+          selectedDays: [],
+          // timeRanges : [
+          //   { value : [540, 720] }
+          // ],
+          timeRanges: [
+            { value : ['', ''] }
+          ]
+        };
+        this.errors.clear();
+        this.$validator.reset();
+      },
 
     },
     mounted(){

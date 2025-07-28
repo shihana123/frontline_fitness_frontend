@@ -34,6 +34,17 @@
             :link="{
               name: 'Programs',
               path: '/programs',
+              icon: 'ni ni-bullet-list-67 text-info'
+              }"
+            >
+        </sidebar-item>
+
+
+
+        <sidebar-item v-if="role_id == 'Admin'"
+            :link="{
+              name: 'Sessions',
+              path: '/sessions',
               icon: 'ni ni-ui-04 text-orange'
               }"
             >

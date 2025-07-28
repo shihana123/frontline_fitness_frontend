@@ -71,8 +71,8 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/programs',
-        name: 'programs',
+        path: '/sessions',
+        name: 'sessions',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Programs/ProgramList.vue'),
         meta: { requiresAuth: true }
       },

@@ -89,7 +89,12 @@
         // this will be called only after form is valid. You can do api call here to login
 
         try {
-        const response = await axios.post(`http://13.48.75.237/api/api/auth/login`, {
+        // const response = await axios.post(`http://13.48.75.237/api/api/auth/login`, {
+        //   email: this.cred.email,
+        //   password: this.cred.password
+        // });
+
+        const response = await axios.post(`http://127.0.0.1:8000/api/auth/login`, {
           email: this.cred.email,
           password: this.cred.password
         });
@@ -150,6 +155,8 @@
       },
       async userDetails()
       {
+        console.log(process.env.VUE_APP_API_BASE_URL);
+        
         const token = localStorage.getItem('token');
         await axios.get(`${process.env.VUE_APP_API_BASE_URL}userDetails/`, {
         headers: { Authorization: `Token ${token}` }
