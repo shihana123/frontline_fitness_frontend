@@ -9,7 +9,7 @@
         <b-card-body>
             <div>
                     <b-row>
-                        <b-col lg="4">
+                        <b-col lg="6">
                             <label class="form-control-label">Group</label>
                             <select class="form-control" v-model="selectedProgram" @change="programChange">
                                 <option v-for="(program, index) in programs" :key="program.id" :value="program.id">{{ program.name }}</option>
@@ -26,18 +26,20 @@
                                             <thead>
                                                 <tr>
                                                     <!-- <th>Program Name</th> -->
-                                                    <th>Level</th>
+                                                    <!-- <th>Level</th> -->
                                                     <th>Slots</th>
                                                     <th>Time</th>
                                                     <th>Days</th>
+                                                    <th>Trainer</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr v-for="(program_level, index) in selectedProgramDetails[0].levels">
-                                                    <td>Level {{ program_level.level }}</td>
-                                                    <td>{{ program_level.enrolled_clients }}/{{ program_level.capacity }}</td>
-                                                    <td>{{ formatTimeRanges(program_level.time) }}</td>
-                                                    <td>{{ program_level.days.join(', ') }}</td>
+                                                <tr v-for="(program_level, index) in selectedProgramDetails">
+                                                    <td>{{ program_level.enrolled_clients }}/{{ program_level.program_capacity }}</td>
+                                                    <td>{{ formatTimeRanges(program_level.program_select_time) }}</td>
+                                                    <td>{{ program_level.program_select_days.join(', ') }}</td>
+                                                    <td>{{ program_level.trainer_name }}</td>
+                                                   
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -91,8 +93,6 @@ import axios from 'axios'
         },
         fetchSingleProgramDetails()
         {
-            console.log('hi');
-            
             const token = localStorage.getItem('token');
                 axios.get(`${process.env.VUE_APP_API_BASE_URL}single-group-programs/${this.selectedProgram}`, {
                     headers: {

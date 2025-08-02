@@ -2,7 +2,7 @@
   <card>
     <b-row align-v="center" slot="header" >
       <b-col cols="8">
-        <h3 class="mb-0">Leads - Create</h3>
+        <h3 class="mb-0">Leads - Update</h3>
       </b-col>
     </b-row>
 
@@ -79,6 +79,11 @@
       <h6 class="heading-small text-muted mb-4">Program Data</h6>
       <div class="pl-lg-4">
         <b-row>
+          <b-button size="sm"  variant="success" class="create_btn" v-if="lead.program_type=='Personal Training'" v-b-modal.modal-1 @click="trainer_availabilitymodal()">Trainer Availability</b-button>
+
+          <b-button size="sm"  variant="success" class="create_btn" v-if="lead.program_type=='Group'" v-b-modal.modal-2 @click="group_availabilitymodal()">Group Availability</b-button>
+        </b-row>
+        <b-row>
           <b-col lg="6">
             <label class="form-control-label">Program Type</label>
               <select class="form-control" v-model="lead.program_type" @change="fetchProgram">
@@ -91,10 +96,18 @@
               <option v-for="program in programs" :key="program.id" :value="program.id">{{ program.name }}</option>
             </select>
           </b-col>
+          <b-col lg="6">
+            <label class="form-control-label">Trainer</label>
+              <select class="form-control" v-model="lead.trainer" required>
+                <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
+                    {{ trainer.name }}
+                </option>
+              </select>
+          </b-col>
           
         </b-row>
 
-        <b-row>
+        <b-row>{{ lead.program_type }}
           <b-col lg="12">
             <base-input label="Days">
                 <b-form-checkbox-group
@@ -102,6 +115,7 @@
                 :options="days"
                 name="days"
                 stacked
+                :disabled="lead.program_type === 'Group'"   
                 >
                 </b-form-checkbox-group>
             </base-input>
@@ -120,12 +134,14 @@
                     type="time"
                     v-model="slot.value[0]"
                     class="time_field" 
+                    :readonly="lead.program_type === 'Group'"   
                   />
                   <span>  to  </span>
                   <input
                     type="time"
                     v-model="slot.value[1]" 
                     class="time_field" 
+                    :readonly="lead.program_type === 'Group'"   
                   />
               </div>
             </div>
@@ -139,16 +155,29 @@
       </div>
 
     </b-form>
+
+    <b-modal size="lg" id="modal-1" hide-footer v-if="modal_1">
+        <trainer-availability/>
+    </b-modal>
+
+    <b-modal size="lg" id="modal-2" hide-footer v-if="modal_2">
+        <group-table/>
+    </b-modal>
+
   </card>
 </template>
 <script>
   import axios from 'axios'
   import Multiselect from 'vue-multiselect'
   import 'vue-multiselect/dist/vue-multiselect.min.css'
+  import TrainerAvailability from "../Trainer/TrainerAvailabilityTimeView";
+  import GroupTable from "../../Programs/ProgramTable/GroupAvailabilityTable";
 
   export default {
     components: {
-      Multiselect
+      Multiselect,
+      TrainerAvailability,
+      GroupTable
     },
     data() {
       return {
@@ -169,8 +198,10 @@
           lead_date: '',
           followup_date: '',
           notes: '',
-          followups: []
+          followups: [],
+          trainer: ''
         },
+        trainers: [],
         days: [
           { text: 'Sunday', value: 'sunday' },
           { text: 'Monday', value: 'monday' },
@@ -183,15 +214,38 @@
         status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
         programs: [],
-        countries: []
+        countries: [],
+        modal_1: false,
+        modal_2: false
       };
     },
     watch: {
       'lead.program_type'(newType) {
         this.fetchProgram();
+      },
+      'lead.program'(newVal) {
+        if (newVal && this.lead.program_type === 'Group') {
+          this.fetchGroupProgramDetails(newVal);
+        }
       }
     },
     methods: {
+      fetchGroupProgramDetails(selectedProgram)
+      {
+        const token = localStorage.getItem('token');
+        axios.get(`${process.env.VUE_APP_API_BASE_URL}single-group-programs/${selectedProgram}`, {
+          headers: {
+            Authorization: `Token ${localStorage.getItem('token')}`
+          }
+          }).then(response => {
+            console.log(response.data);
+            // this.selectedProgramDetails = response.data;
+            this.lead.preferred_days = response.data[0].program_select_days;
+            this.lead.preferred_time = response.data[0].program_select_time.map(slot => ({ value: slot }));
+          }).catch(error => {
+            console.error(error);
+          });
+      },
       async leadDetails(id)
       {
         const token = localStorage.getItem('token');
@@ -208,6 +262,7 @@
                 this.lead.program_type = response.data[0].program_type;
                 this.fetchProgram();
                 this.lead.program = response.data[0].program_name;
+                this.lead.trainer = response.data[0].trainer;
                 this.lead.preferred_time = response.data[0].preferred_time.map(range => ({
                   value: range
                 }));
@@ -236,6 +291,7 @@
         formData.append('country', this.lead.country);
         formData.append('program_type', this.lead.program_type);
         formData.append('program_name', this.lead.program);
+        formData.append('trainer', this.lead.trainer);
         formData.append('preferred_days', JSON.stringify(this.lead.preferred_days));
 
         const timeSlotsKey = `preferred_time`;
@@ -255,6 +311,7 @@
         })
         .then(response => {
           console.log('Lead Updated successfully:', response.data);
+          this.$swal.fire("Updated!", "Lead has been updated.", "success");
         })
         .catch(error => {
           console.error('Error updating lead:', error.response && error.response.data ? error.response.data : error);
@@ -264,6 +321,10 @@
       async fetchProgram()
       {
         const program_type = this.lead.program_type;
+        if (this.lead.program_type !== 'Group') {
+          this.lead.preferred_days = [];
+          this.lead.preferred_time = [{ value: ['', ''] }];
+        }
       
         const token = localStorage.getItem('token');
             await axios.get(`${process.env.VUE_APP_API_BASE_URL}programListTrainer/${program_type}/`, {
@@ -295,17 +356,37 @@
                 console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
             });
       },
-      
+      trainer_availabilitymodal()
+      {
+        this.modal_1 = true;
+      },
+      group_availabilitymodal()
+      {
+        this.modal_2 = true;
+      },
+      async fetchTrainers()
+        {
+            try {
+            const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}byrole/3/`);
+            // console.log(response);
+            this.trainers = response.data;
+            
+            // this.roles = response.data;
+            } catch (error) {
+            console.error('Error fetching roles:', error);
+            }
+        },
     
     },
     
     mounted(){
       
       this.fetchProgram();
+      this.fetchTrainers();
       this.fetchCountries();
       const id = this.$route.params.id;
       this.leadDetails(id)
-
+      
     }
   };
 </script>

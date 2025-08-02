@@ -83,8 +83,8 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/programs/create',
-        name: 'programs/create',
+        path: '/sessions/create',
+        name: 'sessions/create',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Programs/CreateProgram.vue'),
         meta: { requiresAuth: true }
       },
@@ -219,6 +219,12 @@ const routes = [
         path: '/leads/edit/:id',
         name: 'leads/edit',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Leads/UpdateLeads.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/create',
+        name: 'clients/create',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/CreateClients.vue'),
         meta: { requiresAuth: true }
       },
       {

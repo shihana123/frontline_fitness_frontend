@@ -2,13 +2,13 @@
   <card>
     <b-row align-v="center" slot="header" >
       <b-col cols="8">
-        <h3 class="mb-0">Leads - Create</h3>
+        <h3 class="mb-0">Client - Create</h3>
       </b-col>
     </b-row>
     
 
     <b-form @submit.prevent="createLead">
-      <h6 class="heading-small text-muted mb-4">Leads information</h6>
+      <h6 class="heading-small text-muted mb-4">Client information</h6>
 
       <div class="pl-lg-4">
         
@@ -92,27 +92,35 @@
         <b-row>
           
           <b-col lg="6">
-            <label class="form-control-label">Program Type</label>
+            <label class="form-control-label">Program Type *</label>
               <select class="form-control" v-model="lead.program_type" @change="fetchProgram">
                 <option v-for="program_type in programTypes" :value="program_type">{{ program_type }}</option>
               </select>
           </b-col>
           <b-col lg="6">
-            <label class="form-control-label">Program Needed</label>
-            <select v-model="lead.program" class="form-control" >
+            <label class="form-control-label">Program Needed *</label>
+            <select v-model="lead.program" class="form-control" required>
               <option v-for="program in programs" :key="program.id" :value="program.id">{{ program.name }}</option>
             </select>
           </b-col>
+        </b-row>
 
+        <b-row>
           <b-col lg="6">
-            <label class="form-control-label">Trainer</label>
-              <select class="form-control" v-model="lead.trainer">
+            <label class="form-control-label">Trainer *</label>
+              <select class="form-control" v-model="lead.trainer" required>
                 <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
                     {{ trainer.name }}
                 </option>
               </select>
           </b-col>
-          
+          <b-col lg="6">
+            <base-input label="Dietitian *">
+                <select class="form-control" v-model="lead.dietitian" required>
+                    <option v-for="dietitian in dietitians" :key="dietitian.id" :value="dietitian.id">{{ dietitian.name }}</option>
+                </select>
+            </base-input>
+          </b-col>
         </b-row>
 
         <b-row>
@@ -154,39 +162,69 @@
               </div>
             </div>
           </b-col>
-          <b-col lg="6">
-              <base-input
+        </b-row>
+
+        <b-row>
+            <b-col lg="6">
+                        <base-input label="Choose Program Months *">
+                            <select class="form-control" v-model="lead.program_month" required>
+                                <option v-for="program_month in program_months" :key="program_month" :value="program_month">{{ program_month }}</option>
+                            </select>
+                        </base-input>
+                    </b-col>
+                    <b-col lg="6">
+                        <base-input
+                        type="text"
+                        label="Amount *"
+                        v-model="lead.amount"
+                        required
+                        >
+                        </base-input>
+                    </b-col>
+        </b-row>
+
+        <b-row>
+            <b-col lg="6">
+                <base-input
                 type="date"
-                label="Follow-up Date *"
-                placeholder="Follow-up Date"
-                v-model="lead.followup_date"
+                label="Program Start Date *"
+                v-model="lead.program_start_date"
                 required
-              >
-              </base-input>
+                >
+                </base-input>
+            </b-col>
+            <b-col lg="6">
+                <base-input
+                type="date"
+                label="Program End Date *"
+                v-model="lead.program_end_date"
+                disabled
+                >
+                </base-input>
             </b-col>
         </b-row>
       
 
-        <b-button type="submit" variant="success" class="submit_btn">Create Lead</b-button>
+        <b-button type="submit" variant="success" class="submit_btn">Create Client</b-button>
       </div>
 
     </b-form>
 
     <b-modal
       id="lead-success-modal"
-      title="Lead Management"
+      title="Client Management"
       hide-footer
       v-model="showSuccessModal"
     >
       <div class="text-center">
         <b-alert show variant="success">
           <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-          <span class="alert-text"><strong>Success!</strong> Lead Created Successfully!</span>
+          <span class="alert-text"><strong>Success!</strong> Client Created Successfully!</span>
         </b-alert>
 
 
         <b-button variant="primary" @click="goToLeadsList">Close</b-button>
-        <b-button variant="info" class="ml-2" @click="addMoreLead">Add More</b-button>
+        <b-button variant="info" class="ml-2" @click="addMoreClient">Add More</b-button>
       </div>
     </b-modal>
 
@@ -205,7 +243,7 @@
 </template>
 <script>
   import axios from 'axios'
-  import TrainerAvailability from "../Trainer/TrainerAvailabilityTimeView";
+  import TrainerAvailability from "../../Leads/Trainer/TrainerAvailabilityTimeView";
   import GroupTable from "../../Programs/ProgramTable/GroupAvailabilityTable";
   
  
@@ -216,27 +254,37 @@
       GroupTable
     },
     data() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const yyyy = today.getFullYear();
       return {
         showSuccessModal: false,
         lead: {
-          name: '',
-          source: '',
-          phone_no: '',
-          email: '',
-          status: 'New Lead',
-          country: 100,
-          program_type: 'Personal Training',
-          program: '',
-          preferred_time: [
-            { value : ['', ''] }
-          ],
-          preferred_days: [],
-          lead_date: '',
-          followup_date: '',
-          trainer: ''
-          // notes: '',
+            name: '',
+            source: '',
+            phone_no: '',
+            email: '',
+            status: 'Converted',
+            country: 100,
+            program_type: 'Personal Training',
+            program: '',
+            preferred_time: [
+                { value : ['', ''] }
+            ],
+            preferred_days: [],
+            lead_date: '',
+            followup_date: '',
+            trainer: '',
+            program_month: 3,
+            amount: 0,
+            program_start_date: `${yyyy}-${mm}-${dd}`,
+            program_end_date: '',
+            dietitian: '',
         },
         trainers: [],
+        dietitians: [],
+        program_months: [1,3,6,9,12],
         days: [
           { text: 'Sunday', value: 'sunday' },
           { text: 'Monday', value: 'monday' },
@@ -246,7 +294,7 @@
           { text: 'Friday', value: 'friday' },
           { text: 'Saturday', value: 'saturday' },
         ],
-        status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
+        status: ['Converted', 'InActive'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
         programs: [],
         countries: [],
@@ -259,9 +307,29 @@
         if (newVal && this.lead.program_type === 'Group') {
           this.fetchGroupProgramDetails(newVal);
         }
-      }
+      },
+      'lead.program_start_date': 'updateEndDate',
+      'lead.program_month': 'updateEndDate',
+    },
+    created() {
+        this.updateEndDate(); // call once to initialize program_end_date
     },
     methods: {
+        updateEndDate() {
+            if (!this.lead.program_start_date || !this.lead.program_month) return;
+
+            const startDate = new Date(this.lead.program_start_date);
+            const monthsToAdd = parseInt(this.lead.program_month);
+
+            // Calculate new end date
+            const endDate = new Date(startDate.setMonth(startDate.getMonth() + monthsToAdd));
+
+            const yyyy = endDate.getFullYear();
+            const mm = String(endDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(endDate.getDate()).padStart(2, '0');
+
+            this.lead.program_end_date = `${yyyy}-${mm}-${dd}`;
+        },
       fetchGroupProgramDetails(selectedProgram)
       {
         const token = localStorage.getItem('token');
@@ -288,10 +356,17 @@
         formData.append('country', this.lead.country);
         formData.append('program_type', this.lead.program_type);
         formData.append('program_name', this.lead.program);
-        formData.append('trainer', this.lead.trainer);
+        formData.append('trainer_id', this.lead.trainer);
         formData.append('follow_up_date', this.lead.followup_date);
         formData.append('preferred_days', JSON.stringify(this.lead.preferred_days));
-        
+        formData.append('dietitian_id', this.lead.dietitian);
+        formData.append('program_month', this.lead.program_month);
+        formData.append('amount', this.lead.amount);
+        formData.append('program_start_date', this.lead.program_start_date);
+        formData.append('program_end_date', this.lead.program_end_date);
+        formData.append('status', this.lead.status);
+
+
         const timeSlotsKey = `preferred_time`;
         
         const timeSlots = (this.lead[timeSlotsKey] && this.lead[timeSlotsKey].filter(slot => slot.value[0] && slot.value[1])) || [];
@@ -301,7 +376,7 @@
           formData.append('preferred_time', JSON.stringify(timeSlotValues));
         }
         const token = localStorage.getItem('token');
-        axios.post(`${process.env.VUE_APP_API_BASE_URL}leadCreate`, formData,{
+        axios.post(`${process.env.VUE_APP_API_BASE_URL}clientCreate`, formData,{
                 headers: { Authorization: `Token ${token}` }
         })
         .then(response => {
@@ -319,26 +394,32 @@
         this.showSuccessModal = false;
         this.$router.push({ name: 'leads' });
       },
-      addMoreLead()
+      addMoreClient()
       {
         this.showSuccessModal = false;
         // Reset form
         this.lead = {
-          name: '',
-          source: '',
-          phone_no: '',
-          email: '',
-          status: 'New Lead',
-          country: 100,
-          program_type: 'Personal Training',
-          program: '',
-          preferred_time: [
-            { value : ['', ''] }
-          ],
-          preferred_days: [],
-          lead_date: '',
-          followup_date: '',
-        };
+            name: '',
+            source: '',
+            phone_no: '',
+            email: '',
+            status: 'Converted',
+            country: 100,
+            program_type: 'Personal Training',
+            program: '',
+            preferred_time: [
+                { value : ['', ''] }
+            ],
+            preferred_days: [],
+            lead_date: '',
+            followup_date: '',
+            trainer: '',
+            program_month: 3,
+            amount: 0,
+            program_start_date: `${yyyy}-${mm}-${dd}`,
+            program_end_date: '',
+            dietitian: '',
+        },
         this.errors.clear();
         this.$validator.reset();
       },
@@ -414,6 +495,20 @@
             console.error('Error fetching roles:', error);
             }
         },
+        async fetchDietitians()
+        {
+            const token = localStorage.getItem('token');
+            await axios.get(`${process.env.VUE_APP_API_BASE_URL}byrole/4/`, {
+                headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                this.dietitians = response.data;
+                console.log(response);
+            })
+            .catch(error => {
+                console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+            });
+        },
     
     },
     mounted(){
@@ -421,6 +516,7 @@
       this.fetchProgram();
       this.fetchCountries();
       this.fetchTrainer();
+      this.fetchDietitians();
     }
   };
 </script>
