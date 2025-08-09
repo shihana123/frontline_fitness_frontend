@@ -138,7 +138,11 @@ export default {
       } catch (error) {
         console.error('Error fetching users:', error);
       }
-    }
+    },
+    redirect()
+        {
+            this.$router.push('/users/create');
+        }
   },
   mounted() {
     this.userList();

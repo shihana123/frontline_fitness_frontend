@@ -35,12 +35,9 @@
                 :sortable="col.sortable"
             >
             </el-table-column>
-            
+<!--             
             <el-table-column label="Actions" min-width="180">
                 <template slot-scope="scope">
-                    <!-- <a href="#" class="table-icons" data-toggle="tooltip" title="View">
-                        <i class="ni ni-circle-08"></i>
-                    </a> -->
 
                     <base-button size="sm" type="info" v-b-modal.modal-1 @click="assignTrainerView(scope.row)" v-if="!scope.row.programs[0].dietitian || !scope.row.programs[0].trainer">
                         Assign
@@ -55,7 +52,7 @@
                         delete
                     </base-button>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
         </el-table>
 
         <b-card-footer class="py-4 d-flex justify-content-end">
@@ -213,9 +210,17 @@
             { prop: 'client_id', label: 'ID', minWidth: 140, sortable: true },
             { prop: 'name', label: 'Name', minWidth: 140, sortable: true },
             // { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
+            { prop: 'source', label: 'Source', minWidth: 140, sortable: true },
             { prop: 'phone', label: 'Phone', minWidth: 140, sortable: true },
-            { prop: 'programs[0].program.name', label: 'Program', minWidth: 140, sortable: true },
+            { prop: 'email', label: 'Email', minWidth: 140, sortable: true },
             { prop: 'country_name', label: 'Country', minWidth: 140, sortable: true },
+            { prop: 'programs[0].program_type', label: 'Program Type', minWidth: 140, sortable: true },
+            { prop: 'programs[0].program.name', label: 'Program', minWidth: 140, sortable: true },
+            { prop: 'programs[0].trainer.name', label: 'Trainer', minWidth: 140, sortable: true },
+            { prop: 'programs[0].dietitian.name', label: 'Dietitian', minWidth: 140, sortable: true },
+            { prop: 'programs[0].workout_days', label: 'Days', minWidth: 140, sortable: true },
+            { prop: 'programs[0].preferred_time', label: 'Time', minWidth: 140, sortable: true },
+ 
         ],
       };
     },
@@ -271,7 +276,7 @@
         },
         async newclientList(){
             const token = localStorage.getItem('token');
-            axios.get(`${process.env.VUE_APP_API_BASE_URL}salesclientList`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}allclientList`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

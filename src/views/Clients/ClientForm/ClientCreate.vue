@@ -26,15 +26,10 @@
            
           </b-col>
           <b-col lg="6">
-            <base-input
-              type="text"
-              label="Source *"
-              placeholder="Source"
-              v-model="lead.source"
-              v-validate="'required|alpha'"
-              required
-            >
-            </base-input>
+            <label class="form-control-label">Source *</label>
+              <select class="form-control" v-model="lead.source" required>
+                <option v-for="source in sources" :value="source">{{ source }}</option>
+              </select>
           </b-col>
           
         </b-row>
@@ -78,6 +73,22 @@
           </b-col>
         </b-row>
 
+        <b-row>
+          <b-col lg="6">
+            <base-input
+              type="number"
+              label="Age *"
+              placeholder="Age"
+              v-model="lead.age"
+              v-validate="'required'"
+              required
+              min=1
+            >
+            </base-input>
+           
+          </b-col>
+        </b-row>
+
       </div>
      
       <hr class="my-4">
@@ -108,7 +119,7 @@
         <b-row>
           <b-col lg="6">
             <label class="form-control-label">Trainer *</label>
-              <select class="form-control" v-model="lead.trainer" required>
+              <select class="form-control" v-model="lead.trainer" required :disabled="lead.program_type === 'Group'">
                 <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
                     {{ trainer.name }}
                 </option>
@@ -265,6 +276,7 @@
             source: '',
             phone_no: '',
             email: '',
+            age: '',
             status: 'Converted',
             country: 100,
             program_type: 'Personal Training',
@@ -296,6 +308,7 @@
         ],
         status: ['Converted', 'InActive'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
+        sources : ['Instagram', 'Friend/Family Recommendation', 'Online Search', 'Aster Medicity', 'VMC'],
         programs: [],
         countries: [],
         modal_1: false,
@@ -342,6 +355,7 @@
             // this.selectedProgramDetails = response.data;
             this.lead.preferred_days = response.data[0].program_select_days;
             this.lead.preferred_time = response.data[0].program_select_time.map(slot => ({ value: slot }));
+            this.lead.trainer = response.data[0].program_trainer;
           }).catch(error => {
             console.error(error);
           });
@@ -365,6 +379,7 @@
         formData.append('program_start_date', this.lead.program_start_date);
         formData.append('program_end_date', this.lead.program_end_date);
         formData.append('status', this.lead.status);
+        formData.append('age', this.lead.age);
 
 
         const timeSlotsKey = `preferred_time`;

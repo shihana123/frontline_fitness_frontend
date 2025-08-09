@@ -26,15 +26,11 @@
            
           </b-col>
           <b-col lg="6">
-            <base-input
-              type="text"
-              label="Source *"
-              placeholder="Source"
-              v-model="lead.source"
-              v-validate="'required|alpha'"
-              required
-            >
-            </base-input>
+            
+            <label class="form-control-label">Source *</label>
+              <select class="form-control" v-model="lead.source" required>
+                <option v-for="source in sources" :value="source">{{ source }}</option>
+              </select>
           </b-col>
           
         </b-row>
@@ -78,6 +74,22 @@
           </b-col>
         </b-row>
 
+        <b-row>
+          <b-col lg="6">
+            <base-input
+              type="number"
+              label="Age *"
+              placeholder="Age"
+              v-model="lead.age"
+              v-validate="'required'"
+              required
+              min=1
+            >
+            </base-input>
+           
+          </b-col>
+        </b-row>
+
       </div>
      
       <hr class="my-4">
@@ -103,35 +115,17 @@
               <option v-for="program in programs" :key="program.id" :value="program.id">{{ program.name }}</option>
             </select>
           </b-col>
-
+        </b-row>
+        <b-row>
           <b-col lg="6">
             <label class="form-control-label">Trainer</label>
-              <select class="form-control" v-model="lead.trainer">
+              <select class="form-control" v-model="lead.trainer" :disabled="lead.program_type === 'Group'">
                 <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
                     {{ trainer.name }}
                 </option>
               </select>
           </b-col>
-          
-        </b-row>
 
-        <b-row>
-          <b-col lg="12">
-            <base-input label="Days">
-                <b-form-checkbox-group
-                v-model="lead.preferred_days"
-                :options="days"
-                name="days"
-                stacked
-                :disabled="lead.program_type === 'Group'"
-                >
-                </b-form-checkbox-group>
-            </base-input>
-            
-          </b-col>
-        </b-row>
-
-        <b-row>
           <b-col lg="6">
             <label class="form-control-label">
               Preferred Time
@@ -154,6 +148,35 @@
               </div>
             </div>
           </b-col>
+          
+        </b-row>
+
+        <b-row>
+          <b-col lg="12">
+            <base-input label="Days">
+                <b-form-checkbox-group
+                v-model="lead.preferred_days"
+                :options="days"
+                name="days"
+                stacked
+                :disabled="lead.program_type === 'Group'"
+                >
+                </b-form-checkbox-group>
+            </base-input>
+            
+          </b-col>
+        </b-row>
+
+        <b-row>
+          
+          
+        </b-row>
+
+        <hr class="my-4">
+      <!-- Description -->
+      <h6 class="heading-small text-muted mb-4">Followup Details</h6>
+      <div class="pl-lg-4">
+        <b-row>
           <b-col lg="6">
               <base-input
                 type="date"
@@ -164,7 +187,14 @@
               >
               </base-input>
             </b-col>
+
+            <b-col lg="6">
+              <base-input label="Notes">
+                <textarea class="form-control" id="notes" rows="3" col="5" v-model="lead.notes" required ></textarea>
+              </base-input>
+            </b-col>
         </b-row>
+      </div>
       
 
         <b-button type="submit" variant="success" class="submit_btn">Create Lead</b-button>
@@ -233,8 +263,9 @@
           preferred_days: [],
           lead_date: '',
           followup_date: '',
-          trainer: ''
-          // notes: '',
+          trainer: '',
+          notes: '',
+          age: '',
         },
         trainers: [],
         days: [
@@ -248,6 +279,7 @@
         ],
         status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
+        sources : ['Instagram', 'Friend/Family Recommendation', 'Online Search', 'Aster Medicity', 'VMC'],
         programs: [],
         countries: [],
         modal_1: false,
@@ -274,6 +306,7 @@
             // this.selectedProgramDetails = response.data;
             this.lead.preferred_days = response.data[0].program_select_days;
             this.lead.preferred_time = response.data[0].program_select_time.map(slot => ({ value: slot }));
+            this.lead.trainer = response.data[0].program_trainer;
           }).catch(error => {
             console.error(error);
           });
@@ -289,7 +322,9 @@
         formData.append('program_type', this.lead.program_type);
         formData.append('program_name', this.lead.program);
         formData.append('trainer', this.lead.trainer);
+        formData.append('age', this.lead.age);
         formData.append('follow_up_date', this.lead.followup_date);
+        formData.append('notes', this.lead.notes);
         formData.append('preferred_days', JSON.stringify(this.lead.preferred_days));
         
         const timeSlotsKey = `preferred_time`;

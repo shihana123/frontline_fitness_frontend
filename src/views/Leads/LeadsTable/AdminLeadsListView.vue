@@ -35,13 +35,10 @@
 
             <el-table-column label="Actions" min-width="180">
                 <template slot-scope="scope">
-                    <!-- <a href="#" class="table-icons" data-toggle="tooltip" title="View">
-                        <i class="ni ni-circle-08"></i>
-                    </a> -->
-
-                    <base-button size="sm" type="info" v-b-modal.modal-1  @click="followup(scope.row.id)">
+                   
+                    <!-- <base-button size="sm" type="info" v-b-modal.modal-1  @click="followup(scope.row.id)">
                         Update
-                    </base-button>
+                    </base-button> -->
                 
                     <base-button size="sm" type="warning" @click="redirectLead(scope.row)">
                         Followups
@@ -87,7 +84,7 @@
         tableColumns: [
             { prop: 'name', label: 'Name', minWidth: 140, sortable: true },
             { prop: 'source', label: 'Source', minWidth: 140, sortable: true },
-            // { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
+            { prop: 'sales_id.name', label: 'Sales', minWidth: 140, sortable: true },
             { prop: 'phone', label: 'Phone', minWidth: 140, sortable: true },
             { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
             { prop: 'country_name', label: 'Country', minWidth: 140, sortable: true },
@@ -132,7 +129,7 @@
         },
         async leadsList(){
             const token = localStorage.getItem('token');
-            axios.get(`${process.env.VUE_APP_API_BASE_URL}leadsList`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}allleadsList`, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {

@@ -18,7 +18,7 @@
                                             <thead>
                                             <tr>
                                                 <th>Trainer</th>
-                                                <th v-for="hour in timeSlots" :key="'head-' + hour">{{ hour }}:00</th>
+                                                <th v-for="hour in timeSlots" :key="'head-' + hour">{{ formatHour(hour) }}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -31,20 +31,26 @@
                                                     <small>{{ trainer.slots[slot].program_days }}</small>
                                                     </span>
                                                 </td> -->
-                                                <template v-for="hour in timeSlots">
+                                               <template v-for="hour in timeSlots">
                                                     <template v-if="!skipCells[`${trainer.trainer_id}_${hour}`]">
                                                         <td
-                                                            :key="`cell-${trainer.trainer_id}-${hour}`"
-                                                            :colspan="getProgramAtHour(trainer, hour) ? getProgramAtHour(trainer, hour).end_hour - hour : 1"
-                                                            :style="{
-                                                            backgroundColor: getProgramAtHour(trainer, hour) ? '#fc01018c' : '#66eb66'
-                                                            }"
-                                                        ></td>
-
-                                                        <!-- <template v-if="getProgramAtHour(trainer, hour)">
+                                                            class="progrm_dts"
+                                                        :key="`cell-${trainer.trainer_id}-${hour}`"
+                                                        :colspan="getProgramAtHour(trainer, hour) 
+                                                                    ? (getProgramAtHour(trainer, hour).end_hour - getProgramAtHour(trainer, hour).start_hour) + 1 
+                                                                    : 1"
+                                                        :style="{
+                                                            backgroundColor: isHourInProgram(trainer, hour) ? '#fc01018c' : '#66eb66',
+                                                            border: isHourInProgram(trainer, hour) ? '1px solid #fff' : ''
+                                                        }"
+                                                        >
+                                                        <template v-if="getProgramAtHour(trainer, hour)">
                                                             <span>{{ getProgramAtHour(trainer, hour).program_name }}</span><br>
-                                                            <span>{{ getProgramAtHour(trainer, hour).program_days.join(', ') }}</span>
-                                                        </template> -->
+                                                            <span>{{ getProgramAtHour(trainer, hour).program_days.join(', ') }}</span><br>
+                                                            <span>{{ formatHour(getProgramAtHour(trainer, hour).start_hour) }} -
+                                                                {{ formatHour(getProgramAtHour(trainer, hour).end_hour) }}</span>
+                                                        </template>
+                                                        </td>
                                                     </template>
                                                 </template>
                                             </tr>
@@ -110,10 +116,30 @@ import axios from 'axios'
         },
 
         getProgramAtHour(trainer, hour) {
-            return trainer.program_blocks.find(program => program.start_hour === hour);
+           return trainer.program_blocks.find(program => program.start_hour === hour);
+        },
+        formatHour(hour) {
+            if (hour == null) return '';
+
+            let period = hour >= 12 ? 'PM' : 'AM';
+            let displayHour = hour % 12 || 12;
+            return `${displayHour}:00 ${period}`;
+        },
+        isHourInProgram(trainer, hour) {
+            return trainer.program_blocks.some(
+            program => hour >= program.start_hour && hour < program.end_hour
+        );
+        },
+        prepareSkipCells() {
+            this.skipCells = {};
+            this.trainers.forEach(trainer => {
+                trainer.program_blocks.forEach(program => {
+                    for (let h = program.start_hour + 1; h < program.end_hour; h++) {
+                        this.skipCells[`${trainer.trainer_id}_${h}`] = true;
+                    }
+                });
+            });
         }
-        
-        
     },
     mounted() {
         this.fetchAvailability();
@@ -149,5 +175,9 @@ import axios from 'axios'
     width: 95%;
     padding: 5px;
     border-radius: 7px;
+}
+.progrm_dts span
+{
+    color: #fff;
 }
 </style>

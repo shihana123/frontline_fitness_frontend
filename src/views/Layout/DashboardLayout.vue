@@ -50,6 +50,24 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Admin'"
+            :link="{
+              name: 'Clients',
+              path: '/clients/clients',
+              icon: 'ni ni-circle-08 text-green'
+              }"
+            >
+        </sidebar-item>
+
+        <sidebar-item v-if="role_id == 'Admin'"
+            :link="{
+              name: 'Leads',
+              path: '/leads',
+              icon: 'ni ni-circle-08 text-yellow'
+              }"
+            >
+        </sidebar-item>
+
 
         <!-- trainer & Dietitian -->
         <sidebar-item v-if="role_id == 'Trainer'"

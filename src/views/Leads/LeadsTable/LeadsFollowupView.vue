@@ -47,6 +47,12 @@
                                 <h5>Preferred Time : <span class="font-weight-light"> {{ formatPreferredTime(lead.preferred_time) }} </span></h5>
                             </b-col>
                         </b-row>
+                        <b-row class="mt-4">
+                            <b-col lg="12" class="order-lg-2">
+                                <h5>Notes : <span class="font-weight-light"> {{ lead.notes }} </span></h5>
+                            </b-col>
+                            
+                        </b-row>
                         
                     </b-card-body>
                 </b-card>

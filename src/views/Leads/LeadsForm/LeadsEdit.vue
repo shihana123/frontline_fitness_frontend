@@ -23,14 +23,10 @@
             </base-input>
           </b-col>
           <b-col lg="6">
-            <base-input
-              type="text"
-              label="Source"
-              placeholder="Source"
-              v-model="lead.source"
-              v-validate="'required|alpha'"
-            >
-            </base-input>
+            <label class="form-control-label">Source *</label>
+              <select class="form-control" v-model="lead.source" required>
+                <option v-for="source in sources" :value="source">{{ source }}</option>
+              </select>
           </b-col>
           
         </b-row>
@@ -71,6 +67,21 @@
             </select>
           </b-col>
         </b-row>
+        <b-row>
+          <b-col lg="6">
+            <base-input
+              type="number"
+              label="Age *"
+              placeholder="Age"
+              v-model="lead.age"
+              v-validate="'required'"
+              required
+              min=1
+            >
+            </base-input>
+           
+          </b-col>
+        </b-row>
 
       </div>
      
@@ -98,7 +109,7 @@
           </b-col>
           <b-col lg="6">
             <label class="form-control-label">Trainer</label>
-              <select class="form-control" v-model="lead.trainer" required>
+              <select class="form-control" v-model="lead.trainer" required :disabled="lead.program_type === 'Group'">
                 <option v-for="trainer in trainers" :key="trainer.id" :value="trainer.id">
                     {{ trainer.name }}
                 </option>
@@ -199,7 +210,8 @@
           followup_date: '',
           notes: '',
           followups: [],
-          trainer: ''
+          trainer: '',
+          age: ''
         },
         trainers: [],
         days: [
@@ -213,6 +225,7 @@
         ],
         status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
+        sources : ['Instagram', 'Friend/Family Recommendation', 'Online Search', 'Aster Medicity', 'VMC'],
         programs: [],
         countries: [],
         modal_1: false,
@@ -242,6 +255,7 @@
             // this.selectedProgramDetails = response.data;
             this.lead.preferred_days = response.data[0].program_select_days;
             this.lead.preferred_time = response.data[0].program_select_time.map(slot => ({ value: slot }));
+            this.lead.trainer = response.data[0].program_trainer;
           }).catch(error => {
             console.error(error);
           });
@@ -271,6 +285,7 @@
                 this.lead.followup_date = response.data[0].follow_up_date;
                 this.lead.notes = response.data[0].notes;
                 this.followups = response.data[0].followups;
+                this.lead.age = response.data[0].age;
                 console.log(response.data[0].preferred_time);
                 
                 
