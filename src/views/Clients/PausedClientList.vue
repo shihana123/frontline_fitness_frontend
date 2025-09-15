@@ -11,6 +11,9 @@
         <b-col v-else-if="usersRole == 'Sales'">
           <sales-client-table></sales-client-table>
         </b-col>
+        <b-col v-else-if="usersRole == 'Trainer'">
+          <trainer-client-table></trainer-client-table>
+        </b-col>
       </b-row>
       
     </b-container>
@@ -19,11 +22,13 @@
 <script>
   import ClientTable from "./ClientTable/PausedClientTable";
   import SalesClientTable from "./ClientTable/SalesPausedClientTable";
+  import TrainerClientTable from "./ClientTable/TrainerPausedClientTable";
   import axios from 'axios'
   export default {
     components: {
       ClientTable,
-      SalesClientTable
+      SalesClientTable,
+      TrainerClientTable
     },
     data() {
       return {

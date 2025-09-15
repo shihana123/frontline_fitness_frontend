@@ -79,6 +79,10 @@
         <div>
           <i class="ni education_hat mr-2"></i>Workout Selected Days - {{ formatPreferredDays(client[0].programs[0].workout_days) }}
         </div>
+        <!-- <br>
+        <div>
+          <i class="ni education_hat mr-2"></i><b>Days - {{ corrent_Day }} / {{ total_Days }}</b>
+        </div> -->
         <br>
         <div>
           <i class="ni education_hat mr-2"></i><b>Sessions - {{ completed_sessions }} / {{ sessions.length }}</b>
@@ -154,7 +158,9 @@
                 role_id: localStorage.getItem('role_name'),
                 followups: [],
                 sessions: [],
-                completed_sessions: 0
+                completed_sessions: 0,
+                total_Days: 0,
+                corrent_Day: 0
             }
         },
         methods:{

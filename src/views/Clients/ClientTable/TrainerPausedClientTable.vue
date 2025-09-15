@@ -2,9 +2,10 @@
     <div>
     <b-card no-body>
         <b-card-header class="border-0 header-sec">
-            <h3 class="mb-0">Client List</h3>
+            <h3 class="mb-0">Paused Client List</h3>
             <!-- <b-button  variant="success" class="create_btn" @click="redirect()">Create Program</b-button> -->
         </b-card-header>
+        
         <div class="search_bar d-flex justify-content-end mr-2">
             <base-input
             style="width: 35%"
@@ -35,45 +36,6 @@
                 :sortable="col.sortable"
             >
             </el-table-column>
-
-            <el-table-column label="Actions" min-width="180">
-                <template slot-scope="scope">
-                    <base-button
-                        type="primary"
-                        size="small"
-                        class="table_button" @click="clientView(scope.row.id)">
-                        View
-                    </base-button>
-                    
-                    <base-button v-if="scope.row.paused && current_date >= scope.row.paused_details.paused_from"
-                        type="danger"
-                        size="small"
-                        class="table_button" disabled>
-                        Paused
-                    </base-button>
-
-                    <span class="text-danger" v-if="scope.row.paused && current_date < scope.row.paused_details.paused_from">
-                        <br>Pause from {{ scope.row.paused_details.paused_from }}
-                    </span>
-
-                    <!-- <base-button v-if="scope.row.paused && current_date < scope.row.paused_details.paused_from"
-                    v-b-modal.modal-2
-                        type="danger"
-                        size="small"
-                        class="table_button" @click="ChangepauseClient(scope.row.paused_details)">
-                        Pause from {{ scope.row.paused_details.paused_from }}
-                    </base-button> -->
-
-                    <base-button
-                        v-b-modal.modal-1
-                        v-if="scope.row.pause_info.pause_available && scope.row.paused == 0"
-                        type="primary"
-                        size="small"
-                        class="table_button" @click="pauseClient(scope.row.id)">
-                        Pause
-                    </base-button>
-                </template>
-            </el-table-column>
         </el-table>
 
         <b-card-footer class="py-4 d-flex justify-content-end">
@@ -87,17 +49,15 @@
             class="mt-3 d-flex justify-content-end"
             />
         </b-card-footer>
-       
+
+      
     </b-card>
    
     <b-modal id="modal-1" title="Pause Client" hide-footer v-if="modal_1">
         <b-form @submit.prevent="updatePause">
             <h6 class="heading-small text-muted mb-2">Pause the client</h6>
             <div class="pl-lg-12">
-                <b-row >
-                    <b-col lg="12">
-                        <label class="form-control-label">Available Days to pause: <b>{{ no_of_days_available }}</b></label>
-                    </b-col>
+                <b-row >{{ no_of_days_available }}
                     <b-col lg="12">
                         <base-input
                         type="number"
@@ -106,52 +66,6 @@
                         v-model="pausedata.days"
                         :min="1"
                         :max="no_of_days_available"
-                        requied
-                        >
-                        </base-input>
-                        
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="date"
-                        label="Pause Start From"
-                        v-model="pausedata.pausedate"
-                        
-                        >
-                        </base-input>
-                        
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input label="Notes">
-                            <textarea class="form-control" id="notes" rows="3" col="5" v-model="pausedata.notes" required></textarea>
-                        </base-input>
-                        
-                    </b-col>
-                    <div>
-                        <b-button variant="secondary" @click="$bvModal.hide('modal-1')">Cancel</b-button>
-                        <b-button type="submit" variant="primary">Save</b-button>
-                    </div> 
-                </b-row>
-            </div>
-        </b-form>
-    </b-modal>
-
-    <b-modal id="modal-2" title="Pause Client" hide-footer v-if="modal_2">
-        <b-form @submit.prevent="updateexistPause">
-            <h6 class="heading-small text-muted mb-2">Update the Pause</h6>
-            <div class="pl-lg-12">
-                <b-row >
-                    <b-col lg="12">
-                        <label class="form-control-label">Available Days to pause: <b>{{ rem_no_of_days_available  }}</b></label>
-                    </b-col>
-                    <b-col lg="12">
-                        <base-input
-                        type="number"
-                        label="No of Days"
-                        placeholder="No of Days"
-                        v-model="pausedata.days"
-                        :min="1"
-                        :max="rem_no_of_days_available"
                         requied
                         >
                         </base-input>
@@ -193,26 +107,19 @@
     name: 'light-table',
     components: {
       [Table.name]: Table,
-      [TableColumn.name]: TableColumn,
-      [Pagination.name]: Pagination,
+      [TableColumn.name]: TableColumn
     },
     data() {
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-        const yyyy = today.getFullYear();
       return {
         modal_1: false,
-        modal_2: false,
-        rem_no_of_days_available: 0,
         clients: [],
+        currentPage: 1,
         pausedata:{
             pausedate : '',
             days: 1,
-            notes:'',
-            paused_id: 0
+            notes:''
         },
-        pausedDetails: [],
+       
         selectedClientID: '',
         pauseDetails: [],
         no_of_days_available: 0,
@@ -226,8 +133,9 @@
             { prop: 'phone', label: 'Phone', minWidth: 140, sortable: true },
             { prop: 'programs[0].program.name', label: 'Program', minWidth: 140, sortable: true },
             { prop: 'country_name', label: 'Country', minWidth: 140, sortable: true },
+            { prop: 'latest_pause_record.paused_from', label: 'Pause From', minWidth: 140, sortable: true },
+            { prop: 'latest_pause_record.paused_to', label: 'Pause To', minWidth: 140, sortable: true },
         ],
-        current_date: `${yyyy}-${mm}-${dd}`,
       };
     },
     computed: {
@@ -261,7 +169,7 @@
         },
         async clientList(){
             const token = localStorage.getItem('token');
-            axios.get(`${process.env.VUE_APP_API_BASE_URL}dietitianclientList`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}trainerpausesclientList`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -272,17 +180,15 @@
 
             });
         },
-        async clientDetails(client_id)
+        clientDetails(client_id)
         {
             const token = localStorage.getItem('token');
-            await axios.get(`${process.env.VUE_APP_API_BASE_URL}clientpauseDetail/${client_id}/`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}clientpauseDetail/${client_id}/`, {
             headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
                 this.pauseDetails = response.data;
-                
                 this.no_of_days_available = response.data.pause_summary.days_remaining;
-                this.rem_no_of_days_available = this.no_of_days_available + this.pausedata.days;
                 console.log(this.pauseDetails);
                 
             })
@@ -315,51 +221,11 @@
 
             });
         },
-        updateexistPause()
-        {
-            const token = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('pause_days', this.pausedata.days);
-            formData.append('pause_from', this.pausedata.pausedate);
-            formData.append('notes', this.pausedata.notes);
-            formData.append('client_id', this.selectedClientID);
-            formData.append('paused_id', this.paused_id);
-           
-            
-            axios.post(`${process.env.VUE_APP_API_BASE_URL}updatepauseClient`, formData,{
-                headers: { Authorization: `Token ${token}`}
-            })
-            .then(response => {
-                console.log('Consultation scheduled successfully:', response.data);
-                this.modal_1 = false;
-                this.clientList();
-                this.resetForm();
-            })
-            .catch(error => {
-            console.error('Error:', error.response && error.response.data ? error.response.data : error);
-
-            });
-        },
-        ChangepauseClient(pause_details)
-        {
-            this.pauseDetails = pause_details;
-            this.selectedClientID = this.pauseDetails.client;
-            this.pausedata.days = this.pauseDetails.no_of_days;
-            this.pausedata.pausedate = this.pauseDetails.paused_from;
-            this.pausedata.notes = this.pauseDetails.notes;
-            this.paused_id = this.pauseDetails.id;
-            this.clientDetails(this.selectedClientID);
-            console.log(this.no_of_days_available);
-            
-            
-            this.modal_2 = true;
-        },
         resetForm() {
             this.pausedata = {
                 days: 1,
                 pausedate: '',
                 notes: '',
-                paused_id: 0
             };
         },
         
