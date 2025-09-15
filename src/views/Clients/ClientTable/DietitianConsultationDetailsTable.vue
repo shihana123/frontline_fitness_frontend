@@ -8,108 +8,136 @@
         <el-table class="table-responsive table"
                   header-row-class-name="thead-light"
                   :data="consultations">
-            <el-table-column label="Consultation" min-width="90px">
+            <el-table-column label="Consultation" min-width="155px">
                 <template v-slot="scope">
                     Meeting - Day {{ scope.row.day_no }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="Date" min-width="150px">
+            <el-table-column label="Date" min-width="120px">
                 <template v-slot="scope">
                     {{ scope.row.meeting_date }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="Status" min-width="150px">
+            <el-table-column label="Type" min-width="80px">
                 <template v-slot="scope">
-                    <span :style="{ color: scope.row.status ? 'green' : 'red' }">
+                    {{ scope.row.meeting_type }}
+                </template>
+            </el-table-column>
+
+            <el-table-column label="Status" min-width="130px">
+                <template v-slot="scope">
+                    <span :style="{ color: scope.row.status ? 'green' : 'red' }" v-if="scope.row.need_meeting == 1">
                         {{ scope.row.status ? 'Completed' : 'Pending' }}
+                    </span>
+                    <span :style="{ color: 'red' }" v-if="scope.row.need_meeting == 0">
+                       Canceled
                     </span>
                 </template>
             </el-table-column>
 
             <el-table-column label="Action"
                              prop="completion"
-                             min-width="95px">
+                             min-width="115px">
                 <template #default="scope">
-                    <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
-                    <base-button v-b-modal.modal-2
-                    type="primary"
-                    size="small"
-                    @click="viewConsultDetails(scope.row)" class="table_button" v-if="scope.row.meeting_type == 'day_1'">
-                    View
-                    </base-button>
-
-                    <base-button v-b-modal.modal-1
-                    type="warning"
-                    size="small"
-                    @click="updateDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'  && scope.row.status == false">
-                    Update
-                    </base-button>
-
-                    <base-button v-b-modal.modal-3
-                    type="primary"
-                    size="small"
-                    @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'  && scope.row.status == true">
-                    View
-                    </base-button>
-
-                    <base-button v-b-modal.modal-3
-                    type="primary"
-                    size="small"
-                    @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.need_meeting == 2" disabled>
-                    No Meeting 
-                    </base-button>
                     
-                    <base-button v-b-modal.modal-4
-                    type="warning"
-                    size="small"
-                    @click="updateDay10Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.status == false">
-                    Update
-                    </base-button>
+                    <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
+                    <div v-if="current_date >= scope.row.meeting_date">
+                        <base-button v-b-modal.modal-2
+                        type="primary"
+                        size="small"
+                        @click="viewConsultDetails(scope.row)" class="table_button" v-if="scope.row.meeting_type == 'day_1'">
+                        View
+                        </base-button>
 
-                    <base-button v-b-modal.modal-5
-                    type="primary"
-                    size="small"
-                    @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.status == true">
-                    View
-                    </base-button>
+                        <base-button v-b-modal.modal-1
+                        type="warning"
+                        size="small"
+                        @click="updateDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'  && scope.row.status == false">
+                        Update
+                        </base-button>
 
-                    <base-button v-b-modal.modal-6
-                    type="warning"
-                    size="small"
-                    @click="viewTDCModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == false">
-                    Update
-                    </base-button>
+                        <base-button v-b-modal.modal-3
+                        type="primary"
+                        size="small"
+                        @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietchart'  && scope.row.status == true">
+                        View
+                        </base-button>
 
-                    <base-button v-b-modal.modal-
-                    type="warning"
-                    size="small"
-                    @click="viewTDCModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'Renewal'  && scope.row.status == false">
-                    Update
-                    </base-button>  
+                        <!-- <base-button v-b-modal.modal-3
+                        type="primary"
+                        size="small"
+                        @click="viewDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.need_meeting == 0" disabled>
+                        Meeting Canceled 
+                        </base-button> -->
+                        
+                        <base-button v-b-modal.modal-4
+                        type="warning"
+                        size="small"
+                        @click="updateDay10Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.status == false">
+                        Update
+                        </base-button>
 
-                    <base-button v-b-modal.modal-5
-                    type="primary"
-                    size="small"
-                    @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == true">
-                    View
-                    </base-button> 
+                        <base-button v-b-modal.modal-5
+                        type="primary"
+                        size="small"
+                        @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'dietition_only'  && scope.row.status == true">
+                        View
+                        </base-button>
 
-                    <base-button v-b-modal.modal-5
-                    type="primary"
-                    size="small"
-                    @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'Renewal'  && scope.row.status == true">
-                    View
-                    </base-button> 
+                        <base-button v-b-modal.modal-6
+                        type="warning"
+                        size="small"
+                        @click="viewTDCModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == false && scope.row.measurements == false">
+                        Update
+                        </base-button>
+
+                        <base-button v-b-modal.modal-1
+                        type="warning"
+                        size="small"
+                        @click="updateDay3Modal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == false && scope.row.measurements == true">
+                        Update
+                        </base-button>
+
+                        <base-button v-b-modal.modal-
+                        type="warning"
+                        size="small"
+                        @click="viewTDCModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'Renewal'  && scope.row.status == false">
+                        Update
+                        </base-button>  
+
+                        <base-button v-b-modal.modal-5
+                        type="primary"
+                        size="small"
+                        @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'TDC'  && scope.row.status == true">
+                        View
+                        </base-button> 
+
+                        <base-button v-b-modal.modal-5
+                        type="primary"
+                        size="small"
+                        @click="viewMeetingModal(scope.row)" class="table_button" v-else-if="scope.row.meeting_type == 'Renewal'  && scope.row.status == true">
+                        View
+                        </base-button> 
+                    </div>
+                    <div v-else>
+                        <base-button v-b-modal.modal-1
+                        type="danger"
+                        size="small"
+                        @click="updateMeetingDetail(scope.row)" class="table_button" v-if="scope.row.trainer_status == false" disabled>
+                        Upcoming
+                        </base-button>
+                    </div>
+                    
 
                 </template>
             </el-table-column>
         </el-table>
 
-        <b-card-footer class="py-4 d-flex justify-content-end">
+        <!-- <b-card-footer class="py-4 d-flex justify-content-end">
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
-        </b-card-footer>
+        </b-card-footer> -->
     </b-card>
     <b-modal id="modal-1" title="Client Details" hide-footer v-if="modal_1">
         <b-form @submit.prevent="dataUpload">
@@ -384,15 +412,16 @@
             
         </b-form>
     </b-modal>
-    <b-modal size="md" id="modal-5" title="Details of Client" hide-footer v-if="modal_5">
+    <b-modal size="md" id="modal-5" title="Diet Plan Changes" hide-footer v-if="modal_5">
 
         <div class="pl-lg-6">
-            <h6 class="heading-small text-muted mb-2">Diet Plan</h6>
+            <!-- <h6 class="heading-small text-muted mb-2">Diet Plan</h6> -->
             <div class="pl-lg-12">
                 <b-row>
                     <b-col lg="12">
-                        <h5>Diet Chart : <span><base-button size="small" class="table_button">view dietchart</base-button></span></h5>
+                        <h5 v-if="meetingDetails.change_dietplan == true">Diet Chart : <span><base-button size="small" class="table_button">view dietchart</base-button></span></h5>
                         <h5>Notes : <span>{{ meetingDetails.notes }}</span></h5>
+                        <h5>Updated at : <span>{{ meetingDetails.diet_plan_uploaded_at }}</span></h5>
                         
                     </b-col>
                 </b-row>
@@ -540,7 +569,12 @@
         }
     },
     data() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+        const yyyy = today.getFullYear();
       return {
+        current_date: `${yyyy}-${mm}-${dd}`,
         modal_1: false,
         modal_2: false,
         modal_3: false,
@@ -872,6 +906,7 @@
             console.error('Error:', error.response && error.response.data ? error.response.data : error);
 
             });
+            this.modal_2 = true
             
         },
         async clientDetails(id)

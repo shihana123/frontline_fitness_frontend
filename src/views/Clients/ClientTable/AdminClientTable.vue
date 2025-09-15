@@ -13,6 +13,35 @@
             placeholder="Search Clients..."
             />
         </div>
+        <b-row class="mb-2 ml-1">
+            <b-col lg="3">
+                <!-- <div class="search_bar d-flex ml-2"> -->
+                    <label class="form-control-label">Status</label>
+                    <select class="form-control" v-model="search_status">
+                    <option v-for="stat in status" :value="stat">{{ stat }}</option>
+                    </select>
+                <!-- </div> -->
+            </b-col>
+            <b-col lg="3">
+                <base-input
+                type="date"
+                label="From Date"
+                v-model="from_date"
+                required
+                >
+                </base-input>
+            </b-col>
+            <b-col lg="3">
+                <base-input
+                type="date"
+                label="To Date"
+                v-model="to_date"
+                required
+                >
+                </base-input>
+            </b-col>
+        </b-row>
+        
         <el-table
         :data="paginatedData"
         style="width: 100%"
@@ -26,15 +55,41 @@
                     {{ (currentPage - 1) * perPage + scope.$index + 1 }}
                 </template>
             </el-table-column>
+            <!-- Render columns before 'Name' and including 'Name' -->
             <el-table-column
-                v-for="(col, index) in tableColumns"
-                :key="index"
+                v-for="(col, index) in tableColumns.slice(0, 2)"  
+                :key="'before-' + index"
                 :prop="col.prop"
                 :label="col.label"
                 :min-width="col.minWidth"
                 :sortable="col.sortable"
-            >
+            />
+
+            <!-- Insert Status column -->
+            <el-table-column label="Status" min-width="140" sortable>
+                <template slot-scope="scope">
+                    <span :class="statusClass(scope.row.status)">
+                        {{ statusLabel(scope.row.status) }}
+                    </span>
+                </template>
             </el-table-column>
+
+            <!-- Render remaining columns after Name -->
+            <el-table-column
+                v-for="(col, index) in tableColumns.slice(2)"
+                :key="'after-' + index"
+                :prop="col.prop"
+                :label="col.label"
+                :min-width="col.minWidth"
+                :sortable="col.sortable"
+            />
+            <!-- <el-table-column label="Status" min-width="140" sortable>
+            <template slot-scope="scope">
+                <span :class="statusClass(scope.row.status)">
+                {{ statusLabel(scope.row.status) }}
+                </span>
+            </template>
+            </el-table-column> -->
 <!--             
             <el-table-column label="Actions" min-width="180">
                 <template slot-scope="scope">
@@ -170,6 +225,15 @@
         'assignedata.program_month': 'updateEndDate',
         searchQuery() {
             this.currentPage = 1;
+        },
+        from_date() {
+            this.triggerFilters();
+        },
+        to_date() {
+            this.triggerFilters();
+        },
+        search_status() { // your status dropdown v-model
+            this.triggerFilters();
         }
     },
     data() {
@@ -178,6 +242,10 @@
         const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
         const yyyy = today.getFullYear();
       return {
+        search_status: 'Active',
+        from_date: '',
+        to_date: '',
+        status: ['Active', 'Inactive'],
         showModal: false,
         clients: [],
         assignedata:{
@@ -209,7 +277,7 @@
         tableColumns: [
             { prop: 'client_id', label: 'ID', minWidth: 140, sortable: true },
             { prop: 'name', label: 'Name', minWidth: 140, sortable: true },
-            // { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
+            // { prop: 'status', label: 'Status', minWidth: 140, sortable: true, slot:'status' },
             { prop: 'source', label: 'Source', minWidth: 140, sortable: true },
             { prop: 'phone', label: 'Phone', minWidth: 140, sortable: true },
             { prop: 'email', label: 'Email', minWidth: 140, sortable: true },
@@ -218,8 +286,8 @@
             { prop: 'programs[0].program.name', label: 'Program', minWidth: 140, sortable: true },
             { prop: 'programs[0].trainer.name', label: 'Trainer', minWidth: 140, sortable: true },
             { prop: 'programs[0].dietitian.name', label: 'Dietitian', minWidth: 140, sortable: true },
-            { prop: 'programs[0].workout_days', label: 'Days', minWidth: 140, sortable: true },
-            { prop: 'programs[0].preferred_time', label: 'Time', minWidth: 140, sortable: true },
+            { prop: 'programs[0].workout_days', label: 'Days', minWidth: 140 },
+            { prop: 'programs[0].preferred_time', label: 'Time', minWidth: 140},
  
         ],
       };
@@ -232,20 +300,21 @@
             if (!this.searchQuery) return this.clients;
 
             const query = this.searchQuery.toLowerCase();
-            
-            
-
             return this.clients.filter(client => {
                 const name = client.name || '';
                 const client_id = client.client_id || '';
                 const program = client.programs[0].program.name || '';
                 const country = client.country_name || '';
+                const status = client.status || '';
+                // const trainer = client.programs[0].trainer.name || '';
 
                 return (
                 name.toLowerCase().includes(query) ||
                 client_id.includes(query) ||
                 program.toLowerCase().includes(query) ||
-                country.toLowerCase().includes(query)
+                country.toLowerCase().includes(query) ||
+                status.toLowerCase().includes(query) 
+                // trainer.toLowerCase().include(query)
                 );
             });
         },
@@ -277,7 +346,12 @@
         async newclientList(){
             const token = localStorage.getItem('token');
             axios.get(`${process.env.VUE_APP_API_BASE_URL}allclientList`, {
-            headers: { Authorization: `Token ${token}` }
+            headers: { Authorization: `Token ${token}` },
+            params: {
+                status: this.search_status,     // always has a value
+                from_date: this.from_date || '', // empty if not provided
+                to_date: this.to_date || ''      // empty if not provided
+            }
             })
             .then(response => {
                 this.clients = response.data;
@@ -363,6 +437,43 @@
         redirect()
         {
             this.$router.push({ name: 'clients/create' });
+        },
+        statusLabel(status) {
+            console.log(status);
+            
+            // adapt to your actual values (e.g. 'Converted', 'Active', true, 'converted'...)
+            // return status === 'Converted' || status === 'Active' || status === 1 || status === true
+            // ? 'Active'
+            // : 'Inactive';
+
+            if (status === 'Converted') {
+                return 'Active'
+            }
+            else{
+                return 'Inactive';
+            }
+        },
+        // optional: CSS helper for coloring
+        statusClass(status) {
+            if (status === 'Converted') {
+                return 'text-success'
+            }
+            else{
+                return 'text-danger';
+            }
+            // return (status === 'Converted' || status === 'Active' || status === 1 || status === true)
+            // ? 'text-success'   // green
+            // : 'text-danger';   // red
+        },
+        triggerFilters() {
+           
+            // You can decide whether to require both dates or not
+            if (this.from_date && this.to_date) {
+                this.newclientList();
+            } else if (!this.from_date && !this.to_date) {
+                // if no dates, still allow status filtering
+                this.newclientList();
+            }
         }
     },
     mounted()
@@ -403,4 +514,6 @@
     {
         margin-right: 5px;
     }
+    .text-success { color: #28a745; font-weight: 600; }
+    .text-danger  { color: #dc3545; font-weight: 600; }
 </style>

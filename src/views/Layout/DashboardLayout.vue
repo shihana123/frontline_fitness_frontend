@@ -12,6 +12,43 @@
         >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Sales' || role_id == 'Trainer' || role_id == 'Dietitian'"
+            :link="{
+              name: 'Daily Tasks',
+              path: '/users/Dailytasks',
+              icon: 'ni ni-calendar-grid-58 text-info'
+              }"
+            >
+        </sidebar-item>
+
+        
+
+        <div @click="toggleDropdown('trainer')" class="sidebar-item d-flex justify-content-between align-items-center" v-if="role_id == 'Trainer'">
+            <div class="d-flex align-items-center dropdown_slide_items">
+              <i class="ni ni-time-alarm text-yellow text-primary mr-2"></i>
+              <span>Pending Sessions</span>
+            </div>
+            <i :class="dropdowns.trainer ? 'ni ni-bold-down' : 'ni ni-bold-right'" class="dropdown_slide_arrow"></i>
+        </div>
+
+          <!-- Dropdown child items -->
+        <div v-if="dropdowns.trainer" class="ml-4">
+            <sidebar-item
+              :link="{ 
+                name: 'PT Sessions', 
+                path: '/users/Pendingsessions', 
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+            <sidebar-item
+              :link="{ 
+                name: 'Group Sessions', 
+                path: '/users/PendingGroupsessions', 
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+            
+        </div>
+
+
         <sidebar-item v-if="role_id == 'Dietitian'"
           :link="{
             name: 'Dashboard',
@@ -68,6 +105,15 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Admin'"
+            :link="{
+              name: 'User Tasks',
+              path: '/users/salesDailytasks',
+              icon: 'ni ni-calendar-grid-58 text-primary'
+              }"
+            >
+        </sidebar-item>
+
 
         <!-- trainer & Dietitian -->
         <sidebar-item v-if="role_id == 'Trainer'"
@@ -115,21 +161,38 @@
             >
         </sidebar-item>
 
-        <sidebar-item v-if="role_id == 'Trainer'"
-            :link="{
-              name: 'Attendance',
-              path: '/clients/attendance',
-              icon: 'ni ni-calendar-grid-58 text-pink'
-              }"
-            >
-        </sidebar-item>
+        
+        <div @click="toggleDropdown('trainerAttendance')" class="sidebar-item d-flex justify-content-between align-items-center" v-if="role_id == 'Trainer'">
+            <div class="d-flex align-items-center dropdown_slide_items">
+              <i class="ni ni-calendar-grid-58 text-yellow text-pink mr-2"></i>
+              <span>Attendance</span>
+            </div>
+            <i :class="dropdowns.trainerAttendance ? 'ni ni-bold-down' : 'ni ni-bold-right'" class="dropdown_slide_arrow"></i>
+        </div>
+
+          <!-- Dropdown child items -->
+        <div v-if="dropdowns.trainerAttendance" class="ml-4">
+            <sidebar-item
+              :link="{ 
+                name: 'PT Attendance', 
+                path: '/clients/attendance', 
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+            <sidebar-item
+              :link="{ 
+                name: 'Group Attendance', 
+                path: '/clients/groupattendance',
+                icon: 'ni ni-bullet-list-67 text-warning' }"
+            />
+            
+        </div>
 
         <!-- Trainer  & Dietitian -->
 
         <!-- Sales -->
         <div @click="toggleDropdown('sales')" class="sidebar-item d-flex justify-content-between align-items-center" v-if="role_id == 'Sales'">
             <div class="d-flex align-items-center dropdown_slide_items">
-              <i class="ni ni-calendar-grid-58 text-yellow text-primary mr-2"></i>
+              <i class="ni ni-watch-time text-yellow text-primary mr-2"></i>
               <span>Availability</span>
             </div>
             <i :class="dropdowns.sales ? 'ni ni-bold-down' : 'ni ni-bold-right'" class="dropdown_slide_arrow"></i>
@@ -294,9 +357,12 @@
       return {
         role_id: '',
         dropdowns: {
-      sales: false,
-      dashboard: false,
-    },
+          sales: false,
+          dashboard: false,
+          trainer: false,
+          trainerAttendance: false
+        },
+        taskcount: 0
       };
     },
     methods: {
@@ -318,12 +384,14 @@
         });
         this.role_id = userRes.data.roles[0].role.rolename;
         
-      }
+      },
+      
     },
    
     mounted() {
       this.initScrollbar()
       this.userData()
+    
     }
   };
 </script>

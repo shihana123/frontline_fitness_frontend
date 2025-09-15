@@ -186,6 +186,18 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/attendanceDetails/:id/:type',
+        name: 'clients/attendanceDetails',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientAttendanceDetailsView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/clients/groupattendance',
+        name: 'clients/groupattendance',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientGroupAttendanceView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/attendance_view/:id',
         name: 'clients/attendance_view',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientAttendanceMonthlyView.vue'),
@@ -249,6 +261,24 @@ const routes = [
         path: '/program/groupAvailability',
         name: 'program/groupAvailability',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Programs/GroupAvaliabilityList.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/users/Dailytasks',
+        name: 'users/Dailytasks',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Users/DailyTasks.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/users/Pendingsessions',
+        name: 'users/Pendingsessions',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Users/PendingSessions.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/users/PendingGroupsessions',
+        name: 'users/PendingGroupsessions',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Users/PendingGroupsessions.vue'),
         meta: { requiresAuth: true }
       },
       {

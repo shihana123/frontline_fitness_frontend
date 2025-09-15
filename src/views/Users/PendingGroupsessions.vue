@@ -5,8 +5,11 @@
     </base-header>
     <b-container fluid class="mt--7">
       <b-row>
-        <b-col v-if="usersRole == 'Trainer'">
-          <trainer-client-attendance/>
+        <b-col v-if="usersRole == 'Admin'">
+          <admin-sales-task-list/>
+        </b-col>
+        <b-col v-else-if="usersRole == 'Trainer'">
+          <trainer-group-session-list/>
         </b-col>
       </b-row>
       
@@ -14,13 +17,23 @@
   </div>
 </template>
 <script>
+  import { Dropdown, DropdownItem, DropdownMenu, Table, TableColumn } from 'element-ui';
  
-  import TrainerClientAttendance from "./ClientAttendance/ClientAttendanceDetails";
-  import axios from 'axios'
+  import AdminSalesTaskList from "./TaskTable/AdminSalesTaskListView";
+  import TrainerGroupSessionList from "./TaskTable/TrainerGroupSessionListView";
   
+  import axios from 'axios'
+
   export default {
     components: {
-      TrainerClientAttendance,
+      
+      AdminSalesTaskList,
+      TrainerGroupSessionList,
+      [Dropdown.name]: Dropdown,
+      [DropdownItem.name]: DropdownItem,
+      [DropdownMenu.name]: DropdownMenu,
+      [Table.name]: Table,
+      [TableColumn.name]: TableColumn
     },
     data() {
       return {
@@ -52,5 +65,18 @@
   };
 </script>
 <style>
+.el-table.table-dark{
+  background-color: #172b4d;
+  color: #f8f9fe;
+}
 
+.el-table.table-dark th,
+.el-table.table-dark tr{
+  background-color: #172b4d;
+}
+
+.el-table.table-dark td,
+.el-table.table-dark th.is-leaf{
+  border-bottom: none;
+}
 </style>

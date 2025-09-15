@@ -8,19 +8,25 @@
         <el-table class="table-responsive table"
                   header-row-class-name="thead-light"
                   :data="consultations">
-            <el-table-column label="Consultation" min-width="90px">
+            <el-table-column label="Consultation" min-width="155px">
                 <template v-slot="scope">
                     Meeting - Day {{ scope.row.day_no }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="Date" min-width="150px">
+            <el-table-column label="Date" min-width="120px">
                 <template v-slot="scope">
                     {{ scope.row.meeting_date }}
                 </template>
             </el-table-column>
 
-            <el-table-column label="Status" min-width="150px">
+            <el-table-column label="Type" min-width="80px">
+                <template v-slot="scope">
+                    {{ scope.row.meeting_type }}
+                </template>
+            </el-table-column>
+
+            <el-table-column label="Status" min-width="130px">
                 <template v-slot="scope">
                     <span :style="{ color: scope.row.trainer_status ? 'green' : 'red' }">
                         {{ scope.row.trainer_status ? 'Completed' : 'Pending' }}
@@ -30,30 +36,49 @@
 
             <el-table-column label="Action"
                              prop="completion"
-                             min-width="95px">
+                             min-width="115px">
                 <template #default="scope">
+                   
                     <!-- <b-button v-b-modal.modal-1 variant="primary">Launch demo modal</b-button> -->
-                    <base-button v-b-modal.modal-1
-                    type="primary"
-                    size="small"
-                    @click="updateMeetingDetail(scope.row)" class="table_button" v-if="scope.row.trainer_status == false">
-                    Update
-                    </base-button>
+                    <div v-if="current_date >= scope.row.meeting_date">
+                        <base-button v-b-modal.modal-1
+                        type="primary"
+                        size="small"
+                        @click="updateMeetingDetail(scope.row)" class="table_button" v-if="scope.row.trainer_status == false">
+                        Update
+                        </base-button>
 
-                    <base-button v-b-modal.modal-2
-                    type="warning"
-                    size="small"
-                    @click="viewMeetingDetail(scope.row)" class="table_button" v-else-if="scope.row.trainer_status == true">
-                    View
-                    </base-button>
+                        <base-button v-b-modal.modal-2
+                        type="warning"
+                        size="small"
+                        @click="viewMeetingDetail(scope.row)" class="table_button" v-else-if="scope.row.trainer_status == true">
+                        View
+                        </base-button>
+                    </div>
+                    <div v-else>
+                        <base-button v-b-modal.modal-1
+                        type="danger"
+                        size="small"
+                        @click="updateMeetingDetail(scope.row)" class="table_button" v-if="scope.row.trainer_status == false" disabled>
+                        Upcoming
+                        </base-button>
+
+                        <base-button v-b-modal.modal-2
+                        type="warning"
+                        size="small"
+                        @click="viewMeetingDetail(scope.row)" class="table_button" v-else-if="scope.row.trainer_status == true">
+                        View
+                        </base-button>
+                    </div>
+                    
 
                 </template>
             </el-table-column>
         </el-table>
 
-        <b-card-footer class="py-4 d-flex justify-content-end">
+        <!-- <b-card-footer class="py-4 d-flex justify-content-end">
             <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
-        </b-card-footer>
+        </b-card-footer> -->
     </b-card>
     <b-modal id="modal-1" title="Client Details" hide-footer v-if="modal_1">
         <b-form @submit.prevent="dataUpload">
@@ -312,7 +337,12 @@
       [TableColumn.name]: TableColumn
     },
     data() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const yyyy = today.getFullYear();
       return {
+        current_date: `${yyyy}-${mm}-${dd}`,
         modal_1: false,
         modal_2: false,
         showDietChart: false,
@@ -461,6 +491,37 @@
         {
             console.log(client.id);
             this.meeting_id = client.id;
+            const token = localStorage.getItem('token');
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}prevMeetingDetails/${this.meeting_id}`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.scheduledata.half_sit_up = response.data.trainer_meeting_details[0].half_sit_up;
+                    this.scheduledata.modified_push_ups = response.data.trainer_meeting_details[0].modified_push_ups;
+                    this.scheduledata.plank_hold = response.data.trainer_meeting_details[0].plank_hold;
+                    this.scheduledata.wall_sqaut_hold = response.data.trainer_meeting_details[0].wall_sqaut_hold;
+                    this.scheduledata.shoulder_flexibility = response.data.trainer_meeting_details[0].shoulder_flexibility;
+                    this.scheduledata.sit_and_reach = response.data.trainer_meeting_details[0].sit_and_reach;
+                    this.scheduledata.hamstring_flexibility = response.data.trainer_meeting_details[0].hamstring_flexibility;
+                    this.scheduledata.quadriceps_flexibility = response.data.trainer_meeting_details[0].quadriceps_flexibility;
+                    this.scheduledata.rounded_shoulder = response.data.trainer_meeting_details[0].rounded_shoulder;
+                    this.scheduledata.kyphosis = response.data.trainer_meeting_details[0].kyphosis;
+                    this.scheduledata.lordosis = response.data.trainer_meeting_details[0].lordosis;
+                    this.scheduledata.scoliosis = response.data.trainer_meeting_details[0].scoliosis;
+                    this.scheduledata.bow_leg = response.data.trainer_meeting_details[0].bow_leg;
+                    this.scheduledata.knock_knees = response.data.trainer_meeting_details[0].knock_knees;
+                    this.scheduledata.winging_of_scapula = response.data.trainer_meeting_details[0].winging_of_scapula;
+                    this.scheduledata.flat_foot = response.data.trainer_meeting_details[0].flat_foot;
+                    this.scheduledata.notes = response.data.trainer_meeting_details[0].notes;
+
+                    this.modal_1 = true;
+                    
+                })
+                .catch(error => {
+                    console.error('Error', error.response && error.response.data ? error.response.data : error);
+
+                });
             this.modal_1 = true;
         },
         viewMeetingDetail(client)

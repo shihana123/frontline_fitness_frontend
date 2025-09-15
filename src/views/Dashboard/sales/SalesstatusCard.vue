@@ -14,6 +14,22 @@
         
         <br>
       <b-row>
+
+        <b-col xl="3" md="6" >
+          <stats-card title="Daily Tasks"
+                      type="gradient-green"
+                      :sub-title=taskcount
+                      icon="ni ni-calendar-grid-58"
+                      class="mb-4">
+
+            <template slot="footer">
+              <span class="text-danger mr-2"></span>
+              <span class="text-nowrap">{{currentMonth}},{{currentYear}}</span>
+            </template>
+          </stats-card>
+
+        </b-col>
+        
         <b-col xl="3" md="6">
           <stats-card title="New Leads"
                       type="gradient-red"
@@ -41,20 +57,7 @@
             </template>
           </stats-card>
         </b-col>
-        <b-col xl="3" md="6">
-          <stats-card title="Upcoming Followups"
-                      type="gradient-green"
-                      :sub-title=followup_count
-                      icon="ni ni-calendar-grid-58"
-                      class="mb-4">
-
-            <template slot="footer">
-              <span class="text-danger mr-2"></span>
-              <span class="text-nowrap">{{currentMonth}},{{currentYear}}</span>
-            </template>
-          </stats-card>
-
-        </b-col>
+        
         <b-col xl="3" md="6">
           <stats-card title="Revenue"
                       type="gradient-info"
@@ -90,7 +93,8 @@
             currentYear: today.getFullYear().toString(),  // "2025"
             currentMonth: monthNames[today.getMonth()], 
             months: monthNames,
-            years: years
+            years: years,
+            taskcount: 0
         };
     },
     methods: {
@@ -115,12 +119,29 @@
         onDataChange()
         {
           this.newLeadCount();
-        }
+        },
+        async taskList(){
+            const token = localStorage.getItem('token');
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}taskList`, {
+                headers: { Authorization: `Token ${token}` }
+            })
+            .then(response => {
+                this.taskcount = response.data.length;
+                console.log(response.data);
+                
+                // console.log('programs fetched successfully:', response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+            });
+        },
      
     },
    
     mounted() {
-      this.newLeadCount()
+      this.newLeadCount();
+      this.taskList();
     }
   };
 </script>

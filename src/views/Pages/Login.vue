@@ -89,15 +89,15 @@
         // this will be called only after form is valid. You can do api call here to login
 
         try {
-        // const response = await axios.post(`http://13.48.75.237/api/api/auth/login`, {
-        //   email: this.cred.email,
-        //   password: this.cred.password
-        // });
-        
-        const response = await axios.post(`http://127.0.0.1:8000/api/auth/login`, {
+        const response = await axios.post(`http://13.48.75.237/api/api/auth/login`, {
           email: this.cred.email,
           password: this.cred.password
         });
+        
+        // const response = await axios.post(`http://127.0.0.1:8000/api/auth/login`, {
+        //   email: this.cred.email,
+        //   password: this.cred.password
+        // });
 
         const token = response.data.key;
         localStorage.setItem('token', token);
@@ -114,11 +114,11 @@
         }
         else if(this.role == 'Dietitian')
         {
-          this.$router.push('dietitan/dashboard');
+          this.$router.push('/users/Dailytasks');
         }
         else if(this.role == 'Trainer')
         {
-          this.$router.push('/dashboard');
+          this.$router.push('/users/Dailytasks');
         }
         else if(this.role == 'Admin')
         {

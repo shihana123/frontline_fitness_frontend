@@ -52,7 +52,7 @@
         <h5 class="h3">
           {{ client[0].name }}<span class="">, {{ client[0].client_id }}</span>
         </h5>
-        <div class="h5 font-weight-300">
+        <div class="h5 font-weight-300" v-if="role_id == 'Admin'">
           <i class="ni location_pin mr-2"></i>{{ client[0].email }}
         </div>
         <div class="h5 font-weight-300">
@@ -68,7 +68,7 @@
         </div>
         
         <div>
-          <i class="ni education_hat mr-2"></i>Program Type - {{ client[0].programs[0].program.program_type[0] }}
+          <i class="ni education_hat mr-2"></i>Program Type - {{ client[0].programs[0].program.program_type }}
         </div>
         <!-- <div v-if="client[0].programs[0].program.program_type[0] === 'Group'">
           <i class="ni education_hat mr-2"></i>Selected Time - {{ client[0].programs[0].preferred_time }}
@@ -79,6 +79,11 @@
         <div>
           <i class="ni education_hat mr-2"></i>Workout Selected Days - {{ formatPreferredDays(client[0].programs[0].workout_days) }}
         </div>
+        <br>
+        <div>
+          <i class="ni education_hat mr-2"></i><b>Sessions - {{ completed_sessions }} / {{ sessions.length }}</b>
+          <base-button size="sm" type="warning" class="ml-2" @click="viewAttendance(client[0].programs[0].program.program_type)">Details</base-button>
+        </div>
         
         <hr class="my-4">
         <!-- Trainer -->
@@ -88,12 +93,12 @@
             class="table_button" @click="workoutView(client[0].id)">
             Weekly Workout Plan
         </base-button>
-        <base-button v-if="role_id == 'Trainer'"
+        <!-- <base-button v-if="role_id == 'Trainer'"
             type="primary"
             size="small"
             class="table_button" @click="ClientAttendanceView(client[0].id)">
             Attendance Details
-        </base-button>
+        </base-button> -->
         <!-- Trainer -->
 
         <!-- Dietitian -->
@@ -103,14 +108,14 @@
             class="table_button" @click="WeeklymeetingtView(client[0].id)">
             Weekly Meeting
         </base-button>
-        <base-button v-if="role_id == 'Dietitian'"
+        <base-button v-if="role_id == 'Dietitian' || role_id == 'Trainer'"
             type="primary"
             size="small"
             class="table_button" @click="measurmentsView(client[0].id)">
             Measurement Updates
         </base-button>
 
-        <base-button v-if="role_id == 'Dietitian'"
+        <base-button v-if="role_id == 'Dietitian' || role_id == 'Trainer'"
             type="primary"
             size="small"
             class="table_button" @click="dietChartView(client[0].id)">
@@ -147,7 +152,9 @@
             return {
                 client: [],
                 role_id: localStorage.getItem('role_name'),
-                followups: []
+                followups: [],
+                sessions: [],
+                completed_sessions: 0
             }
         },
         methods:{
@@ -236,13 +243,46 @@
                     console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
 
                 });
+            },
+            session_details(id)
+            {
+                const token = localStorage.getItem('token');
+                axios.get(`${process.env.VUE_APP_API_BASE_URL}fetchClientSessions/${id}`, {
+                headers: { Authorization: `Token ${token}` }
+                })
+                .then(response => {
+                    
+                    this.sessions = response.data;
+                    let i = 0;
+                    for (let index = 0; index < this.sessions.length; index++) {
+                      const element = this.sessions[index]['completed'];
+                      
+                      if (element === true) {
+                        i++;
+                      }
+                      
+                    }
+                    this.completed_sessions = i;
+                    // console.log('programs fetched successfully:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching programs:', error.response && error.response.data ? error.response.data : error);
+
+                });
+            },
+            viewAttendance(program_type)
+            {
+              const client_id = this.$route.params.id;
+              this.$router.push({ name: 'clients/attendanceDetails', params: { id: client_id, type: program_type } });
             }
         },
         mounted(){
             this.userData()
             const id = this.$route.params.id;
             this.clientDetails(id);
+            this.session_details(id);
             this.followupDetails(id);
+            
         }
     };
 </script>

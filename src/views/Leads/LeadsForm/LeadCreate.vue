@@ -277,7 +277,7 @@
           { text: 'Friday', value: 'friday' },
           { text: 'Saturday', value: 'saturday' },
         ],
-        status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
+        status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'pending Payment'],
         programTypes : ['Personal Training', 'Group', 'Recorded Sessions'],
         sources : ['Instagram', 'Friend/Family Recommendation', 'Online Search', 'Aster Medicity', 'VMC'],
         programs: [],

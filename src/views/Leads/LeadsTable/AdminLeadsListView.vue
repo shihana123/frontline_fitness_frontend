@@ -12,6 +12,36 @@
             placeholder="Search Leads..."
             />
         </div>
+
+        <b-row class="mb-2 ml-1">
+            <b-col lg="3">
+                <!-- <div class="search_bar d-flex ml-2"> -->
+                    <label class="form-control-label">Status</label>
+                    <select class="form-control" v-model="search_status">
+                    <option v-for="stat in status" :value="stat">{{ stat }}</option>
+                    </select>
+                <!-- </div> -->
+            </b-col>
+            <b-col lg="3">
+                <base-input
+                type="date"
+                label="From Date"
+                v-model="from_date"
+                required
+                >
+                </base-input>
+            </b-col>
+            <b-col lg="3">
+                <base-input
+                type="date"
+                label="To Date"
+                v-model="to_date"
+                required
+                >
+                </base-input>
+            </b-col>
+        </b-row>
+
         <el-table :data="paginatedData"
         style="width: 100%"
         class="table-responsive table"
@@ -74,6 +104,10 @@
     },
     data() {
       return {
+        search_status: 'New Lead',
+        from_date: '',
+        to_date: '',
+        status: ['New Lead', 'Interested', 'Not Interested', 'Follow-up scheduled', 'CLosed/Lost', 'Converted', 'pending Payment'],
         leads: [],
         currentPage: 1,
         selectedLeadID: '',
@@ -84,9 +118,9 @@
         tableColumns: [
             { prop: 'name', label: 'Name', minWidth: 140, sortable: true },
             { prop: 'source', label: 'Source', minWidth: 140, sortable: true },
+            { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
             { prop: 'sales_id.name', label: 'Sales', minWidth: 140, sortable: true },
             { prop: 'phone', label: 'Phone', minWidth: 140, sortable: true },
-            { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
             { prop: 'country_name', label: 'Country', minWidth: 140, sortable: true },
         ],
       };
@@ -121,6 +155,15 @@
     watch: {
         searchQuery() {
             this.currentPage = 1;
+        },
+        from_date() {
+            this.triggerFilters();
+        },
+        to_date() {
+            this.triggerFilters();
+        },
+        search_status() { // your status dropdown v-model
+            this.triggerFilters();
         }
     },
     methods:{
@@ -130,7 +173,12 @@
         async leadsList(){
             const token = localStorage.getItem('token');
             axios.get(`${process.env.VUE_APP_API_BASE_URL}allleadsList`, {
-                headers: { Authorization: `Token ${token}` }
+                headers: { Authorization: `Token ${token}` },
+                params: {
+                    status: this.search_status,     // always has a value
+                    from_date: this.from_date || '', // empty if not provided
+                    to_date: this.to_date || ''      // empty if not provided
+                }
             })
             .then(response => {
                 this.leads = response.data;
@@ -156,6 +204,16 @@
         redirect()
         {
             this.$router.push('/leads/create');
+        },
+        triggerFilters() {
+           
+            // You can decide whether to require both dates or not
+            if (this.from_date && this.to_date) {
+                this.leadsList();
+            } else if (!this.from_date && !this.to_date) {
+                // if no dates, still allow status filtering
+                this.leadsList();
+            }
         }
     },
     mounted()

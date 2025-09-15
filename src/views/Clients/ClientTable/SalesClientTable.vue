@@ -227,9 +227,6 @@
             if (!this.searchQuery) return this.clients;
 
             const query = this.searchQuery.toLowerCase();
-            
-            
-
             return this.clients.filter(client => {
                 const name = client.name || '';
                 const client_id = client.client_id || '';
@@ -245,9 +242,9 @@
             });
         },
         paginatedData() {
-        const start = (this.currentPage - 1) * this.perPage;
-        const end = this.currentPage * this.perPage;
-        return this.filteredClients.slice(start, end);
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = this.currentPage * this.perPage;
+            return this.filteredClients.slice(start, end);
         }
     },
     methods:{

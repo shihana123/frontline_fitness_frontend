@@ -15,7 +15,7 @@
 </template>
 <script>
  
-  import TrainerClientAttendance from "./ClientAttendance/ClientAttendanceDetails";
+  import TrainerClientAttendance from "./ClientAttendance/ClientGroupAttendanceDetails";
   import axios from 'axios'
   
   export default {

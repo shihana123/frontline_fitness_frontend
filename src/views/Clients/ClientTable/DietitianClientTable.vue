@@ -5,84 +5,87 @@
             <h3 class="mb-0">Client List</h3>
             <!-- <b-button  variant="success" class="create_btn" @click="redirect()">Create Program</b-button> -->
         </b-card-header>
-        <el-table class="table-responsive table"
-                  header-row-class-name="thead-light"
-                  :data="clients">
+        <div class="search_bar d-flex justify-content-end mr-2">
+            <base-input
+            style="width: 35%"
+            v-model="searchQuery"
+            prepend-icon="fas fa-search"
+            placeholder="Search Clients..."
+            />
+        </div>
 
-            <el-table-column label="ID"
-                             
-                             prop="client_id">
+        <el-table
+        :data="paginatedData"
+        style="width: 100%"
+        class="table-responsive table"
+        header-row-class-name="thead-light"
+        @selection-change="selectedRows = $event"
+        >
+            <el-table-column label="#" min-width="80">
+                <template slot-scope="scope">
+                    {{ (currentPage - 1) * perPage + scope.$index + 1 }}
+                </template>
             </el-table-column>
-            <el-table-column label="Name"
-                             
-                             prop="name">
-            </el-table-column>
-
-            <el-table-column label="Phone"
-                             
-                             prop="phone">
-            </el-table-column>
-
-            <el-table-column label="Program Type"
-                            
-                             prop="programs[0].program_type">
-            </el-table-column>
-
-            <el-table-column label="Program"
-                            
-                             prop="programs[0].program.name">
+            <el-table-column
+                v-for="(col, index) in tableColumns"
+                :key="index"
+                :prop="col.prop"
+                :label="col.label"
+                :min-width="col.minWidth"
+                :sortable="col.sortable"
+            >
             </el-table-column>
 
-            <!-- <el-table-column label="Workout Start Date"
-                             
-                             prop="workout_start_date">
-            </el-table-column> -->
-           
-            <el-table-column label="Action"
-                             prop="completion"
-                             >
-                <template #default="scope">
-                    <div class="action_buttons">
-                        <base-button
+            <el-table-column label="Actions" min-width="180">
+                <template slot-scope="scope">
+                    <base-button
                         type="primary"
                         size="small"
                         class="table_button" @click="clientView(scope.row.id)">
                         View
-                        </base-button>
+                    </base-button>
 
-                        <base-button v-if="scope.row.paused"
+                    <base-button v-if="scope.row.paused"
                         type="danger"
                         size="small"
                         class="table_button" disabled>
                         Paused
-                        </base-button>
+                    </base-button>
 
-
-                        <base-button
+                    <base-button
                         v-b-modal.modal-1
                         v-if="scope.row.pause_info.pause_available"
                         type="primary"
                         size="small"
                         class="table_button" @click="pauseClient(scope.row.id)">
                         Pause
-                        </base-button>
-                    </div>
-                    
+                    </base-button>
                 </template>
-
             </el-table-column>
         </el-table>
 
         <b-card-footer class="py-4 d-flex justify-content-end">
-            <base-pagination v-model="currentPage" :per-page="10" :total="50"></base-pagination>
+            <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="filteredClients.length"
+            :page-size="perPage"
+            :current-page.sync="currentPage"
+            @current-change="paginationChanged"
+            class="mt-3 d-flex justify-content-end"
+            />
         </b-card-footer>
+       
     </b-card>
    
     <b-modal id="modal-1" title="Pause Client" hide-footer v-if="modal_1">
         <b-form @submit.prevent="updatePause">
             <h6 class="heading-small text-muted mb-2">Pause the client</h6>
             <div class="pl-lg-12">
-                <b-row >{{ no_of_days_available }}
+                <b-row >
+                    <b-col lg="12">
+                        <label class="form-control-label">Available Days to pause: <b>{{ no_of_days_available }}</b></label>
+                    </b-col>
                     <b-col lg="12">
                         <base-input
                         type="number"
@@ -126,19 +129,19 @@
 <script>
   import axios from 'axios'
   import projects from '../../Tables/projects'
-  import { Table, TableColumn} from 'element-ui'
+  import { Table, TableColumn, Pagination } from 'element-ui'
   import { useRouter } from 'vue-router';
   export default {
     name: 'light-table',
     components: {
       [Table.name]: Table,
-      [TableColumn.name]: TableColumn
+      [TableColumn.name]: TableColumn,
+      [Pagination.name]: Pagination,
     },
     data() {
       return {
         modal_1: false,
         clients: [],
-        currentPage: 1,
         pausedata:{
             pausedate : '',
             days: 1,
@@ -148,9 +151,48 @@
         selectedClientID: '',
         pauseDetails: [],
         no_of_days_available: 0,
+        currentPage: 1,
+        perPage: 10,
+        searchQuery: '', 
+        tableColumns: [
+            { prop: 'client_id', label: 'ID', minWidth: 140, sortable: true },
+            { prop: 'name', label: 'Name', minWidth: 140, sortable: true },
+            // { prop: 'status', label: 'Status', minWidth: 140, sortable: true },
+            { prop: 'phone', label: 'Phone', minWidth: 140, sortable: true },
+            { prop: 'programs[0].program.name', label: 'Program', minWidth: 140, sortable: true },
+            { prop: 'country_name', label: 'Country', minWidth: 140, sortable: true },
+        ],
       };
     },
+    computed: {
+        filteredClients() {
+            if (!this.searchQuery) return this.clients;
+
+            const query = this.searchQuery.toLowerCase();
+            return this.clients.filter(client => {
+                const name = client.name || '';
+                const client_id = client.client_id || '';
+                const program = client.programs[0].program.name || '';
+                // const country = client.country_name || '';
+
+                return (
+                name.toLowerCase().includes(query) ||
+                client_id.includes(query) ||
+                program.toLowerCase().includes(query)
+                // country.toLowerCase().includes(query)
+                );
+            });
+        },
+        paginatedData() {
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = this.currentPage * this.perPage;
+            return this.filteredClients.slice(start, end);
+        }
+    },
     methods:{
+        paginationChanged(page) {
+            this.currentPage = page;
+        },
         async clientList(){
             const token = localStorage.getItem('token');
             axios.get(`${process.env.VUE_APP_API_BASE_URL}dietitianclientList`, {
