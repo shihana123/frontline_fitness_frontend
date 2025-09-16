@@ -240,6 +240,12 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/clients/existclientscreate',
+        name: 'clients/existclientscreate',
+        component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/CreateExistsClients.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/clients/sales_clients',
         name: 'clients/sales_clients',
         component: () => import(/* webpackChunkName: "demo" */ '../views/Clients/ClientList.vue'),

@@ -68,14 +68,14 @@
                     </a> -->
 
                     <base-button v-b-modal.modal-1
-                    v-if="scope.row.new_client && scope.row.trainer_first_consultation == 0"
+                    v-if="scope.row.new_client && scope.row.diet_first_consultation == 0"
                     type="primary"
                     size="small"
                     @click="handleNewClient(scope.row)" class="table_button">
                     Schedule
                     </base-button>
                     <base-button v-b-modal.modal-2
-                    v-else-if="scope.row.new_client && scope.row.trainer_first_consultation == 2"
+                    v-else-if="scope.row.new_client && scope.row.diet_first_consultation == 2"
                     type="warning"
                     size="small"
                     @click="ClientDataEnter(scope.row)" class="table_button">
@@ -83,7 +83,7 @@
                     </base-button>
 
                     <base-button
-                    v-else-if="scope.row.new_client && scope.row.trainer_first_consultation == 3"
+                    v-else-if="scope.row.new_client && scope.row.diet_first_consultation == 3"
                     type="success"
                     size="small"
                     class="table_button">
@@ -131,9 +131,9 @@
         </b-form>
     </b-modal>
 
-    <b-modal id="modal-2" title="Details of Client" hide-footer v-if="data_modal">
+    <b-modal id="modal-2" title="Enter Details after First Consulation" hide-footer v-if="data_modal">
         <b-form @submit.prevent="enterClientDetails">
-            <h6 class="heading-small text-muted mb-2">Enter Details after First Consulation</h6>
+            <!-- <h6 class="heading-small text-muted mb-2">Enter Details after First Consulation</h6> -->
             <div v-show="dietary_div">
                 <h6 class="heading-small text-muted mb-2">Dietary and Nutritional Assessment</h6>
                 <div class="pl-lg-12">
@@ -415,7 +415,7 @@
         clients: [],
         scheduledata:{
             scheduledate : '',
-            type: 'trainer',
+            type: 'dietitian',
             no_of_consultation: 1
         },
         clientdetails:{

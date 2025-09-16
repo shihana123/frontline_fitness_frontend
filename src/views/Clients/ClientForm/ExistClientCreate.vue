@@ -209,7 +209,6 @@
                 type="date"
                 label="Program End Date *"
                 v-model="lead.program_end_date"
-                disabled
                 >
                 </base-input>
             </b-col>
@@ -234,7 +233,7 @@
         </b-alert>
 
 
-        <b-button variant="primary" @click="goToClientList">Close</b-button>
+        <b-button variant="primary" @click="goToLeadsList">Close</b-button>
         <b-button variant="info" class="ml-2" @click="addMoreClient">Add More</b-button>
       </div>
     </b-modal>
@@ -390,12 +389,15 @@
           const timeSlotValues = timeSlots.map(slot => slot.value);
           formData.append('preferred_time', JSON.stringify(timeSlotValues));
         }
+
+        console.log(formData);
+        
         const token = localStorage.getItem('token');
         axios.post(`${process.env.VUE_APP_API_BASE_URL}clientCreate`, formData,{
                 headers: { Authorization: `Token ${token}` }
         })
         .then(response => {
-          console.log('Client created successfully:', response.data);
+          console.log('Lead created successfully:', response.data);
           this.showSuccessModal = true;
         })
         .catch(error => {
@@ -404,10 +406,10 @@
         });
         
       },
-      goToClientList()
+      goToLeadsList()
       {
         this.showSuccessModal = false;
-        this.$router.push({ name: 'clients/clients' });
+        this.$router.push({ name: 'leads' });
       },
       addMoreClient()
       {

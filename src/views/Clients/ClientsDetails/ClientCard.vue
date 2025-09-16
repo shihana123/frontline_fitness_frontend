@@ -58,7 +58,7 @@
         <div class="h5 font-weight-300">
           <i class="ni location_pin mr-2"></i>{{ client[0].phone }}
         </div>
-        <div class="h5 mt-4" v-if="role_id == 'Sales'">
+        <div class="h5 mt-4" v-if="role_id == 'Sales' || role_id == 'Admin'">
           <h5><i class="ni business_briefcase-24 mr-2"></i>Selected Program - {{ client[0].programs[0].program.name }}</h5>
           <h5><i class="ni business_briefcase-24 mr-2"></i>Program Choosen for - {{ client[0].program_months }} Months</h5>
           <h5><i class="ni business_briefcase-24 mr-2"></i>Amount Paid - ₹{{ client[0].amount }}</h5>
@@ -85,7 +85,10 @@
         </div> -->
         <br>
         <div>
-          <i class="ni education_hat mr-2"></i><b>Sessions - {{ completed_sessions }} / {{ sessions.length }}</b>
+          <i class="ni education_hat mr-2"></i><b>Sessions - {{ completed_sessions }} / {{ distinct_sessions.length }}</b>
+          <br> <b>TR - {{ repeated_completed_sessions }} / {{ repeated_sessions.length }}</b> 
+          <br> <b>CR - {{ rescheduled_completed_sessions }} / {{ rescheduled_sessions.length }}</b> 
+          <br>
           <base-button size="sm" type="warning" class="ml-2" @click="viewAttendance(client[0].programs[0].program.program_type)">Details</base-button>
         </div>
         
@@ -157,8 +160,12 @@
                 client: [],
                 role_id: localStorage.getItem('role_name'),
                 followups: [],
-                sessions: [],
+                distinct_sessions: [],
+                repeated_sessions: [],
+                rescheduled_sessions: [],
                 completed_sessions: 0,
+                rescheduled_completed_sessions: 0,
+                repeated_completed_sessions: 0,
                 total_Days: 0,
                 corrent_Day: 0
             }
@@ -257,11 +264,13 @@
                 headers: { Authorization: `Token ${token}` }
                 })
                 .then(response => {
-                    
-                    this.sessions = response.data;
+                    this.distinct_sessions = response.data.distinct_sessions;
+                    this.repeated_sessions = response.data.repeated_sessions;
+                    this.rescheduled_sessions = response.data.rescheduled_sessions;
+                    // this.sessions = response.data.distinct_sessions;
                     let i = 0;
-                    for (let index = 0; index < this.sessions.length; index++) {
-                      const element = this.sessions[index]['completed'];
+                    for (let index = 0; index < this.distinct_sessions.length; index++) {
+                      const element = this.distinct_sessions[index]['completed'];
                       
                       if (element === true) {
                         i++;
@@ -269,6 +278,28 @@
                       
                     }
                     this.completed_sessions = i;
+
+                    let j = 0;
+                    for (let index = 0; index < this.repeated_sessions.length; index++) {
+                      const element = this.repeated_sessions[index]['completed'];
+                      
+                      if (element === true) {
+                        j++;
+                      }
+                      
+                    }
+                    this.repeated_completed_sessions = j;
+
+                    let k = 0;
+                    for (let index = 0; index < this.rescheduled_sessions.length; index++) {
+                      const element = this.rescheduled_sessions[index]['completed'];
+                      
+                      if (element === true) {
+                        k++;
+                      }
+                      
+                    }
+                    this.rescheduled_completed_sessions = k;
                     // console.log('programs fetched successfully:', response.data);
                 })
                 .catch(error => {

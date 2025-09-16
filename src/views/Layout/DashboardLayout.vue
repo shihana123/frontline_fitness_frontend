@@ -114,6 +114,15 @@
             >
         </sidebar-item>
 
+        <sidebar-item v-if="role_id == 'Admin'"
+            :link="{
+              name: 'Existing Clients',
+              path: '/clients/existclientscreate',
+              icon: 'ni ni-circle-08 text-orange'
+              }"
+            >
+        </sidebar-item>
+
 
         <!-- trainer & Dietitian -->
         <sidebar-item v-if="role_id == 'Trainer'"
